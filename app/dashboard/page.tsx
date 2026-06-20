@@ -1,7 +1,13 @@
 import { redirect } from "next/navigation";
 
 import { logoutAction } from "@/app/actions/auth";
+import { LinkManager } from "@/components/dashboard/link-manager";
 import { copy } from "@/lib/copy";
+import {
+  getCurrentLinks,
+  LinksAuthenticationError,
+  LinksLookupError,
+} from "@/lib/links/get-current-links";
 import {
   getCurrentProfile,
   ProfileAuthenticationError,
@@ -30,6 +36,22 @@ export default async function DashboardPage() {
     redirect("/onboarding");
   }
 
+  let initialLinks;
+
+  try {
+    initialLinks = await getCurrentLinks();
+  } catch (error) {
+    if (error instanceof LinksAuthenticationError) {
+      redirect("/login");
+    }
+
+    if (error instanceof LinksLookupError) {
+      throw new Error(copy.links.failure.load);
+    }
+
+    throw error;
+  }
+
   return (
     <main className="min-h-screen px-6 py-8 sm:px-10">
       <div className="mx-auto max-w-5xl">
@@ -45,7 +67,7 @@ export default async function DashboardPage() {
           </form>
         </header>
 
-        <section className="mt-24 rounded-3xl border border-slate-200/80 bg-white p-8 shadow-[0_24px_80px_rgba(15,23,42,0.06)] sm:p-12">
+        <section className="mt-20 rounded-3xl border border-slate-200/80 bg-white p-8 shadow-[0_24px_80px_rgba(15,23,42,0.06)] sm:p-12">
           <p className="text-sm font-bold uppercase tracking-[0.2em] text-orange-600">
             {copy.dashboard.eyebrow}
           </p>
@@ -55,10 +77,21 @@ export default async function DashboardPage() {
           <p className="mt-3 font-medium text-slate-700">
             @{current.profile.username}
           </p>
-          <p className="mt-6 text-slate-600">
-            {copy.dashboard.linksComingSoon}
-          </p>
         </section>
+
+        <div className="mt-12">
+          <p className="text-sm font-bold uppercase tracking-[0.2em] text-orange-600">
+            {copy.links.eyebrow}
+          </p>
+          <h2 className="mt-3 text-3xl font-semibold tracking-tight text-slate-950">
+            {copy.links.title}
+          </h2>
+          <p className="mt-2 max-w-2xl text-slate-600">
+            {copy.links.description}
+          </p>
+        </div>
+
+        <LinkManager initialLinks={initialLinks} />
       </div>
     </main>
   );
