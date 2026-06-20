@@ -30,7 +30,7 @@ Build only the Next.js authentication foundation: public landing page, registrat
 
 ### Registration
 
-The registration form performs basic browser validation and submits to a Server Action with `previousState` as its first argument. The action first calls `auth.getUser()` to detect an existing verified session, then validates and normalizes the email, validates the password, and calls Supabase `signUp`. `emailRedirectTo` points to the absolute `/auth/callback` URL derived from the request origin. Successful submission returns a safe English message explaining that email verification is required. Supabase error text is never displayed directly.
+The registration form performs basic browser validation and submits to a Server Action with `previousState` as its first argument. The action first calls `auth.getClaims()` to detect an existing verified session, then validates and normalizes the email, validates the password, and calls Supabase `signUp`. `emailRedirectTo` points to the absolute `/auth/callback` URL derived from the request origin. Successful submission returns the generic message: “If an account can be created with this email address, check your inbox to continue.” Supabase error text is never displayed directly.
 
 ### Email Confirmation
 
@@ -38,13 +38,13 @@ The registration form performs basic browser validation and submits to a Server 
 
 ### Login and Logout
 
-The login action first calls `auth.getUser()` to detect an existing verified session, validates input, calls `signInWithPassword`, verifies the resulting server session with a second `auth.getUser()` call, and redirects to `/dashboard`. The logout action verifies the current user with `auth.getUser()`, signs out, and redirects to `/login`.
+The login action first calls `auth.getClaims()` to detect an existing verified session, validates input, calls `signInWithPassword`, verifies the resulting server session with a second `auth.getClaims()` call, and redirects to `/dashboard`. The logout action verifies the current session with `auth.getClaims()`, signs out, and redirects to `/login`.
 
 ## Authorization
 
 The proxy refreshes session cookies and provides fast redirects but is not the security boundary. It redirects unauthenticated `/dashboard` requests to `/login`, and authenticated `/login` or `/register` requests to `/dashboard`.
 
-The dashboard independently calls `auth.getUser()` and redirects to `/login` when no verified user exists. Every Server Action calls `auth.getUser()` inside the action. No action accepts a browser-provided user ID or role.
+The dashboard independently calls `auth.getClaims()` and redirects to `/login` when no verified claims exist. It may then call `auth.getUser()` to obtain the email address for display. Every Server Action calls `auth.getClaims()` inside the action. No action accepts a browser-provided user ID or role. `auth.getSession()` is never used for a security decision.
 
 ## Forms and Feedback
 
@@ -61,7 +61,7 @@ All user-facing text is English and centralized in `lib/copy.ts` where practical
 - `NEXT_PUBLIC_SUPABASE_URL`
 - `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`
 
-The README includes brief startup commands and notes that both the local callback URL and production callback URL must be added to Supabase Dashboard URL Configuration Redirect URLs.
+The README includes brief startup commands, notes that Confirm email must be enabled, and states that both the local callback URL and production callback URL must be added to Supabase Dashboard URL Configuration Redirect URLs.
 
 ## Error Handling
 
