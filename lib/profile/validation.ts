@@ -16,6 +16,12 @@ export const initialProfileActionState: ProfileActionState = {
   message: "",
 };
 
+export interface ProfileVisibilityActionState {
+  status: "idle" | "success" | "error";
+  message: string;
+  isPublished: boolean;
+}
+
 interface ValidProfileInput {
   success: true;
   username: string;

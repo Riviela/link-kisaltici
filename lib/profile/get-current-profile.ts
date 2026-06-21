@@ -6,6 +6,7 @@ export interface CurrentProfile {
   id: string;
   username: string;
   display_name: string;
+  is_published: boolean;
 }
 
 export interface CurrentProfileResult {
@@ -39,7 +40,7 @@ export async function getCurrentProfile(): Promise<CurrentProfileResult> {
 
   const { data: profile, error: profileError } = await supabase
     .from("profiles")
-    .select("id, username, display_name")
+    .select("id, username, display_name, is_published")
     .eq("id", userId)
     .maybeSingle();
 

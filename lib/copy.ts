@@ -86,6 +86,32 @@ export const copy = {
     titlePrefix: "Welcome",
     logout: "Log out",
   },
+  profileVisibility: {
+    published: "Published",
+    private: "Private",
+    publish: "Publish profile",
+    unpublish: "Unpublish profile",
+    processing: "Processing...",
+    success: {
+      published: "Your profile is now public.",
+      private: "Your profile is now private.",
+    },
+    failure: {
+      authentication: "Your session has expired. Please log in again.",
+      update: "We could not update profile visibility. Please try again.",
+    },
+  },
+  publicProfile: {
+    empty: "No links have been published yet.",
+    failure: {
+      load: "We could not load this profile right now.",
+    },
+  },
+  notFound: {
+    title: "Profile not found",
+    description: "This profile is unavailable or has not been published.",
+    home: "Return home",
+  },
   links: {
     eyebrow: "Your links",
     title: "Manage your links",

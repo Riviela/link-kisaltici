@@ -1,6 +1,7 @@
 "use server";
 
 import type { PostgrestError } from "@supabase/supabase-js";
+import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
 import { copy } from "@/lib/copy";
@@ -12,6 +13,7 @@ import {
 } from "@/lib/profile/get-current-profile";
 import {
   type ProfileActionState,
+  type ProfileVisibilityActionState,
   validateProfileInput,
 } from "@/lib/profile/validation";
 import { createClient } from "@/lib/supabase/server";
@@ -127,5 +129,60 @@ export async function createProfileAction(
   return {
     status: "error",
     message: copy.onboarding.failure.create,
+  };
+}
+
+export async function updateProfileVisibilityAction(
+  previousState: ProfileVisibilityActionState,
+  formData: FormData,
+): Promise<ProfileVisibilityActionState> {
+  const requestedValue = formData.get("isPublished");
+
+  if (requestedValue !== "true" && requestedValue !== "false") {
+    return {
+      status: "error",
+      message: copy.profileVisibility.failure.update,
+      isPublished: previousState.isPublished,
+    };
+  }
+
+  const supabase = await createClient();
+  const { data: claimsData, error: claimsError } =
+    await supabase.auth.getClaims();
+  const userId = claimsData?.claims?.sub;
+
+  if (claimsError || typeof userId !== "string" || userId.length === 0) {
+    return {
+      status: "error",
+      message: copy.profileVisibility.failure.authentication,
+      isPublished: previousState.isPublished,
+    };
+  }
+
+  const isPublished = requestedValue === "true";
+  const { data: profile, error } = await supabase
+    .from("profiles")
+    .update({ is_published: isPublished })
+    .eq("id", userId)
+    .select("username, is_published")
+    .maybeSingle();
+
+  if (error || !profile) {
+    return {
+      status: "error",
+      message: copy.profileVisibility.failure.update,
+      isPublished: previousState.isPublished,
+    };
+  }
+
+  revalidatePath("/dashboard");
+  revalidatePath(`/${profile.username}`);
+
+  return {
+    status: "success",
+    message: profile.is_published
+      ? copy.profileVisibility.success.published
+      : copy.profileVisibility.success.private,
+    isPublished: profile.is_published,
   };
 }
