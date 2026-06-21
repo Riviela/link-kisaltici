@@ -157,7 +157,7 @@ export function LinkCard({
               </>
             ) : (
               <button
-                className="button-quiet min-h-9 px-3 text-xs text-[var(--color-danger)] hover:bg-[var(--color-danger-soft)] hover:text-[var(--color-danger)]"
+                className="button-delete button-quiet min-h-9 px-3 text-xs text-[var(--color-danger)]"
                 disabled={disabled}
                 onClick={() => setIsConfirmingDelete(true)}
                 type="button"
