@@ -20,6 +20,12 @@ export const copy = {
     passwordLabel: "Password",
     passwordPlaceholder: "At least 8 characters",
     processing: "Processing...",
+    visual: {
+      title: "Creative notes",
+      username: "@canvas",
+      firstLink: "Selected work",
+      secondLink: "Writing notes",
+    },
     login: {
       title: "Welcome back",
       description: "Log in to continue to your dashboard.",
@@ -58,7 +64,8 @@ export const copy = {
       "Set up the basic profile that will become the foundation of your page.",
     usernameLabel: "Username",
     usernameHint: "3-30 lowercase letters, numbers, or underscores.",
-    usernamePlaceholder: "your_name",
+    usernamePlaceholder: "yourname",
+    usernamePreview: "yourdomain.com/yourname",
     displayNameLabel: "Display name",
     displayNamePlaceholder: "Your name",
     bioLabel: "Bio",
@@ -84,6 +91,8 @@ export const copy = {
   dashboard: {
     eyebrow: "Dashboard",
     titlePrefix: "Welcome",
+    content: "Content",
+    preview: "Live preview",
     logout: "Log out",
   },
   profileVisibility: {

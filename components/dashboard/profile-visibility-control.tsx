@@ -24,12 +24,12 @@ export function ProfileVisibilityControl({
   );
 
   return (
-    <div className="w-full rounded-2xl border border-slate-200 bg-slate-50/70 p-4 sm:w-auto sm:min-w-56">
+    <div className="w-full rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-surface-raised)] p-3 sm:w-auto sm:min-w-56">
       <div className="flex items-center justify-between gap-4">
-        <span className="flex items-center gap-2 text-sm font-semibold text-slate-800">
+        <span className="flex items-center gap-2 text-sm font-bold text-[var(--color-text)]">
           <span
             aria-hidden="true"
-            className={`size-2.5 rounded-full ${state.isPublished ? "bg-emerald-500" : "bg-slate-400"}`}
+            className={`size-2.5 rounded-full ${state.isPublished ? "bg-[var(--color-accent)]" : "bg-[#a6a8b2]"}`}
           />
           {state.isPublished
             ? copy.profileVisibility.published
@@ -43,7 +43,7 @@ export function ProfileVisibilityControl({
             value={String(!state.isPublished)}
           />
           <button
-            className="rounded-full border border-slate-300 bg-white px-3 py-2 text-xs font-bold text-slate-800 transition hover:border-orange-400 hover:text-orange-700 disabled:cursor-not-allowed disabled:opacity-60 motion-reduce:transition-none"
+            className="button-secondary min-h-9 rounded-full px-3 text-xs"
             disabled={isPending}
             type="submit"
           >
@@ -59,7 +59,7 @@ export function ProfileVisibilityControl({
       {state.message ? (
         <p
           aria-live="polite"
-          className={`mt-3 text-xs ${state.status === "error" ? "text-red-700" : "text-slate-600"}`}
+          className={`mt-3 text-xs ${state.status === "error" ? "text-[var(--color-danger)]" : "text-[var(--color-muted)]"}`}
           role="status"
         >
           {state.message}

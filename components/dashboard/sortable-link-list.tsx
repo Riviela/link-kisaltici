@@ -59,7 +59,7 @@ export function SortableLinkList({
 
   if (links.length === 0) {
     return (
-      <div className="rounded-2xl border border-dashed border-slate-300 bg-slate-50 px-6 py-12 text-center text-sm text-slate-500">
+      <div className="rounded-[var(--radius-card)] border border-dashed border-[var(--color-border-strong)] bg-[var(--color-surface-raised)] px-6 py-14 text-center text-sm leading-6 text-[var(--color-muted)]">
         {copy.links.empty}
       </div>
     );

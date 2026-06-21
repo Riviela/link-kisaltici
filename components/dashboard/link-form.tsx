@@ -70,11 +70,14 @@ export function LinkForm({
       ) : null}
 
       <div className="space-y-2">
-        <label className="text-sm font-medium text-slate-800" htmlFor={`${mode}-title-${link?.id ?? "new"}`}>
+        <label
+          className="text-sm font-semibold text-[var(--color-text)]"
+          htmlFor={`${mode}-title-${link?.id ?? "new"}`}
+        >
           {copy.links.titleLabel}
         </label>
         <input
-          className="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-slate-950 outline-none transition focus:border-orange-500 focus:ring-4 focus:ring-orange-100 disabled:bg-slate-50"
+          className="field-control"
           defaultValue={link?.title}
           disabled={controlsDisabled}
           id={`${mode}-title-${link?.id ?? "new"}`}
@@ -87,12 +90,15 @@ export function LinkForm({
       </div>
 
       <div className="space-y-2">
-        <label className="text-sm font-medium text-slate-800" htmlFor={`${mode}-url-${link?.id ?? "new"}`}>
+        <label
+          className="text-sm font-semibold text-[var(--color-text)]"
+          htmlFor={`${mode}-url-${link?.id ?? "new"}`}
+        >
           {copy.links.urlLabel}
         </label>
         <input
           autoCapitalize="none"
-          className="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-slate-950 outline-none transition focus:border-orange-500 focus:ring-4 focus:ring-orange-100 disabled:bg-slate-50"
+          className="field-control"
           defaultValue={link?.url}
           disabled={controlsDisabled}
           id={`${mode}-url-${link?.id ?? "new"}`}
@@ -106,9 +112,9 @@ export function LinkForm({
         />
       </div>
 
-      <label className="flex items-center gap-3 text-sm font-medium text-slate-800">
+      <label className="flex items-center gap-3 text-sm font-semibold text-[var(--color-text)]">
         <input
-          className="size-4 accent-orange-500"
+          className="size-4 accent-[#6d5dfb]"
           defaultChecked={link?.is_active ?? true}
           disabled={controlsDisabled}
           name="isActive"
@@ -120,7 +126,7 @@ export function LinkForm({
       {state.status === "error" ? (
         <p
           aria-live="polite"
-          className="rounded-xl bg-red-50 px-4 py-3 text-sm text-red-700"
+          className="status-error"
           role="status"
         >
           {state.message}
@@ -129,7 +135,7 @@ export function LinkForm({
 
       <div className="flex flex-wrap gap-3">
         <button
-          className="rounded-xl bg-slate-950 px-5 py-3 text-sm font-semibold text-white transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-60"
+          className={`button-primary px-5 py-3 text-sm ${mode === "create" ? "w-full" : ""}`}
           disabled={controlsDisabled}
           type="submit"
         >
@@ -142,7 +148,7 @@ export function LinkForm({
 
         {mode === "edit" && onCancel ? (
           <button
-            className="rounded-xl border border-slate-200 bg-white px-5 py-3 text-sm font-semibold text-slate-700 transition hover:border-slate-300 disabled:cursor-not-allowed disabled:opacity-60"
+            className="button-secondary px-5 py-3 text-sm"
             disabled={controlsDisabled}
             onClick={onCancel}
             type="button"

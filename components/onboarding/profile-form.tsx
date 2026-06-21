@@ -23,13 +23,13 @@ export function ProfileForm() {
   return (
     <form action={formAction} className="space-y-5">
       <div className="space-y-2">
-        <label className="text-sm font-medium text-slate-800" htmlFor="username">
+        <label className="text-sm font-semibold text-[var(--color-text)]" htmlFor="username">
           {copy.onboarding.usernameLabel}
         </label>
         <input
           autoCapitalize="none"
           autoComplete="username"
-          className="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-slate-950 outline-none transition focus:border-orange-500 focus:ring-4 focus:ring-orange-100"
+          className="field-control"
           id="username"
           maxLength={USERNAME_MAX_LENGTH}
           minLength={USERNAME_MIN_LENGTH}
@@ -43,19 +43,24 @@ export function ProfileForm() {
           spellCheck={false}
           type="text"
         />
-        <p className="text-xs text-slate-500">{copy.onboarding.usernameHint}</p>
+        <div className="flex flex-wrap items-center justify-between gap-2 text-xs text-[var(--color-muted)]">
+          <p>{copy.onboarding.usernameHint}</p>
+          <p className="font-semibold text-[var(--color-accent-strong)]">
+            {copy.onboarding.usernamePreview}
+          </p>
+        </div>
       </div>
 
       <div className="space-y-2">
         <label
-          className="text-sm font-medium text-slate-800"
+          className="text-sm font-semibold text-[var(--color-text)]"
           htmlFor="displayName"
         >
           {copy.onboarding.displayNameLabel}
         </label>
         <input
           autoComplete="name"
-          className="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-slate-950 outline-none transition focus:border-orange-500 focus:ring-4 focus:ring-orange-100"
+          className="field-control"
           id="displayName"
           maxLength={DISPLAY_NAME_MAX_LENGTH}
           name="displayName"
@@ -68,15 +73,15 @@ export function ProfileForm() {
 
       <div className="space-y-2">
         <div className="flex items-center justify-between gap-4">
-          <label className="text-sm font-medium text-slate-800" htmlFor="bio">
+          <label className="text-sm font-semibold text-[var(--color-text)]" htmlFor="bio">
             {copy.onboarding.bioLabel}
           </label>
-          <span className="text-xs text-slate-500">
+          <span className="text-xs text-[var(--color-muted)]">
             {copy.onboarding.bioOptional}
           </span>
         </div>
         <textarea
-          className="min-h-28 w-full resize-y rounded-xl border border-slate-200 bg-white px-4 py-3 text-slate-950 outline-none transition focus:border-orange-500 focus:ring-4 focus:ring-orange-100"
+          className="field-control min-h-28 resize-y"
           id="bio"
           maxLength={BIO_MAX_LENGTH}
           name="bio"
@@ -88,7 +93,7 @@ export function ProfileForm() {
       {state.message ? (
         <p
           aria-live="polite"
-          className="rounded-xl bg-red-50 px-4 py-3 text-sm text-red-700"
+          className="status-error"
           role="status"
         >
           {state.message}
@@ -96,7 +101,7 @@ export function ProfileForm() {
       ) : null}
 
       <button
-        className="w-full rounded-xl bg-slate-950 px-4 py-3 font-semibold text-white transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-60"
+        className="button-primary w-full px-5 py-3"
         disabled={isPending}
         type="submit"
       >

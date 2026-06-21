@@ -1,0 +1,209 @@
+@import "tailwindcss";
+
+:root {
+  color-scheme: light;
+  --color-page: #f4f5f7;
+  --color-surface: #ffffff;
+  --color-surface-raised: #fafafc;
+  --color-text: #17171c;
+  --color-muted: #6f7280;
+  --color-border: #e4e5ea;
+  --color-border-strong: #d3d5dd;
+  --color-accent: #6d5dfb;
+  --color-accent-strong: #5947ee;
+  --color-accent-soft: #eeecff;
+  --color-danger: #b4233f;
+  --color-danger-soft: #fff0f3;
+  --color-success: #16794c;
+  --color-success-soft: #ecf8f1;
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.25rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-10: 2.5rem;
+  --radius-control: 1rem;
+  --radius-card: 1.5rem;
+  --radius-panel: 2rem;
+  --radius-shell: 2.25rem;
+  --border-subtle: 1px solid var(--color-border);
+  --shadow-card: 0 14px 40px rgba(62, 54, 120, 0.08);
+  --shadow-panel: 0 28px 80px rgba(62, 54, 120, 0.12);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  background: var(--color-page);
+}
+
+body {
+  background: var(--color-page);
+  color: var(--color-text);
+  font-family: "Avenir Next", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+  margin: 0;
+  min-width: 320px;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button,
+input,
+textarea {
+  font: inherit;
+}
+
+button,
+a {
+  -webkit-tap-highlight-color: transparent;
+}
+
+::selection {
+  background: var(--color-accent-soft);
+  color: var(--color-text);
+}
+
+.surface-panel {
+  background: var(--color-surface);
+  border: var(--border-subtle);
+  border-radius: var(--radius-panel);
+  box-shadow: var(--shadow-card);
+}
+
+.field-control {
+  background: var(--color-surface-raised);
+  border: 1px solid transparent;
+  border-radius: var(--radius-control);
+  color: var(--color-text);
+  min-height: 3.25rem;
+  outline: none;
+  padding: 0.8rem 1rem;
+  transition: border-color 180ms ease, background-color 180ms ease,
+    box-shadow 180ms ease;
+  width: 100%;
+}
+
+.field-control:hover {
+  border-color: var(--color-border-strong);
+}
+
+.field-control:focus {
+  background: var(--color-surface);
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 4px var(--color-accent-soft);
+}
+
+.field-control:disabled {
+  cursor: not-allowed;
+  opacity: 0.58;
+}
+
+.button-primary,
+.button-secondary,
+.button-danger,
+.button-quiet {
+  align-items: center;
+  border-radius: var(--radius-control);
+  display: inline-flex;
+  font-weight: 700;
+  justify-content: center;
+  min-height: 2.75rem;
+  transition: background-color 180ms ease, border-color 180ms ease,
+    color 180ms ease, opacity 180ms ease, transform 180ms ease;
+}
+
+.button-primary {
+  background: var(--color-accent);
+  border: 1px solid var(--color-accent);
+  color: white;
+}
+
+.button-primary:hover {
+  background: var(--color-accent-strong);
+  border-color: var(--color-accent-strong);
+  transform: translateY(-1px);
+}
+
+.button-secondary {
+  background: var(--color-surface);
+  border: var(--border-subtle);
+  color: var(--color-text);
+}
+
+.button-secondary:hover,
+.button-quiet:hover {
+  background: var(--color-accent-soft);
+  border-color: #cac5ff;
+  color: var(--color-accent-strong);
+}
+
+.button-danger {
+  background: var(--color-danger);
+  border: 1px solid var(--color-danger);
+  color: white;
+}
+
+.button-quiet {
+  background: transparent;
+  border: 1px solid transparent;
+  color: var(--color-muted);
+}
+
+.button-primary:active,
+.button-secondary:active,
+.button-danger:active,
+.button-quiet:active {
+  transform: translateY(1px);
+}
+
+.button-primary:focus-visible,
+.button-secondary:focus-visible,
+.button-danger:focus-visible,
+.button-quiet:focus-visible,
+a:focus-visible {
+  outline: 3px solid #c9c4ff;
+  outline-offset: 2px;
+}
+
+.button-primary:disabled,
+.button-secondary:disabled,
+.button-danger:disabled,
+.button-quiet:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+  transform: none;
+}
+
+.status-error,
+.status-success {
+  border-radius: 0.875rem;
+  font-size: 0.875rem;
+  line-height: 1.4;
+  padding: 0.8rem 1rem;
+}
+
+.status-error {
+  background: var(--color-danger-soft);
+  color: var(--color-danger);
+}
+
+.status-success {
+  background: var(--color-success-soft);
+  color: var(--color-success);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
+}

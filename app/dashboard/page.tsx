@@ -54,53 +54,87 @@ export default async function DashboardPage() {
   }
 
   return (
-    <main className="min-h-screen px-6 py-8 sm:px-10">
-      <div className="mx-auto max-w-5xl">
-        <header className="flex items-center justify-between">
-          <p className="font-bold tracking-tight">{copy.metadata.title}</p>
-          <form action={logoutAction}>
-            <button
-              className="rounded-full border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-800 transition hover:border-slate-400"
-              type="submit"
+    <main className="min-h-dvh bg-[var(--color-page)]">
+      <div className="xl:grid xl:grid-cols-[5.25rem_minmax(0,1fr)]">
+        <nav className="hidden min-h-dvh border-r border-[var(--color-border)] bg-white xl:sticky xl:top-0 xl:flex xl:h-dvh xl:flex-col xl:items-center xl:py-7">
+          <a
+            aria-current="page"
+            className="mt-24 flex w-full flex-col items-center gap-2 border-r-2 border-[var(--color-accent)] py-3 text-[var(--color-accent-strong)]"
+            href="#content"
+          >
+            <svg
+              aria-hidden="true"
+              fill="none"
+              height="20"
+              viewBox="0 0 20 20"
+              width="20"
             >
-              {copy.dashboard.logout}
-            </button>
-          </form>
-        </header>
+              <path
+                d="M4 5.5h12M4 10h12M4 14.5h8"
+                stroke="currentColor"
+                strokeLinecap="round"
+                strokeWidth="1.7"
+              />
+            </svg>
+            <span className="text-[0.68rem] font-bold">
+              {copy.dashboard.content}
+            </span>
+          </a>
+        </nav>
 
-        <section className="mt-20 rounded-3xl border border-slate-200/80 bg-white p-8 shadow-[0_24px_80px_rgba(15,23,42,0.06)] sm:p-12">
-          <div className="flex flex-col gap-8 sm:flex-row sm:items-end sm:justify-between">
-            <div>
-              <p className="text-sm font-bold uppercase tracking-[0.2em] text-orange-600">
-                {copy.dashboard.eyebrow}
-              </p>
-              <h1 className="mt-4 text-4xl font-semibold tracking-tight text-slate-950">
-                {copy.dashboard.titlePrefix}, {current.profile.display_name}
-              </h1>
-              <p className="mt-3 font-medium text-slate-700">
-                @{current.profile.username}
-              </p>
+        <div className="min-w-0">
+          <header className="flex items-center justify-between border-b border-[var(--color-border)] bg-white px-5 py-4 sm:px-8 lg:px-10">
+            <p className="font-extrabold tracking-[-0.025em] text-[var(--color-text)]">
+              {copy.metadata.title}
+            </p>
+            <form action={logoutAction}>
+              <button
+                className="button-secondary rounded-full px-4 text-sm"
+                type="submit"
+              >
+                {copy.dashboard.logout}
+              </button>
+            </form>
+          </header>
+
+          <div className="mx-auto max-w-[91rem] px-4 py-5 sm:px-7 sm:py-8 lg:px-9">
+            <section className="surface-panel mb-7 p-6 sm:p-8">
+              <div className="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
+                <div className="flex min-w-0 items-center gap-4">
+                  <div className="grid size-14 shrink-0 place-items-center rounded-[1.15rem] bg-[var(--color-accent-soft)] text-lg font-bold text-[var(--color-accent-strong)]">
+                    {current.profile.display_name.trim().charAt(0).toUpperCase()}
+                  </div>
+                  <div className="min-w-0">
+                    <p className="text-xs font-bold text-[var(--color-accent-strong)]">
+                      {copy.dashboard.eyebrow}
+                    </p>
+                    <h1 className="mt-1 truncate text-2xl font-bold tracking-[-0.035em] text-[var(--color-text)] sm:text-3xl">
+                      {copy.dashboard.titlePrefix}, {current.profile.display_name}
+                    </h1>
+                    <p className="mt-1 text-sm font-semibold text-[var(--color-muted)]">
+                      @{current.profile.username}
+                    </p>
+                  </div>
+                </div>
+
+                <ProfileVisibilityControl
+                  initialIsPublished={current.profile.is_published}
+                />
+              </div>
+            </section>
+
+            <div id="content">
+              <LinkManager
+                initialLinks={initialLinks}
+                profile={{
+                  bio: current.profile.bio,
+                  displayName: current.profile.display_name,
+                  username: current.profile.username,
+                }}
+              />
             </div>
-
-            <ProfileVisibilityControl
-              initialIsPublished={current.profile.is_published}
-            />
           </div>
-        </section>
-
-        <div className="mt-12">
-          <p className="text-sm font-bold uppercase tracking-[0.2em] text-orange-600">
-            {copy.links.eyebrow}
-          </p>
-          <h2 className="mt-3 text-3xl font-semibold tracking-tight text-slate-950">
-            {copy.links.title}
-          </h2>
-          <p className="mt-2 max-w-2xl text-slate-600">
-            {copy.links.description}
-          </p>
         </div>
-
-        <LinkManager initialLinks={initialLinks} />
       </div>
     </main>
   );
