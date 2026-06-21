@@ -42,7 +42,7 @@ export const copy = {
       stepLabel: "Step",
       emailStep: {
         title: "What is your email?",
-        description: "We will send a verification code to this address.",
+        description: "We will send a verification link to this address.",
       },
       usernameStep: {
         title: "Choose your profile URL",
@@ -59,23 +59,7 @@ export const copy = {
       alternatePrompt: "Already have an account?",
       alternateLink: "Log in",
       success:
-        "If an account can be created with this email address, check your inbox to continue.",
-      verificationExpired:
-        "Your verification session has expired. Start registration again.",
-    },
-    otp: {
-      eyebrow: "Email verification",
-      title: "Check your inbox",
-      description: "We sent a verification code to your email.",
-      digitLabel: "Digit",
-      submit: "Verify email",
-      resend: "Resend code",
-      resendIn: "Resend code in",
-      resendSuccess: "A new verification code has been sent.",
-      resendWait: "Please wait before requesting another code.",
-      useDifferentEmail: "Use a different email",
-      signInPrompt: "Already have an account?",
-      signIn: "Sign in",
+        "If an account can be created with this email, check your inbox to verify your email address.",
     },
     error: {
       title: "We could not complete authentication",
@@ -89,14 +73,10 @@ export const copy = {
       passwordMismatch: "Passwords do not match.",
       invalidUsername:
         "Use 3-30 lowercase letters, numbers, or underscores, starting with a letter or number.",
-      invalidOtp: "Enter the complete 6-digit verification code.",
     },
     failure: {
       login: "The email address or password is incorrect.",
       register: "We could not complete this request. Please try again.",
-      verify:
-        "The code is invalid or has expired. Request a new code.",
-      general: "We could not complete this request. Please try again.",
     },
   },
   onboarding: {

@@ -3,23 +3,9 @@
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 
-import {
-  clearPendingSignupCookies,
-  getPendingResendSeconds,
-  readPendingSignupEmail,
-  restartPendingResendCooldown,
-  setPendingSignupCookies,
-} from "@/lib/auth/pending-signup";
-import {
-  validateOtpToken,
-  validateRegistrationInput,
-} from "@/lib/auth/register-validation";
+import { validateRegistrationInput } from "@/lib/auth/register-validation";
 import { validateCredentials } from "@/lib/auth/validation";
-import type {
-  AuthActionState,
-  OtpActionState,
-  ResendOtpActionResult,
-} from "@/lib/auth/types";
+import type { AuthActionState } from "@/lib/auth/types";
 import { copy } from "@/lib/copy";
 import { createClient } from "@/lib/supabase/server";
 
@@ -89,100 +75,7 @@ export async function registerAction(
     return { status: "error", message: copy.auth.failure.register };
   }
 
-  await setPendingSignupCookies(registration.email);
-  redirect("/verify-email");
-}
-
-export async function verifySignupOtpAction(
-  previousState: OtpActionState,
-  formData: FormData,
-): Promise<OtpActionState> {
-  void previousState;
-
-  const email = await readPendingSignupEmail();
-
-  if (!email) {
-    redirect("/register?notice=verification-expired");
-  }
-
-  const token = validateOtpToken(formData);
-
-  if (!token.success) {
-    return { status: "error", message: token.message };
-  }
-
-  const supabase = await createClient();
-
-  try {
-    const { data, error } = await supabase.auth.verifyOtp({
-      email,
-      token: token.token,
-      type: "email",
-    });
-
-    if (error || !data.session || !data.user) {
-      return { status: "error", message: copy.auth.failure.verify };
-    }
-  } catch {
-    return { status: "error", message: copy.auth.failure.general };
-  }
-
-  await clearPendingSignupCookies();
-  redirect("/onboarding");
-}
-
-export async function resendSignupOtpAction(): Promise<ResendOtpActionResult> {
-  const email = await readPendingSignupEmail();
-
-  if (!email) {
-    redirect("/register?notice=verification-expired");
-  }
-
-  const remainingSeconds = await getPendingResendSeconds();
-
-  if (remainingSeconds > 0) {
-    return {
-      status: "error",
-      message: copy.auth.otp.resendWait,
-      cooldownSeconds: remainingSeconds,
-    };
-  }
-
-  const supabase = await createClient();
-
-  try {
-    const { error } = await supabase.auth.resend({
-      type: "signup",
-      email,
-    });
-
-    if (error) {
-      return {
-        status: "error",
-        message: copy.auth.failure.general,
-        cooldownSeconds: 0,
-      };
-    }
-  } catch {
-    return {
-      status: "error",
-      message: copy.auth.failure.general,
-      cooldownSeconds: 0,
-    };
-  }
-
-  const cooldownSeconds = await restartPendingResendCooldown();
-
-  return {
-    status: "success",
-    message: copy.auth.otp.resendSuccess,
-    cooldownSeconds,
-  };
-}
-
-export async function useDifferentEmailAction(): Promise<void> {
-  await clearPendingSignupCookies();
-  redirect("/register");
+  return { status: "success", message: copy.auth.register.success };
 }
 
 export async function loginAction(

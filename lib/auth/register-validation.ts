@@ -10,8 +10,6 @@ import {
   PASSWORD_MIN_LENGTH,
 } from "@/lib/auth/validation";
 
-const OTP_PATTERN = /^\d{6}$/;
-
 interface ValidRegistrationInput {
   success: true;
   email: string;
@@ -83,15 +81,4 @@ export function validateRegistrationInput(
   }
 
   return { success: true, email, username, password };
-}
-
-export function validateOtpToken(formData: FormData) {
-  const tokenValue = formData.get("token");
-  const token = typeof tokenValue === "string" ? tokenValue.trim() : "";
-
-  if (!OTP_PATTERN.test(token)) {
-    return { success: false as const, message: copy.auth.validation.invalidOtp };
-  }
-
-  return { success: true as const, token };
 }

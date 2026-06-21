@@ -5,23 +5,13 @@ import { RegisterWizard } from "@/components/auth/register-wizard";
 import { copy } from "@/lib/copy";
 import { createClient } from "@/lib/supabase/server";
 
-interface RegisterPageProps {
-  searchParams: Promise<{ notice?: string | string[] }>;
-}
-
-export default async function RegisterPage({ searchParams }: RegisterPageProps) {
+export default async function RegisterPage() {
   const supabase = await createClient();
   const { data } = await supabase.auth.getClaims();
 
   if (data?.claims) {
     redirect("/dashboard");
   }
-
-  const params = await searchParams;
-  const notice =
-    params.notice === "verification-expired"
-      ? copy.auth.register.verificationExpired
-      : "";
 
   return (
     <AuthCard
@@ -31,7 +21,7 @@ export default async function RegisterPage({ searchParams }: RegisterPageProps) 
       description={copy.auth.register.description}
       title={copy.auth.register.title}
     >
-      <RegisterWizard notice={notice} />
+      <RegisterWizard />
     </AuthCard>
   );
 }

@@ -12,6 +12,5 @@ export const config = {
     "/onboarding",
     "/login",
     "/register",
-    "/verify-email",
   ],
 };

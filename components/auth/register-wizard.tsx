@@ -32,11 +32,7 @@ const stepNumbers: Record<RegisterStep, number> = {
   password: 3,
 };
 
-interface RegisterWizardProps {
-  notice?: string;
-}
-
-export function RegisterWizard({ notice = "" }: RegisterWizardProps) {
+export function RegisterWizard() {
   const [state, formAction, isPending] = useActionState<
     AuthActionState,
     FormData
@@ -53,6 +49,7 @@ export function RegisterWizard({ notice = "" }: RegisterWizardProps) {
     password.length >= PASSWORD_MIN_LENGTH &&
     password.length <= PASSWORD_MAX_LENGTH;
   const passwordsMatch = password === confirmPassword;
+  const registrationComplete = state.status === "success";
 
   function continueFromEmail(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -83,12 +80,6 @@ export function RegisterWizard({ notice = "" }: RegisterWizardProps) {
       <p className="text-xs font-bold uppercase tracking-[0.16em] text-[var(--color-accent-strong)]">
         {copy.auth.register.stepLabel} {currentStep} / 3
       </p>
-
-      {notice ? (
-        <p className="status-error mt-5" role="status">
-          {notice}
-        </p>
-      ) : null}
 
       {step === "email" ? (
         <form className="mt-6 space-y-5" onSubmit={continueFromEmail}>
@@ -230,6 +221,7 @@ export function RegisterWizard({ notice = "" }: RegisterWizardProps) {
               autoComplete="new-password"
               autoFocus
               className="field-control"
+              disabled={isPending || registrationComplete}
               id="registerPassword"
               maxLength={PASSWORD_MAX_LENGTH}
               minLength={PASSWORD_MIN_LENGTH}
@@ -252,6 +244,7 @@ export function RegisterWizard({ notice = "" }: RegisterWizardProps) {
             <input
               autoComplete="new-password"
               className="field-control"
+              disabled={isPending || registrationComplete}
               id="confirmPassword"
               maxLength={PASSWORD_MAX_LENGTH}
               minLength={PASSWORD_MIN_LENGTH}
@@ -270,7 +263,13 @@ export function RegisterWizard({ notice = "" }: RegisterWizardProps) {
           </div>
 
           {state.message ? (
-            <p aria-live="polite" className="status-error" role="status">
+            <p
+              aria-live="polite"
+              className={
+                state.status === "success" ? "status-success" : "status-error"
+              }
+              role="status"
+            >
               {state.message}
             </p>
           ) : null}
@@ -278,7 +277,7 @@ export function RegisterWizard({ notice = "" }: RegisterWizardProps) {
           <div className="grid grid-cols-[auto_1fr] gap-3">
             <button
               className="button-secondary px-5 py-3"
-              disabled={isPending}
+              disabled={isPending || registrationComplete}
               onClick={() => setStep("username")}
               type="button"
             >
@@ -286,7 +285,12 @@ export function RegisterWizard({ notice = "" }: RegisterWizardProps) {
             </button>
             <button
               className="button-primary px-5 py-3"
-              disabled={isPending || !passwordIsValid || !passwordsMatch}
+              disabled={
+                isPending ||
+                registrationComplete ||
+                !passwordIsValid ||
+                !passwordsMatch
+              }
               type="submit"
             >
               {isPending ? copy.auth.processing : copy.auth.register.submit}
