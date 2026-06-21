@@ -15,6 +15,7 @@ import {
   sortableKeyboardCoordinates,
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
+import { useId } from "react";
 
 import { LinkCard } from "@/components/dashboard/link-card";
 import { copy } from "@/lib/copy";
@@ -43,6 +44,7 @@ export function SortableLinkList({
   onToggle,
   onUpdate,
 }: SortableLinkListProps) {
+  const dndContextId = useId();
   const sensors = useSensors(
     useSensor(PointerSensor, {
       activationConstraint: { distance: 6 },
@@ -66,6 +68,7 @@ export function SortableLinkList({
   return (
     <DndContext
       collisionDetection={closestCenter}
+      id={dndContextId}
       onDragEnd={onDragEnd}
       sensors={sensors}
     >
