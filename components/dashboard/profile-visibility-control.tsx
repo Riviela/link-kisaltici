@@ -24,12 +24,12 @@ export function ProfileVisibilityControl({
   );
 
   return (
-    <div className="w-full rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-surface-raised)] p-3 sm:w-auto sm:min-w-56">
+    <div className="visibility-control w-full rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-surface-raised)] p-3 sm:w-auto sm:min-w-56">
       <div className="flex items-center justify-between gap-4">
         <span className="flex items-center gap-2 text-sm font-bold text-[var(--color-text)]">
           <span
             aria-hidden="true"
-            className={`size-2.5 rounded-full ${state.isPublished ? "bg-[var(--color-accent)]" : "bg-[#a6a8b2]"}`}
+            className={`status-badge size-2.5 rounded-full ${state.isPublished ? "bg-[var(--color-accent)]" : "bg-[#a6a8b2]"}`}
           />
           {state.isPublished
             ? copy.profileVisibility.published

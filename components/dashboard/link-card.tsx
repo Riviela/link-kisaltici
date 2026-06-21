@@ -45,7 +45,7 @@ export function LinkCard({
   if (isEditing) {
     return (
       <article
-        className="rounded-[var(--radius-card)] border border-[#cbc6ff] bg-[#f7f6ff] p-5"
+        className="interactive-card rounded-[var(--radius-card)] border border-[#cbc6ff] bg-[#f7f6ff] p-5"
         ref={setNodeRef}
         style={style}
       >
@@ -63,14 +63,16 @@ export function LinkCard({
 
   return (
     <article
-      className={`rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-surface)] p-4 transition-[border-color,box-shadow,transform] duration-200 sm:p-5 ${isDragging ? "z-10 scale-[1.01] border-[#bbb4ff] shadow-[0_22px_50px_rgba(62,54,120,0.18)]" : "shadow-[0_8px_24px_rgba(62,54,120,0.05)] hover:border-[var(--color-border-strong)]"}`}
+      className={`interactive-card rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-surface)] p-4 sm:p-5 ${isDragging ? "z-10 scale-[1.01] border-[#bbb4ff] shadow-[0_22px_50px_rgba(62,54,120,0.18)]" : "shadow-[0_8px_24px_rgba(62,54,120,0.05)]"}`}
+      data-dragging={isDragging ? "true" : undefined}
       ref={setNodeRef}
       style={style}
     >
       <div className="flex items-start gap-3 sm:gap-4">
         <button
           aria-label={copy.links.dragHandle}
-          className="button-quiet mt-0.5 grid size-10 min-h-10 shrink-0 touch-none place-items-center rounded-xl p-0 text-[var(--color-muted)] disabled:opacity-40"
+          className="button-quiet drag-handle mt-0.5 grid size-10 min-h-10 shrink-0 touch-none place-items-center rounded-xl p-0 text-[var(--color-muted)] disabled:opacity-40"
+          data-dragging={isDragging ? "true" : undefined}
           disabled={disabled}
           type="button"
           {...attributes}
@@ -103,7 +105,7 @@ export function LinkCard({
               </p>
             </div>
 
-            <label className="flex cursor-pointer items-center gap-2 text-xs font-bold text-[var(--color-muted)]">
+            <label className="toggle-control flex items-center gap-2 text-xs font-bold text-[var(--color-muted)]">
               <input
                 checked={link.is_active}
                 className="peer sr-only"
@@ -113,7 +115,7 @@ export function LinkCard({
                 }}
                 type="checkbox"
               />
-              <span className="relative h-6 w-11 rounded-full bg-[#d9dbe2] transition-colors after:absolute after:left-1 after:top-1 after:size-4 after:rounded-full after:bg-white after:shadow-sm after:transition-transform peer-checked:bg-[var(--color-accent)] peer-checked:after:translate-x-5 peer-focus-visible:ring-4 peer-focus-visible:ring-[#d7d3ff] peer-disabled:opacity-45" />
+              <span className="toggle-track relative h-6 w-11 rounded-full bg-[#d9dbe2] after:absolute after:left-1 after:top-1 after:size-4 after:rounded-full after:bg-white after:shadow-sm peer-checked:bg-[var(--color-accent)] peer-checked:after:translate-x-5 peer-focus-visible:ring-4 peer-focus-visible:ring-[#d7d3ff] peer-disabled:opacity-45" />
               {link.is_active ? copy.links.active : copy.links.inactive}
             </label>
           </div>

@@ -55,7 +55,7 @@ export function ProfileForm({ pendingUsername }: ProfileFormProps) {
       </div>
 
       {state.showUsernameFallback ? (
-        <div className="space-y-2">
+        <div className="motion-step-enter space-y-2">
           <label
             className="text-sm font-semibold text-[var(--color-text)]"
             htmlFor="username"

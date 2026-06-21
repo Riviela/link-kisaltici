@@ -24,7 +24,7 @@ export function ProfilePreview({
           <h2 className="text-sm font-bold text-[var(--color-text)]">
             {copy.dashboard.preview}
           </h2>
-          <span className="rounded-full bg-[var(--color-accent-soft)] px-3 py-1 text-xs font-bold text-[var(--color-accent-strong)]">
+          <span className="status-badge rounded-full bg-[var(--color-accent-soft)] px-3 py-1 text-xs font-bold text-[var(--color-accent-strong)]">
             @{username}
           </span>
         </div>
@@ -52,7 +52,7 @@ export function ProfilePreview({
               {activeLinks.length > 0 ? (
                 activeLinks.map((link) => (
                   <div
-                    className="flex min-h-12 items-center justify-between gap-3 rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface-raised)] px-4 py-3 text-sm font-bold text-[var(--color-text)]"
+                    className="preview-item flex min-h-12 items-center justify-between gap-3 rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface-raised)] px-4 py-3 text-sm font-bold text-[var(--color-text)]"
                     key={link.id}
                   >
                     <span className="truncate">{link.title}</span>

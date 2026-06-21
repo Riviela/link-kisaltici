@@ -82,7 +82,10 @@ export function RegisterWizard() {
       </p>
 
       {step === "email" ? (
-        <form className="mt-6 space-y-5" onSubmit={continueFromEmail}>
+        <form
+          className="motion-step-enter mt-6 space-y-5"
+          onSubmit={continueFromEmail}
+        >
           <div>
             <h2 className="text-2xl font-bold tracking-[-0.03em] text-[var(--color-text)]">
               {copy.auth.register.emailStep.title}
@@ -123,7 +126,10 @@ export function RegisterWizard() {
       ) : null}
 
       {step === "username" ? (
-        <form className="mt-6 space-y-5" onSubmit={continueFromUsername}>
+        <form
+          className="motion-step-enter mt-6 space-y-5"
+          onSubmit={continueFromUsername}
+        >
           <div>
             <h2 className="text-2xl font-bold tracking-[-0.03em] text-[var(--color-text)]">
               {copy.auth.register.usernameStep.title}
@@ -140,7 +146,7 @@ export function RegisterWizard() {
             >
               {copy.auth.register.usernameStep.label}
             </label>
-            <div className="flex min-h-[3.25rem] items-center rounded-[var(--radius-control)] border border-transparent bg-[var(--color-surface-raised)] pl-4 transition focus-within:border-[var(--color-accent)] focus-within:bg-white focus-within:shadow-[0_0_0_4px_var(--color-accent-soft)]">
+            <div className="field-shell flex min-h-[3.25rem] items-center rounded-[var(--radius-control)] border border-transparent bg-[var(--color-surface-raised)] pl-4 focus-within:border-[var(--color-accent)] focus-within:bg-white focus-within:shadow-[0_0_0_4px_var(--color-accent-soft)]">
               <span className="shrink-0 text-sm font-semibold text-[var(--color-muted)]">
                 {PUBLIC_PROFILE_HOST}/
               </span>
@@ -197,7 +203,10 @@ export function RegisterWizard() {
       ) : null}
 
       {step === "password" ? (
-        <form action={formAction} className="mt-6 space-y-5">
+        <form
+          action={formAction}
+          className="motion-step-enter mt-6 space-y-5"
+        >
           <input name="email" type="hidden" value={email} />
           <input name="username" type="hidden" value={username} />
 

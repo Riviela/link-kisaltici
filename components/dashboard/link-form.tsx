@@ -112,7 +112,7 @@ export function LinkForm({
         />
       </div>
 
-      <label className="flex items-center gap-3 text-sm font-semibold text-[var(--color-text)]">
+      <label className="toggle-control flex items-center gap-3 text-sm font-semibold text-[var(--color-text)]">
         <input
           className="size-4 accent-[#6d5dfb]"
           defaultChecked={link?.is_active ?? true}
