@@ -89,7 +89,7 @@ export default async function DashboardPage() {
             </p>
             <form action={logoutAction}>
               <button
-                className="button-secondary rounded-full px-4 text-sm"
+                className="button-secondary px-4 text-sm"
                 type="submit"
               >
                 {copy.dashboard.logout}

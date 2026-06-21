@@ -1,14 +1,15 @@
 import type { Metadata } from "next";
-import { Instrument_Sans } from "next/font/google";
+import { Schibsted_Grotesk } from "next/font/google";
 
 import { copy } from "@/lib/copy";
 
 import "./globals.css";
 
-const instrumentSans = Instrument_Sans({
+const schibstedGrotesk = Schibsted_Grotesk({
   display: "swap",
   subsets: ["latin", "latin-ext"],
   variable: "--font-app",
+  weight: ["400", "500", "600", "700"],
 });
 
 export const metadata: Metadata = {
@@ -22,7 +23,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html className={instrumentSans.variable} lang="en">
+    <html className={schibstedGrotesk.variable} lang="en">
       <body className="antialiased">{children}</body>
     </html>
   );

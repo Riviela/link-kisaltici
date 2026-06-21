@@ -43,7 +43,7 @@ export function ProfileVisibilityControl({
             value={String(!state.isPublished)}
           />
           <button
-            className="button-secondary min-h-9 rounded-full px-3 text-xs"
+            className="button-secondary min-h-9 px-3 text-xs"
             disabled={isPending}
             type="submit"
           >

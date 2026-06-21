@@ -11,7 +11,7 @@ export default function Home() {
         </Link>
         <div className="flex items-center gap-3">
           <Link
-            className="button-quiet min-h-10 rounded-full px-4 text-sm"
+            className="button-quiet min-h-10 px-4 text-sm"
             href="/login"
           >
             {copy.navigation.login}

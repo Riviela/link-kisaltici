@@ -32,7 +32,7 @@
   --shadow-card: 0 14px 40px rgba(62, 54, 120, 0.08);
   --shadow-panel: 0 28px 80px rgba(62, 54, 120, 0.12);
   --shadow-interactive: 0 12px 30px rgba(62, 54, 120, 0.1);
-  --motion-duration-fast: 140ms;
+  --motion-duration-fast: 180ms;
   --motion-duration-base: 200ms;
   --motion-duration-slow: 280ms;
   --motion-ease-standard: cubic-bezier(0.2, 0, 0, 1);
@@ -171,6 +171,7 @@ textarea:disabled,
 .button-primary {
   background: var(--color-accent);
   border: 1px solid var(--color-accent);
+  border-radius: 9999px;
   color: white;
 }
 
