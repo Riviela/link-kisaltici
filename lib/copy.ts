@@ -35,12 +35,47 @@ export const copy = {
     },
     register: {
       title: "Create your account",
-      description: "Start with your email address and a secure password.",
+      description: "Create your profile in a few focused steps.",
       submit: "Create account",
+      continue: "Continue",
+      back: "Back",
+      stepLabel: "Step",
+      emailStep: {
+        title: "What is your email?",
+        description: "We will send a verification code to this address.",
+      },
+      usernameStep: {
+        title: "Choose your profile URL",
+        description: "Pick the address people will use to find your profile.",
+        label: "Profile URL",
+        hint: "You can change this before your profile is created.",
+      },
+      passwordStep: {
+        title: "Create a password",
+        description: "Use at least 8 characters to protect your account.",
+        confirmLabel: "Confirm password",
+        confirmPlaceholder: "Enter your password again",
+      },
       alternatePrompt: "Already have an account?",
       alternateLink: "Log in",
       success:
         "If an account can be created with this email address, check your inbox to continue.",
+      verificationExpired:
+        "Your verification session has expired. Start registration again.",
+    },
+    otp: {
+      eyebrow: "Email verification",
+      title: "Check your inbox",
+      description: "We sent a verification code to your email.",
+      digitLabel: "Digit",
+      submit: "Verify email",
+      resend: "Resend code",
+      resendIn: "Resend code in",
+      resendSuccess: "A new verification code has been sent.",
+      resendWait: "Please wait before requesting another code.",
+      useDifferentEmail: "Use a different email",
+      signInPrompt: "Already have an account?",
+      signIn: "Sign in",
     },
     error: {
       title: "We could not complete authentication",
@@ -51,10 +86,17 @@ export const copy = {
     validation: {
       invalidEmail: "Enter a valid email address.",
       invalidPassword: "Password must be between 8 and 128 characters.",
+      passwordMismatch: "Passwords do not match.",
+      invalidUsername:
+        "Use 3-30 lowercase letters, numbers, or underscores, starting with a letter or number.",
+      invalidOtp: "Enter the complete 6-digit verification code.",
     },
     failure: {
       login: "The email address or password is incorrect.",
-      register: "We could not create the account right now. Please try again.",
+      register: "We could not complete this request. Please try again.",
+      verify:
+        "The code is invalid or has expired. Request a new code.",
+      general: "We could not complete this request. Please try again.",
     },
   },
   onboarding: {

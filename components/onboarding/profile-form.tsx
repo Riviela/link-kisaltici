@@ -1,8 +1,10 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useState } from "react";
 
 import { createProfileAction } from "@/app/actions/profile";
+import { normalizeUsernameInput } from "@/lib/auth/register-validation";
+import { PUBLIC_PROFILE_HOST } from "@/lib/config/site";
 import { copy } from "@/lib/copy";
 import {
   BIO_MAX_LENGTH,
@@ -14,11 +16,16 @@ import {
 
 const DISPLAY_NAME_PATTERN = String.raw`.*\S.*`;
 
-export function ProfileForm() {
+interface ProfileFormProps {
+  initialUsername?: string;
+}
+
+export function ProfileForm({ initialUsername = "" }: ProfileFormProps) {
   const [state, formAction, isPending] = useActionState(
     createProfileAction,
     initialProfileActionState,
   );
+  const [username, setUsername] = useState(initialUsername);
 
   return (
     <form action={formAction} className="space-y-5">
@@ -34,19 +41,21 @@ export function ProfileForm() {
           maxLength={USERNAME_MAX_LENGTH}
           minLength={USERNAME_MIN_LENGTH}
           name="username"
-          onInput={(event) => {
-            event.currentTarget.value = event.currentTarget.value.toLowerCase();
-          }}
+          onChange={(event) =>
+            setUsername(normalizeUsernameInput(event.target.value))
+          }
           pattern="[a-z0-9][a-z0-9_]{2,29}"
           placeholder={copy.onboarding.usernamePlaceholder}
           required
           spellCheck={false}
           type="text"
+          value={username}
         />
         <div className="flex flex-wrap items-center justify-between gap-2 text-xs text-[var(--color-muted)]">
           <p>{copy.onboarding.usernameHint}</p>
           <p className="font-semibold text-[var(--color-accent-strong)]">
-            {copy.onboarding.usernamePreview}
+            {PUBLIC_PROFILE_HOST}/
+            {username || copy.onboarding.usernamePlaceholder}
           </p>
         </div>
       </div>

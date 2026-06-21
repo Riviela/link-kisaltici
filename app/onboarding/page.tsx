@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 
 import { AuthVisual } from "@/components/auth/auth-visual";
 import { ProfileForm } from "@/components/onboarding/profile-form";
+import { normalizeUsernameInput } from "@/lib/auth/register-validation";
 import { copy } from "@/lib/copy";
 import {
   getCurrentProfile,
@@ -9,6 +10,8 @@ import {
   ProfileLookupError,
   type CurrentProfileResult,
 } from "@/lib/profile/get-current-profile";
+import { USERNAME_PATTERN } from "@/lib/profile/validation";
+import { createClient } from "@/lib/supabase/server";
 
 export default async function OnboardingPage() {
   let current: CurrentProfileResult;
@@ -31,6 +34,22 @@ export default async function OnboardingPage() {
     redirect("/dashboard");
   }
 
+  let initialUsername = "";
+  const supabase = await createClient();
+  const { data: userData } = await supabase.auth.getUser();
+
+  if (userData.user?.id === current.userId) {
+    const pendingUsername = userData.user.user_metadata?.pending_username;
+
+    if (typeof pendingUsername === "string") {
+      const normalizedUsername = normalizeUsernameInput(pendingUsername);
+
+      if (USERNAME_PATTERN.test(normalizedUsername)) {
+        initialUsername = normalizedUsername;
+      }
+    }
+  }
+
   return (
     <main className="grid min-h-dvh bg-white lg:grid-cols-[minmax(31rem,0.9fr)_minmax(34rem,1.1fr)]">
       <section className="flex min-h-dvh px-6 py-8 sm:px-10 lg:px-16 lg:py-12">
@@ -50,7 +69,7 @@ export default async function OnboardingPage() {
               {copy.onboarding.description}
             </p>
             <div className="mt-10">
-              <ProfileForm />
+              <ProfileForm initialUsername={initialUsername} />
             </div>
           </div>
 

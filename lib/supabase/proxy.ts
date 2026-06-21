@@ -70,5 +70,11 @@ export async function updateSession(request: NextRequest) {
     return redirectWithCookies(dashboardUrl, supabaseResponse);
   }
 
+  if (isAuthenticated && pathname === "/verify-email") {
+    const onboardingUrl = request.nextUrl.clone();
+    onboardingUrl.pathname = "/onboarding";
+    return redirectWithCookies(onboardingUrl, supabaseResponse);
+  }
+
   return supabaseResponse;
 }
