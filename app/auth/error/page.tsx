@@ -16,7 +16,7 @@ export default function AuthErrorPage() {
           {copy.auth.error.description}
         </p>
         <Link
-          className="button-primary mt-7 rounded-full px-5 py-3 text-sm"
+          className="button-primary mt-7 px-5 py-3 text-sm"
           href="/register"
         >
           {copy.auth.error.backToRegister}

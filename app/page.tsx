@@ -17,7 +17,7 @@ export default function Home() {
             {copy.navigation.login}
           </Link>
           <Link
-            className="button-primary min-h-10 rounded-full px-4 text-sm"
+            className="button-primary min-h-10 px-4 text-sm"
             href="/register"
           >
             {copy.navigation.register}
@@ -37,7 +37,7 @@ export default function Home() {
             {copy.home.description}
           </p>
           <Link
-            className="button-primary mt-9 rounded-full px-7 py-3.5"
+            className="button-primary mt-9 px-7 py-3.5"
             href="/register"
           >
             {copy.navigation.register}

@@ -67,7 +67,7 @@ export function LoginForm() {
       ) : null}
 
       <button
-        className="button-primary w-full px-5 py-3"
+        className="auth-submit-button button-primary w-full px-5 py-3"
         disabled={isPending}
         type="submit"
       >

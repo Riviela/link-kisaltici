@@ -122,7 +122,7 @@ export function LinkCard({
 
           <div className="mt-4 flex flex-wrap items-center gap-2">
             <button
-              className="button-secondary min-h-9 rounded-xl px-3 text-xs"
+              className="button-secondary min-h-9 px-3 text-xs"
               disabled={disabled}
               onClick={() => onEdit(link.id)}
               type="button"
@@ -136,7 +136,7 @@ export function LinkCard({
                   {copy.links.deleteConfirm}
                 </span>
                 <button
-                  className="button-danger min-h-9 rounded-xl px-3 text-xs"
+                  className="button-danger min-h-9 px-3 text-xs"
                   disabled={disabled}
                   onClick={async () => {
                     const deleted = await onDelete(link.id);
@@ -147,7 +147,7 @@ export function LinkCard({
                   {copy.links.delete}
                 </button>
                 <button
-                  className="button-secondary min-h-9 rounded-xl px-3 text-xs"
+                  className="button-secondary min-h-9 px-3 text-xs"
                   disabled={disabled}
                   onClick={() => setIsConfirmingDelete(false)}
                   type="button"
@@ -157,7 +157,7 @@ export function LinkCard({
               </>
             ) : (
               <button
-                className="button-quiet min-h-9 rounded-xl px-3 text-xs text-[var(--color-danger)] hover:bg-[var(--color-danger-soft)] hover:text-[var(--color-danger)]"
+                className="button-quiet min-h-9 px-3 text-xs text-[var(--color-danger)] hover:bg-[var(--color-danger-soft)] hover:text-[var(--color-danger)]"
                 disabled={disabled}
                 onClick={() => setIsConfirmingDelete(true)}
                 type="button"

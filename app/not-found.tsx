@@ -19,7 +19,7 @@ export default function NotFoundPage() {
           {copy.notFound.description}
         </p>
         <Link
-          className="button-primary mt-7 rounded-full px-5 py-3 text-sm"
+          className="button-primary mt-7 px-5 py-3 text-sm"
           href="/"
         >
           {copy.notFound.home}

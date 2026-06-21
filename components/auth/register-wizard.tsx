@@ -116,7 +116,7 @@ export function RegisterWizard() {
           </div>
 
           <button
-            className="button-primary w-full px-5 py-3"
+            className="auth-submit-button button-primary w-full px-5 py-3"
             disabled={!emailIsValid}
             type="submit"
           >
@@ -192,7 +192,7 @@ export function RegisterWizard() {
               {copy.auth.register.back}
             </button>
             <button
-              className="button-primary px-5 py-3"
+              className="auth-submit-button button-primary px-5 py-3"
               disabled={!usernameIsValid}
               type="submit"
             >
@@ -293,7 +293,7 @@ export function RegisterWizard() {
               {copy.auth.register.back}
             </button>
             <button
-              className="button-primary px-5 py-3"
+              className="auth-submit-button button-primary px-5 py-3"
               disabled={
                 isPending ||
                 registrationComplete ||

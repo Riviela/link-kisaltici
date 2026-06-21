@@ -25,6 +25,7 @@
   --space-8: 2rem;
   --space-10: 2.5rem;
   --radius-control: 1rem;
+  --radius-button: 20px;
   --radius-card: 1.5rem;
   --radius-panel: 2rem;
   --radius-shell: 2.25rem;
@@ -154,32 +155,35 @@ textarea:disabled,
 .button-danger,
 .button-quiet {
   align-items: center;
-  border-radius: var(--radius-control);
   display: inline-flex;
   font-weight: 700;
   justify-content: center;
   min-height: 2.75rem;
+}
+
+.button-primary,
+.button-secondary,
+.button-danger,
+.button-quiet,
+.public-link-button {
+  border-radius: var(--radius-button);
   transition:
-    background-color var(--motion-duration-fast) var(--motion-ease-standard),
-    border-color var(--motion-duration-fast) var(--motion-ease-standard),
-    box-shadow var(--motion-duration-fast) var(--motion-ease-standard),
-    color var(--motion-duration-fast) var(--motion-ease-standard),
-    opacity var(--motion-duration-fast) var(--motion-ease-standard),
-    transform var(--motion-duration-fast) var(--motion-ease-emphasized);
+    transform 180ms ease-out,
+    box-shadow 180ms ease-out,
+    background-color 180ms ease-out,
+    border-color 180ms ease-out,
+    color 180ms ease-out;
 }
 
 .button-primary {
   background: var(--color-accent);
   border: 1px solid var(--color-accent);
-  border-radius: 9999px;
   color: white;
 }
 
 .button-primary:not(:disabled):hover {
   background: var(--color-accent-strong);
   border-color: var(--color-accent-strong);
-  box-shadow: 0 10px 22px rgba(89, 71, 238, 0.2);
-  transform: translateY(var(--interaction-lift));
 }
 
 .button-secondary {
@@ -189,11 +193,10 @@ textarea:disabled,
 }
 
 .button-secondary:not(:disabled):hover,
-.button-quiet:not(:disabled):hover {
+.button-quiet:not(.drag-handle):not(:disabled):hover {
   background: var(--color-accent-soft);
   border-color: #cac5ff;
   color: var(--color-accent-strong);
-  transform: translateY(var(--interaction-lift));
 }
 
 .button-danger {
@@ -202,22 +205,27 @@ textarea:disabled,
   color: white;
 }
 
-.button-danger:not(:disabled):hover {
-  box-shadow: 0 10px 22px rgba(180, 35, 63, 0.16);
-  transform: translateY(var(--interaction-lift));
-}
-
 .button-quiet {
   background: transparent;
   border: 1px solid transparent;
   color: var(--color-muted);
 }
 
-.button-primary:active,
-.button-secondary:active,
-.button-danger:active,
-.button-quiet:active {
-  transform: translateY(0) scale(var(--interaction-press-scale));
+.button-primary:not(:disabled):hover,
+.button-secondary:not(:disabled):hover,
+.button-danger:not(:disabled):hover,
+.button-quiet:not(.drag-handle):not(:disabled):hover,
+.public-link-button:hover {
+  box-shadow: 0 10px 22px rgba(0, 0, 0, 0.14);
+  transform: translateY(-1px);
+}
+
+.button-primary:not(:disabled):active,
+.button-secondary:not(:disabled):active,
+.button-danger:not(:disabled):active,
+.button-quiet:not(.drag-handle):not(:disabled):active,
+.public-link-button:active {
+  transform: translateY(0) scale(0.985);
 }
 
 .button-primary:focus-visible,
@@ -235,7 +243,16 @@ a:focus-visible {
 .button-quiet:disabled {
   cursor: not-allowed;
   opacity: 0.5;
+  box-shadow: none;
   transform: none;
+}
+
+.auth-submit-button {
+  border-radius: 1.75rem;
+}
+
+.auth-submit-button:not(:disabled):hover {
+  box-shadow: 0 10px 22px rgba(89, 71, 238, 0.2);
 }
 
 .status-error,
@@ -323,15 +340,7 @@ a:focus-visible {
 }
 
 .public-link-button {
-  transition:
-    background-color var(--motion-duration-base) var(--motion-ease-standard),
-    border-color var(--motion-duration-base) var(--motion-ease-standard),
-    box-shadow var(--motion-duration-base) var(--motion-ease-standard),
-    transform var(--motion-duration-base) var(--motion-ease-emphasized);
-}
-
-.public-link-button:active {
-  transform: translateY(0) scale(var(--interaction-press-scale));
+  min-height: 4rem;
 }
 
 .preview-item {
@@ -378,8 +387,12 @@ a:focus-visible {
   .button-primary:not(:disabled):hover,
   .button-secondary:not(:disabled):hover,
   .button-danger:not(:disabled):hover,
-  .button-quiet:not(:disabled):hover,
+  .button-quiet:not(.drag-handle):not(:disabled):hover,
   .public-link-button:hover,
+  .button-primary:not(:disabled):active,
+  .button-secondary:not(:disabled):active,
+  .button-danger:not(:disabled):active,
+  .button-quiet:not(.drag-handle):not(:disabled):active,
   .public-link-button:active {
     transform: none;
   }
