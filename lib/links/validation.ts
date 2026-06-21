@@ -5,6 +5,8 @@ export const LINK_URL_MAX_LENGTH = 2048;
 
 const CONTROL_OR_WHITESPACE_PATTERN = /[\s\x00-\x1f\x7f]/;
 const ALLOWED_URL_PATTERN = /^(?:https?:\/\/[^/\s\x00-\x1f\x7f][^\s\x00-\x1f\x7f]*|mailto:[^\s\x00-\x1f\x7f]+|tel:[^\s\x00-\x1f\x7f]+)$/i;
+const SUPPORTED_PROTOCOL_PATTERN = /^(?:https?:\/\/|mailto:|tel:)/i;
+const EXPLICIT_PROTOCOL_PATTERN = /^[a-z][a-z0-9+.-]*:/i;
 
 interface ValidLinkInput {
   success: true;
@@ -20,11 +22,24 @@ interface InvalidLinkInput {
 
 export type LinkValidationResult = ValidLinkInput | InvalidLinkInput;
 
+export function normalizeLinkUrl(value: string): string {
+  if (
+    SUPPORTED_PROTOCOL_PATTERN.test(value) ||
+    EXPLICIT_PROTOCOL_PATTERN.test(value)
+  ) {
+    return value;
+  }
+
+  return `https://${value}`;
+}
+
 export function validateLinkInput(formData: FormData): LinkValidationResult {
   const titleValue = formData.get("title");
   const urlValue = formData.get("url");
   const title = typeof titleValue === "string" ? titleValue.trim() : "";
-  const url = typeof urlValue === "string" ? urlValue : "";
+  const url = normalizeLinkUrl(
+    typeof urlValue === "string" ? urlValue : "",
+  );
 
   if (title.length === 0 || title.length > LINK_TITLE_MAX_LENGTH) {
     return {
