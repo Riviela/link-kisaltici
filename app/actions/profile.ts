@@ -12,9 +12,17 @@ import {
   type CurrentProfileResult,
 } from "@/lib/profile/get-current-profile";
 import {
+  getPendingUsername,
+  PendingUsernameAuthenticationError,
+  PendingUsernameLookupError,
+  type PendingUsernameResult,
+} from "@/lib/profile/get-pending-username";
+import {
   type ProfileActionState,
   type ProfileVisibilityActionState,
-  validateProfileInput,
+  type ProfileDetailsValidationResult,
+  validateProfileDetails,
+  validateProfileUsername,
 } from "@/lib/profile/validation";
 import { createClient } from "@/lib/supabase/server";
 
@@ -50,6 +58,7 @@ async function readProfileForAction(): Promise<
       return {
         status: "error",
         message: copy.onboarding.failure.authentication,
+        showUsernameFallback: false,
       };
     }
 
@@ -57,20 +66,85 @@ async function readProfileForAction(): Promise<
       return {
         status: "error",
         message: copy.onboarding.failure.load,
+        showUsernameFallback: false,
       };
     }
 
     return {
       status: "error",
       message: copy.onboarding.failure.create,
+      showUsernameFallback: false,
+    };
+  }
+}
+
+async function readPendingUsernameForAction(): Promise<
+  PendingUsernameResult | ProfileActionState
+> {
+  try {
+    return await getPendingUsername();
+  } catch (error) {
+    if (error instanceof PendingUsernameAuthenticationError) {
+      return {
+        status: "error",
+        message: copy.onboarding.failure.authentication,
+        showUsernameFallback: false,
+      };
+    }
+
+    if (error instanceof PendingUsernameLookupError) {
+      return {
+        status: "error",
+        message: copy.onboarding.failure.load,
+        showUsernameFallback: false,
+      };
+    }
+
+    return {
+      status: "error",
+      message: copy.onboarding.failure.create,
+      showUsernameFallback: false,
     };
   }
 }
 
 function isActionState(
-  value: CurrentProfileResult | ProfileActionState,
+  value: CurrentProfileResult | PendingUsernameResult | ProfileActionState,
 ): value is ProfileActionState {
   return "status" in value;
+}
+
+async function insertProfile(
+  userId: string,
+  username: string,
+  details: Extract<ProfileDetailsValidationResult, { success: true }>,
+) {
+  const supabase = await createClient();
+
+  return supabase.from("profiles").insert({
+    id: userId,
+    username,
+    display_name: details.displayName,
+    bio: details.bio,
+  });
+}
+
+async function readProfileAfterRace(error: PostgrestError) {
+  if (error.code !== "23505") {
+    return null;
+  }
+
+  const profileAfterRace = await readProfileForAction();
+
+  if (isActionState(profileAfterRace)) {
+    return profileAfterRace;
+  }
+
+  if (profileAfterRace.profile) {
+    redirect("/dashboard");
+  }
+
+  return null;
 }
 
 export async function createProfileAction(
@@ -89,33 +163,101 @@ export async function createProfileAction(
     redirect("/dashboard");
   }
 
-  const profileInput = validateProfileInput(formData);
+  const pending = await readPendingUsernameForAction();
 
-  if (!profileInput.success) {
-    return { status: "error", message: profileInput.message };
+  if (isActionState(pending)) {
+    return pending;
   }
 
-  const supabase = await createClient();
-  const { error } = await supabase.from("profiles").insert({
-    id: current.userId,
-    username: profileInput.username,
-    display_name: profileInput.displayName,
-    bio: profileInput.bio,
-  });
+  if (pending.userId !== current.userId) {
+    return {
+      status: "error",
+      message: copy.onboarding.failure.authentication,
+      showUsernameFallback: false,
+    };
+  }
+
+  const fallbackValue = formData.get("username");
+  const fallbackWasSubmitted = typeof fallbackValue === "string";
+  const showUsernameFallback =
+    pending.username === null || fallbackWasSubmitted;
+  const profileDetails = validateProfileDetails(formData);
+
+  if (!profileDetails.success) {
+    return {
+      status: "error",
+      message: profileDetails.message,
+      showUsernameFallback,
+    };
+  }
+
+  const fallbackUsername = validateProfileUsername(fallbackValue);
+  let username = pending.username;
+
+  if (!username) {
+    if (!fallbackUsername.success) {
+      return {
+        status: "error",
+        message: fallbackUsername.message,
+        showUsernameFallback: true,
+      };
+    }
+
+    username = fallbackUsername.username;
+  }
+
+  let { error } = await insertProfile(
+    current.userId,
+    username,
+    profileDetails,
+  );
 
   if (!error) {
     redirect("/dashboard");
   }
 
-  if (error.code === "23505") {
-    const profileAfterRace = await readProfileForAction();
+  const raceState = await readProfileAfterRace(error);
 
-    if (isActionState(profileAfterRace)) {
-      return profileAfterRace;
+  if (raceState) {
+    return raceState;
+  }
+
+  if (!isUsernameUnavailableError(error)) {
+    return {
+      status: "error",
+      message: copy.onboarding.failure.create,
+      showUsernameFallback,
+    };
+  }
+
+  if (
+    pending.username &&
+    fallbackUsername.success &&
+    fallbackUsername.username !== pending.username
+  ) {
+    const fallbackInsert = await insertProfile(
+      current.userId,
+      fallbackUsername.username,
+      profileDetails,
+    );
+
+    if (!fallbackInsert.error) {
+      redirect("/dashboard");
     }
 
-    if (profileAfterRace.profile) {
-      redirect("/dashboard");
+    error = fallbackInsert.error;
+    const fallbackRaceState = await readProfileAfterRace(error);
+
+    if (fallbackRaceState) {
+      return fallbackRaceState;
+    }
+
+    if (!isUsernameUnavailableError(error)) {
+      return {
+        status: "error",
+        message: copy.onboarding.failure.create,
+        showUsernameFallback: true,
+      };
     }
   }
 
@@ -123,12 +265,14 @@ export async function createProfileAction(
     return {
       status: "error",
       message: copy.onboarding.failure.usernameUnavailable,
+      showUsernameFallback: true,
     };
   }
 
   return {
     status: "error",
     message: copy.onboarding.failure.create,
+    showUsernameFallback,
   };
 }
 

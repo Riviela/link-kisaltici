@@ -17,48 +17,74 @@ import {
 const DISPLAY_NAME_PATTERN = String.raw`.*\S.*`;
 
 interface ProfileFormProps {
-  initialUsername?: string;
+  pendingUsername: string | null;
 }
 
-export function ProfileForm({ initialUsername = "" }: ProfileFormProps) {
+export function ProfileForm({ pendingUsername }: ProfileFormProps) {
+  const initialState = {
+    ...initialProfileActionState,
+    showUsernameFallback: pendingUsername === null,
+  };
   const [state, formAction, isPending] = useActionState(
     createProfileAction,
-    initialProfileActionState,
+    initialState,
   );
-  const [username, setUsername] = useState(initialUsername);
+  const [username, setUsername] = useState("");
+  const displayedUsername = state.showUsernameFallback
+    ? username || copy.onboarding.usernamePlaceholder
+    : pendingUsername;
 
   return (
     <form action={formAction} className="space-y-5">
       <div className="space-y-2">
-        <label className="text-sm font-semibold text-[var(--color-text)]" htmlFor="username">
-          {copy.onboarding.usernameLabel}
-        </label>
-        <input
-          autoCapitalize="none"
-          autoComplete="username"
-          className="field-control"
-          id="username"
-          maxLength={USERNAME_MAX_LENGTH}
-          minLength={USERNAME_MIN_LENGTH}
-          name="username"
-          onChange={(event) =>
-            setUsername(normalizeUsernameInput(event.target.value))
-          }
-          pattern="[a-z0-9][a-z0-9_]{2,29}"
-          placeholder={copy.onboarding.usernamePlaceholder}
-          required
-          spellCheck={false}
-          type="text"
-          value={username}
-        />
-        <div className="flex flex-wrap items-center justify-between gap-2 text-xs text-[var(--color-muted)]">
-          <p>{copy.onboarding.usernameHint}</p>
-          <p className="font-semibold text-[var(--color-accent-strong)]">
+        <p className="text-sm font-semibold text-[var(--color-text)]">
+          {copy.onboarding.profileUrlLabel}
+        </p>
+        <div
+          aria-label={copy.onboarding.profileUrlLabel}
+          className="rounded-[var(--radius-control)] border border-[var(--color-border)] bg-[var(--color-accent-soft)] px-4 py-3"
+        >
+          <p className="font-bold text-[var(--color-accent-strong)]">
             {PUBLIC_PROFILE_HOST}/
-            {username || copy.onboarding.usernamePlaceholder}
+            {displayedUsername}
           </p>
         </div>
+        <p className="text-xs leading-5 text-[var(--color-muted)]">
+          {copy.onboarding.profileUrlHint}
+        </p>
       </div>
+
+      {state.showUsernameFallback ? (
+        <div className="space-y-2">
+          <label
+            className="text-sm font-semibold text-[var(--color-text)]"
+            htmlFor="username"
+          >
+            {copy.onboarding.usernameFallbackLabel}
+          </label>
+          <input
+            autoCapitalize="none"
+            autoComplete="username"
+            className="field-control"
+            id="username"
+            maxLength={USERNAME_MAX_LENGTH}
+            minLength={USERNAME_MIN_LENGTH}
+            name="username"
+            onChange={(event) =>
+              setUsername(normalizeUsernameInput(event.target.value))
+            }
+            pattern="[a-z0-9][a-z0-9_]{2,29}"
+            placeholder={copy.onboarding.usernamePlaceholder}
+            required
+            spellCheck={false}
+            type="text"
+            value={username}
+          />
+          <p className="text-xs text-[var(--color-muted)]">
+            {copy.onboarding.usernameHint}
+          </p>
+        </div>
+      ) : null}
 
       <div className="space-y-2">
         <label

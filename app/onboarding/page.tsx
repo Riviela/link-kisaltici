@@ -2,7 +2,6 @@ import { redirect } from "next/navigation";
 
 import { AuthVisual } from "@/components/auth/auth-visual";
 import { ProfileForm } from "@/components/onboarding/profile-form";
-import { normalizeUsernameInput } from "@/lib/auth/register-validation";
 import { copy } from "@/lib/copy";
 import {
   getCurrentProfile,
@@ -10,8 +9,12 @@ import {
   ProfileLookupError,
   type CurrentProfileResult,
 } from "@/lib/profile/get-current-profile";
-import { USERNAME_PATTERN } from "@/lib/profile/validation";
-import { createClient } from "@/lib/supabase/server";
+import {
+  getPendingUsername,
+  PendingUsernameAuthenticationError,
+  PendingUsernameLookupError,
+  type PendingUsernameResult,
+} from "@/lib/profile/get-pending-username";
 
 export default async function OnboardingPage() {
   let current: CurrentProfileResult;
@@ -34,20 +37,24 @@ export default async function OnboardingPage() {
     redirect("/dashboard");
   }
 
-  let initialUsername = "";
-  const supabase = await createClient();
-  const { data: userData } = await supabase.auth.getUser();
+  let pending: PendingUsernameResult;
 
-  if (userData.user?.id === current.userId) {
-    const pendingUsername = userData.user.user_metadata?.pending_username;
-
-    if (typeof pendingUsername === "string") {
-      const normalizedUsername = normalizeUsernameInput(pendingUsername);
-
-      if (USERNAME_PATTERN.test(normalizedUsername)) {
-        initialUsername = normalizedUsername;
-      }
+  try {
+    pending = await getPendingUsername();
+  } catch (error) {
+    if (error instanceof PendingUsernameAuthenticationError) {
+      redirect("/login");
     }
+
+    if (error instanceof PendingUsernameLookupError) {
+      throw new Error(copy.onboarding.failure.load);
+    }
+
+    throw error;
+  }
+
+  if (pending.userId !== current.userId) {
+    redirect("/login");
   }
 
   return (
@@ -69,7 +76,7 @@ export default async function OnboardingPage() {
               {copy.onboarding.description}
             </p>
             <div className="mt-10">
-              <ProfileForm initialUsername={initialUsername} />
+              <ProfileForm pendingUsername={pending.username} />
             </div>
           </div>
 

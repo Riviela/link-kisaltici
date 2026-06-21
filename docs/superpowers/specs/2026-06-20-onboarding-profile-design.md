@@ -22,10 +22,12 @@ The root `proxy.ts` matcher adds `/onboarding`. The proxy remains a fast cookie-
 
 `app/actions/profile.ts` exports `createProfileAction(previousState, formData)`. It calls the shared profile helper before validation and insert. Existing profiles redirect to `/dashboard`. Unauthenticated calls return a safe English authentication message.
 
-The action validates and normalizes form values, then inserts only:
+`lib/profile/get-pending-username.ts` independently calls `getClaims()` and then `getUser()`. It accepts no browser-provided identity. It normalizes and validates `user_metadata.pending_username`, returning `null` only when the metadata is missing or fails the existing username syntax.
+
+In the normal flow, the action does not read a username from the browser form. It validates the profile details and inserts only:
 
 - `id`: verified `claims.sub`
-- `username`: trimmed and lowercased
+- `username`: normalized, validated `pending_username` from the verified user's metadata
 - `display_name`: trimmed
 - `bio`: trimmed text, or `null` when blank
 
@@ -35,7 +37,8 @@ It does not send `avatar_path` or `is_published`, so database defaults and const
 
 Browser and Server Action validation mirror the database limits:
 
-- Username: 3-30 characters, lowercased before save, first character alphanumeric, remaining characters lowercase letters, numbers, or underscores.
+- Metadata username: normalized and checked server-side against the existing 3-30 character username syntax.
+- Fallback username: shown only when metadata is missing or invalid, or after a database username conflict; it uses the same browser and Server Action validation.
 - Display name: required, trimmed, at most 80 characters, and not whitespace-only.
 - Bio: optional, trimmed, and at most 280 characters.
 
@@ -43,13 +46,15 @@ The database remains the final source of truth, including reserved username and 
 
 ## Error and Race Handling
 
-Duplicate username and reserved-username constraint failures map to `This username is not available. Please choose another one.` Raw Supabase and Postgres error text is never rendered.
+Duplicate username and reserved-username constraint failures map to `This profile URL is no longer available. Choose another one.` and enable the fallback username field. Raw Supabase and Postgres error text is never rendered.
+
+When valid metadata exists, a submitted fallback value is ignored until the action first attempts the metadata username and receives a matching database constraint failure. This prevents browser input from replacing the registration username during the normal flow. A second insert may then use the validated fallback value.
 
 If concurrent submissions race on the same authenticated user, a primary-key or unique failure triggers a fresh shared profile lookup. If the user's profile now exists, the action redirects to `/dashboard`. If no profile exists, the action returns the safe username-unavailable or generic profile-creation message as appropriate. Other database failures return a fixed safe English message.
 
 ## Client Form
 
-`components/onboarding/profile-form.tsx` is a small Client Component using `useActionState`. It provides browser constraints, safe English feedback, a disabled pending button, and `Processing...` while submitting. Success redirects on the server to `/dashboard`.
+`components/onboarding/profile-form.tsx` is a small Client Component using `useActionState`. In the normal flow it shows the selected `test.com/{username}` as read-only information and asks only for display name and optional bio. It shows the editable username field only for the defined fallback states. It provides safe English feedback, a disabled pending button, and `Processing...` while submitting. Success redirects on the server to `/dashboard`.
 
 ## Copy
 

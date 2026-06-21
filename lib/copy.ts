@@ -85,9 +85,12 @@ export const copy = {
     description:
       "Set up the basic profile that will become the foundation of your page.",
     usernameLabel: "Username",
+    usernameFallbackLabel: "Choose another username",
     usernameHint: "3-30 lowercase letters, numbers, or underscores.",
     usernamePlaceholder: "yourname",
     usernamePreview: "yourdomain.com/yourname",
+    profileUrlLabel: "Your profile URL",
+    profileUrlHint: "This is the address you selected during registration.",
     displayNameLabel: "Display name",
     displayNamePlaceholder: "Your name",
     bioLabel: "Bio",
@@ -107,7 +110,7 @@ export const copy = {
       load: "We could not load your profile right now. Please try again.",
       create: "We could not create your profile right now. Please try again.",
       usernameUnavailable:
-        "This username is not available. Please choose another one.",
+        "This profile URL is no longer available. Choose another one.",
     },
   },
   dashboard: {

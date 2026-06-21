@@ -9,11 +9,13 @@ export const USERNAME_PATTERN = /^[a-z0-9][a-z0-9_]{2,29}$/;
 export interface ProfileActionState {
   status: "idle" | "error";
   message: string;
+  showUsernameFallback: boolean;
 }
 
 export const initialProfileActionState: ProfileActionState = {
   status: "idle",
   message: "",
+  showUsernameFallback: false,
 };
 
 export interface ProfileVisibilityActionState {
@@ -22,41 +24,30 @@ export interface ProfileVisibilityActionState {
   isPublished: boolean;
 }
 
-interface ValidProfileInput {
+interface ValidProfileDetails {
   success: true;
-  username: string;
   displayName: string;
   bio: string | null;
 }
 
-interface InvalidProfileInput {
+interface InvalidProfileDetails {
   success: false;
   message: string;
 }
 
-export type ProfileValidationResult = ValidProfileInput | InvalidProfileInput;
+export type ProfileDetailsValidationResult =
+  | ValidProfileDetails
+  | InvalidProfileDetails;
 
-export function validateProfileInput(
+export function validateProfileDetails(
   formData: FormData,
-): ProfileValidationResult {
-  const usernameValue = formData.get("username");
+): ProfileDetailsValidationResult {
   const displayNameValue = formData.get("displayName");
   const bioValue = formData.get("bio");
 
-  const username =
-    typeof usernameValue === "string"
-      ? usernameValue.trim().toLowerCase()
-      : "";
   const displayName =
     typeof displayNameValue === "string" ? displayNameValue.trim() : "";
   const normalizedBio = typeof bioValue === "string" ? bioValue.trim() : "";
-
-  if (!USERNAME_PATTERN.test(username)) {
-    return {
-      success: false,
-      message: copy.onboarding.validation.username,
-    };
-  }
 
   if (
     displayName.length === 0 ||
@@ -77,8 +68,21 @@ export function validateProfileInput(
 
   return {
     success: true,
-    username,
     displayName,
     bio: normalizedBio.length > 0 ? normalizedBio : null,
   };
+}
+
+export function validateProfileUsername(value: FormDataEntryValue | null) {
+  const username =
+    typeof value === "string" ? value.trim().toLowerCase() : "";
+
+  if (!USERNAME_PATTERN.test(username)) {
+    return {
+      success: false as const,
+      message: copy.onboarding.validation.username,
+    };
+  }
+
+  return { success: true as const, username };
 }
