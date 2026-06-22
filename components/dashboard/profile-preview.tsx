@@ -98,7 +98,7 @@ export function ProfilePreview({
 }: ProfilePreviewProps) {
   const activeLinks = links.filter((link) => link.is_active);
   const [shareState, setShareState] = useState<
-    "closed" | "open" | "closing"
+    "closed" | "entering" | "open" | "closing"
   >("closed");
   const [copyStatus, setCopyStatus] = useState<"idle" | "copied" | "error">(
     "idle",
@@ -111,14 +111,22 @@ export function ProfilePreview({
       current === "closed" ? current : "closing",
     );
   }, []);
+  const completeOpenShare = useCallback(() => {
+    setShareState((current) => (current === "entering" ? "open" : current));
+  }, []);
   const completeCloseShare = useCallback(() => setShareState("closed"), []);
 
   useEffect(() => {
+    if (shareState === "entering") {
+      const timeoutId = window.setTimeout(completeOpenShare, 280);
+      return () => window.clearTimeout(timeoutId);
+    }
+
     if (shareState !== "closing") return;
 
     const timeoutId = window.setTimeout(completeCloseShare, 280);
     return () => window.clearTimeout(timeoutId);
-  }, [completeCloseShare, shareState]);
+  }, [completeCloseShare, completeOpenShare, shareState]);
 
   useEffect(() => {
     if (shareState === "closed") return;
@@ -186,14 +194,16 @@ export function ProfilePreview({
 
         <div className="relative mb-4" ref={shareContainerRef}>
           <button
-            aria-expanded={shareState === "open"}
+            aria-expanded={
+              shareState === "entering" || shareState === "open"
+            }
             className={`${styles.previewUrlButton} w-full select-none gap-3 px-4 py-3 text-sm`}
             onClick={() => {
               if (shareState === "closing") return;
 
               setCopyStatus("idle");
               if (shareState === "closed") {
-                setShareState("open");
+                setShareState("entering");
               } else {
                 requestCloseShare();
               }
@@ -221,13 +231,14 @@ export function ProfilePreview({
 
           {shareState !== "closed" ? (
             <section
-              className={`${styles.sharePanel} ${shareState === "closing" ? styles.sharePanelClosing : ""} absolute inset-x-0 top-full z-20 mt-2 rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-surface)]`}
+              className={`${styles.sharePanel} ${shareState === "entering" ? styles.sharePanelEntering : ""} ${shareState === "closing" ? styles.sharePanelClosing : ""} absolute inset-x-0 top-full z-20 mt-2 rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-surface)]`}
               data-phase={shareState}
               onAnimationEnd={(event) => {
-                if (
-                  shareState === "closing" &&
-                  event.target === event.currentTarget
-                ) {
+                if (event.target !== event.currentTarget) return;
+
+                if (shareState === "entering") {
+                  completeOpenShare();
+                } else if (shareState === "closing") {
                   completeCloseShare();
                 }
               }}
