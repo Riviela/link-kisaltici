@@ -164,10 +164,9 @@ textarea:disabled,
 .button-quiet,
 .public-link-button {
   border-radius: 30px;
-  transition:
-    background-color 180ms ease-out,
-    border-color 180ms ease-out,
-    color 180ms ease-out;
+  transition-duration: 220ms;
+  transition-property: background-color, border-color, color;
+  transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .button-primary {
@@ -391,12 +390,15 @@ a:focus-visible {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
-    scroll-behavior: auto !important;
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
+  html {
+    scroll-behavior: auto;
+  }
+
+  .motion-step-enter {
+    animation: none;
+  }
+
+  .toggle-track::after {
+    transition-duration: 0ms;
   }
 }
