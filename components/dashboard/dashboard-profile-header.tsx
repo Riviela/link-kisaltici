@@ -38,11 +38,10 @@ export function DashboardProfileHeader({
 
   return (
     <>
-      <section className="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
-        <div className="flex min-w-0 items-center gap-4">
+      <section className="mb-5 flex min-w-0 items-center gap-4 sm:gap-5">
           <ProfileAvatar
             avatarUrl={avatarUrl}
-            className="size-14"
+            className="size-[4.5rem]"
           />
           <div className="min-w-0">
             <button
@@ -53,29 +52,29 @@ export function DashboardProfileHeader({
               <span className="block truncate">@{username}</span>
             </button>
             {bio ? (
-              <p className="mt-1 max-w-2xl whitespace-pre-wrap text-sm leading-6 text-[var(--color-muted)]">
+              <p className="mt-0.5 max-w-2xl whitespace-pre-wrap text-sm leading-5 text-[var(--color-muted)]">
                 {bio}
               </p>
             ) : null}
-            <div className="mt-3 flex items-center gap-2">
+            <div className="mt-2 flex items-center gap-1.5">
               {SOCIAL_PLATFORMS.map((platform) => {
                 const label = SOCIAL_PLATFORM_CONFIG[platform].label;
                 const connected = Boolean(socialHandles[platform]);
                 return (
                   <button
                     aria-label={`${connected ? "Edit" : "Add"} ${label}`}
-                    className={`grid size-9 place-items-center rounded-full border transition-colors duration-200 ${connected ? "border-[var(--color-success)] bg-[var(--color-success-soft)] text-[var(--color-success)]" : "border-[var(--color-border)] bg-[var(--color-surface)] text-[var(--color-muted)] hover:bg-[var(--color-surface-hover)]"}`}
+                    className={`${styles.socialProfileButton} ${connected ? styles.socialProfileButtonConnected : ""}`}
                     key={platform}
                     onClick={() => setSocialPlatform(platform)}
                     type="button"
                   >
                     <SocialIcon platform={platform} />
+                    {!connected ? <span aria-hidden="true" className={styles.socialAddBadge}>+</span> : null}
                   </button>
                 );
               })}
             </div>
           </div>
-        </div>
       </section>
 
       {isModalOpen ? (

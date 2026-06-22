@@ -15,13 +15,34 @@ interface AddLinkModalProps {
   onSuccess: (link: LinkItem, message: string) => void;
 }
 
-export function AddLinkModal({ onClose, onPendingChange, onSuccess }: AddLinkModalProps) {
-  const [state, formAction, isPending] = useActionState(createLinkFromUrlAction, initialLinkPickerActionState);
+function LinkGlyph() {
+  return (
+    <svg aria-hidden="true" fill="none" height="21" viewBox="0 0 24 24" width="21">
+      <path
+        d="M9.5 14.5 14.5 9M7.4 16.6l-1 1a3.5 3.5 0 0 1-5-5l4-4a3.5 3.5 0 0 1 5 0M16.6 7.4l1-1a3.5 3.5 0 0 1 5 5l-4 4a3.5 3.5 0 0 1-5 0"
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeWidth="1.7"
+      />
+    </svg>
+  );
+}
+
+export function AddLinkModal({
+  onClose,
+  onPendingChange,
+  onSuccess,
+}: AddLinkModalProps) {
+  const [state, formAction, isPending] = useActionState(
+    createLinkFromUrlAction,
+    initialLinkPickerActionState,
+  );
   const [phase, setPhase] = useState<"open" | "closing">("open");
   const [urlValue, setUrlValue] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
   const hasClosedRef = useRef(false);
-  const validation = urlValue.trim().length > 0 ? validateLinkUrlValue(urlValue) : null;
+  const validation =
+    urlValue.trim().length > 0 ? validateLinkUrlValue(urlValue) : null;
   const completeClose = useCallback(() => {
     if (hasClosedRef.current) return;
     hasClosedRef.current = true;
@@ -61,7 +82,9 @@ export function AddLinkModal({ onClose, onPendingChange, onSuccess }: AddLinkMod
       aria-hidden={phase === "closing" ? true : undefined}
       className={`${styles.modalOverlay} ${phase === "closing" ? styles.modalOverlayClosing : ""} fixed inset-0 z-50 grid place-items-center bg-[rgba(17,19,26,0.36)] p-4`}
       onAnimationEnd={(event) => {
-        if (phase === "closing" && event.target === event.currentTarget) completeClose();
+        if (phase === "closing" && event.target === event.currentTarget) {
+          completeClose();
+        }
       }}
       onMouseDown={(event) => {
         if (event.target === event.currentTarget) requestClose();
@@ -70,18 +93,37 @@ export function AddLinkModal({ onClose, onPendingChange, onSuccess }: AddLinkMod
       <section
         aria-labelledby="addLinkTitle"
         aria-modal="true"
-        className={`${styles.modalSurface} ${phase === "closing" ? styles.modalSurfaceClosing : ""} min-h-[28rem] w-full max-w-2xl rounded-[var(--radius-panel)] border border-[var(--color-border)] bg-[var(--color-surface)] p-6 shadow-[var(--shadow-panel)] sm:p-8`}
+        className={`${styles.modalSurface} ${phase === "closing" ? styles.modalSurfaceClosing : ""} min-h-[min(36rem,calc(100dvh-2rem))] w-full max-w-[52rem] overflow-hidden rounded-[1.75rem] border border-[var(--color-border)] bg-[var(--color-surface)] shadow-[var(--shadow-panel)]`}
         role="dialog"
       >
-        <div className="flex items-center justify-between gap-4">
-          <h2 className="text-2xl font-bold text-[var(--color-text)]" id="addLinkTitle">{copy.linkPicker.title}</h2>
-          <button aria-label={copy.linkPicker.close} className={`${styles.shareCloseButton} size-9 p-0`} onClick={requestClose} type="button">×</button>
+        <div className="flex items-center justify-between gap-4 border-b border-[var(--color-border)] px-6 py-5 sm:px-8">
+          <h2
+            className="text-2xl font-bold text-[var(--color-text)]"
+            id="addLinkTitle"
+          >
+            {copy.linkPicker.title}
+          </h2>
+          <button
+            aria-label={copy.linkPicker.close}
+            className={`${styles.shareCloseButton} size-9 p-0`}
+            onClick={requestClose}
+            type="button"
+          >
+            <svg aria-hidden="true" fill="none" height="16" viewBox="0 0 16 16" width="16">
+              <path d="m4 4 8 8m0-8-8 8" stroke="currentColor" strokeLinecap="round" strokeWidth="1.7" />
+            </svg>
+          </button>
         </div>
 
-        <form action={formAction} className="mt-6">
-          <label className="sr-only" htmlFor="linkPickerUrl">{copy.linkPicker.inputLabel}</label>
-          <div className="flex items-center gap-3 rounded-[30px] bg-[var(--color-surface-raised)] px-5 ring-1 ring-transparent focus-within:ring-[var(--color-accent)]">
-            <svg aria-hidden="true" className="size-5 shrink-0 text-[var(--color-muted)]" fill="none" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5" stroke="currentColor" strokeWidth="1.8" /><path d="m16 16 4 4" stroke="currentColor" strokeLinecap="round" strokeWidth="1.8" /></svg>
+        <form action={formAction} className="px-6 py-5 sm:px-8">
+          <label className="sr-only" htmlFor="linkPickerUrl">
+            {copy.linkPicker.inputLabel}
+          </label>
+          <div className={`${styles.linkPickerField} flex items-center gap-3 rounded-[30px] px-5`}>
+            <svg aria-hidden="true" className="size-5 shrink-0 text-[var(--color-text)]" fill="none" viewBox="0 0 24 24">
+              <circle cx="11" cy="11" r="6.5" stroke="currentColor" strokeWidth="1.8" />
+              <path d="m16 16 4 4" stroke="currentColor" strokeLinecap="round" strokeWidth="1.8" />
+            </svg>
             <input
               autoFocus
               className="min-h-14 min-w-0 flex-1 bg-transparent text-[var(--color-text)] outline-none"
@@ -96,31 +138,61 @@ export function AddLinkModal({ onClose, onPendingChange, onSuccess }: AddLinkMod
             />
           </div>
 
-          <div className="mt-8">
+          <div className="mt-9">
             {validation?.success ? (
               <>
-                <p className="mb-3 text-sm text-[var(--color-muted)]">{copy.linkPicker.resultCount}</p>
-                <button className="flex w-full items-center gap-4 rounded-2xl px-3 py-3 text-left hover:bg-[var(--color-surface-hover)]" disabled={isPending} type="submit">
-                  <span className="grid size-11 shrink-0 place-items-center rounded-full border border-[var(--color-border)] text-[var(--color-accent-strong)]">↗</span>
-                  <span className="min-w-0 flex-1">
-                    <span className="block font-semibold text-[var(--color-text)]">{copy.linkPicker.resultTitle}</span>
-                    <span className="block truncate text-sm text-[var(--color-muted)]">{validation.url}</span>
+                <p className="mb-3 px-3 text-sm text-[var(--color-text)]">
+                  {copy.linkPicker.resultCount}
+                </p>
+                <button
+                  className={styles.linkPickerResult}
+                  disabled={isPending}
+                  type="submit"
+                >
+                  <span className={styles.linkPickerResultIcon}>
+                    <LinkGlyph />
                   </span>
-                  <span aria-hidden="true" className="text-xl text-[var(--color-muted)]">›</span>
+                  <span className="min-w-0 flex-1">
+                    <span className="block font-semibold text-[var(--color-text)]">
+                      {copy.linkPicker.resultTitle}
+                    </span>
+                    <span className="block truncate text-sm text-[var(--color-muted)]">
+                      {validation.url}
+                    </span>
+                  </span>
+                  <svg aria-hidden="true" className="shrink-0 text-[var(--color-muted)]" fill="none" height="18" viewBox="0 0 18 18" width="18">
+                    <path d="m7 4 5 5-5 5" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" />
+                  </svg>
                 </button>
               </>
             ) : urlValue.trim().length === 0 ? (
-              <button className="flex w-full items-center gap-4 rounded-2xl px-3 py-3 text-left hover:bg-[var(--color-surface-hover)]" onClick={() => inputRef.current?.focus()} type="button">
-                <span className="grid size-11 shrink-0 place-items-center rounded-full border border-[var(--color-border)] text-[var(--color-accent-strong)]">↗</span>
-                <span className="font-semibold text-[var(--color-text)]">{copy.linkPicker.emptyOption}</span>
+              <button
+                className={styles.linkPickerResult}
+                onClick={() => inputRef.current?.focus()}
+                type="button"
+              >
+                <span className={styles.linkPickerResultIcon}>
+                  <LinkGlyph />
+                </span>
+                <span className="font-semibold text-[var(--color-text)]">
+                  {copy.linkPicker.emptyOption}
+                </span>
               </button>
             ) : (
               <p className="status-error">{copy.linkPicker.invalid}</p>
             )}
           </div>
 
-          {state.status === "error" ? <p className="status-error mt-4" role="status">{state.message}</p> : null}
-          {isPending ? <p className="mt-4 text-sm font-semibold text-[var(--color-muted)]" role="status">{copy.linkPicker.adding}</p> : null}
+          {state.status === "error" ? (
+            <p className="status-error mt-4" role="status">
+              {state.message}
+            </p>
+          ) : null}
+          {isPending ? (
+            <p className="mt-4 text-sm font-semibold text-[var(--color-muted)]" role="status">
+              {copy.linkPicker.adding}
+            </p>
+          ) : null}
         </form>
       </section>
     </div>

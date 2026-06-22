@@ -1,7 +1,7 @@
 "use client";
 
-import { CSS } from "@dnd-kit/utilities";
 import { useSortable } from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 import { useState } from "react";
 
 import { LinkForm } from "@/components/dashboard/link-form";
@@ -32,13 +32,8 @@ export function LinkCard({
   onUpdate,
 }: LinkCardProps) {
   const [isConfirmingDelete, setIsConfirmingDelete] = useState(false);
-  const {
-    attributes,
-    listeners,
-    setNodeRef,
-    transform,
-    isDragging,
-  } = useSortable({ id: link.id, disabled });
+  const { attributes, listeners, setNodeRef, transform, isDragging } =
+    useSortable({ id: link.id, disabled });
 
   const style = {
     transform: CSS.Transform.toString(
@@ -49,7 +44,7 @@ export function LinkCard({
   if (isEditing) {
     return (
       <article
-        className="interactive-card rounded-[var(--radius-card)] border border-[var(--color-accent)] bg-[var(--color-accent-soft)] p-5"
+        className={`${styles.linkEditorCard} border border-[var(--color-accent)] bg-[var(--color-accent-soft)] p-5`}
         ref={setNodeRef}
         style={style}
       >
@@ -67,109 +62,105 @@ export function LinkCard({
 
   return (
     <article
-      className={`interactive-card rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-surface)] p-4 sm:p-5 ${isDragging ? "z-10 scale-[1.01] border-[var(--color-accent)] shadow-[0_22px_50px_rgba(62,54,120,0.18)]" : "shadow-[0_8px_24px_rgba(62,54,120,0.05)]"}`}
+      className={styles.linkCard}
       data-dragging={isDragging ? "true" : undefined}
       ref={setNodeRef}
       style={style}
     >
-      <div className="flex items-start gap-3 sm:gap-4">
-        <button
-          aria-label={copy.links.dragHandle}
-          className="button-quiet drag-handle mt-0.5 grid size-10 min-h-10 shrink-0 touch-none place-items-center rounded-xl p-0 text-[var(--color-muted)] disabled:opacity-40"
-          data-dragging={isDragging ? "true" : undefined}
-          disabled={disabled}
-          type="button"
-          {...attributes}
-          {...listeners}
-        >
-          <svg
-            aria-hidden="true"
-            fill="none"
-            height="18"
-            viewBox="0 0 18 18"
-            width="18"
-          >
-            <path
-              d="M6 4.5h.01M12 4.5h.01M6 9h.01M12 9h.01M6 13.5h.01M12 13.5h.01"
-              stroke="currentColor"
-              strokeLinecap="round"
-              strokeWidth="2.5"
-            />
-          </svg>
-        </button>
+      <button
+        aria-label={copy.links.dragHandle}
+        className={`${styles.linkDragHandle} drag-handle`}
+        data-dragging={isDragging ? "true" : undefined}
+        disabled={disabled}
+        type="button"
+        {...attributes}
+        {...listeners}
+      >
+        <svg aria-hidden="true" fill="none" height="18" viewBox="0 0 18 18" width="18">
+          <path d="M6 4.5h.01M12 4.5h.01M6 9h.01M12 9h.01M6 13.5h.01M12 13.5h.01" stroke="currentColor" strokeLinecap="round" strokeWidth="2.5" />
+        </svg>
+      </button>
 
-        <div className="min-w-0 flex-1">
-          <div className="flex flex-wrap items-start justify-between gap-3">
-            <div className="min-w-0">
-              <h3 className="truncate font-bold text-[var(--color-text)]">
+      <div className="min-w-0 flex-1">
+        <div className="flex min-w-0 items-start justify-between gap-4">
+          <div className="min-w-0 flex-1">
+            <div className="flex min-w-0 items-center gap-2">
+              <h3 className="truncate text-[0.95rem] font-bold text-[var(--color-text)]">
                 {link.title}
               </h3>
-              <p className="mt-1 break-all text-sm text-[var(--color-muted)]">
-                {link.url}
-              </p>
-            </div>
-
-            <label className="toggle-control flex items-center gap-2 text-xs font-bold text-[var(--color-muted)]">
-              <input
-                checked={link.is_active}
-                className="peer sr-only"
+              <button
+                aria-label={copy.links.edit}
+                className={styles.inlineEditButton}
                 disabled={disabled}
-                onChange={(event) => {
-                  void onToggle(link.id, event.currentTarget.checked);
-                }}
-                type="checkbox"
-              />
-              <span className={`${styles.toggleTrack} toggle-track relative h-6 w-11 rounded-full bg-[var(--color-border-strong)] after:absolute after:left-1 after:top-1 after:size-4 after:rounded-full after:bg-[var(--color-surface)] peer-checked:bg-[#22C55E] peer-checked:after:translate-x-5 peer-focus-visible:ring-4 peer-focus-visible:ring-[var(--color-accent-soft)] peer-disabled:opacity-45`} />
-              {link.is_active ? copy.links.active : copy.links.inactive}
-            </label>
+                onClick={() => onEdit(link.id)}
+                type="button"
+              >
+                <svg aria-hidden="true" fill="none" height="15" viewBox="0 0 16 16" width="15"><path d="m3 11-.5 2.5L5 13l7.2-7.2-2-2L3 11ZM9.5 4.5l2 2" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.35" /></svg>
+              </button>
+            </div>
+            <p className="mt-1 truncate text-sm text-[var(--color-muted)]">
+              {link.url}
+            </p>
           </div>
 
-          <div className="mt-4 flex flex-wrap items-center gap-2">
-            <button
-              className="button-secondary min-h-9 px-3 text-xs"
+          <label className="toggle-control flex shrink-0 items-center gap-2 text-xs font-semibold text-[var(--color-muted)]">
+            <span className="sr-only">
+              {link.is_active ? copy.links.active : copy.links.inactive}
+            </span>
+            <input
+              checked={link.is_active}
+              className="peer sr-only"
               disabled={disabled}
-              onClick={() => onEdit(link.id)}
-              type="button"
-            >
-              {copy.links.edit}
-            </button>
+              onChange={(event) => {
+                void onToggle(link.id, event.currentTarget.checked);
+              }}
+              type="checkbox"
+            />
+            <span className={`${styles.toggleTrack} toggle-track relative h-6 w-11 rounded-full bg-[var(--color-border-strong)] after:absolute after:left-1 after:top-1 after:size-4 after:rounded-full after:bg-[var(--color-surface)] peer-checked:bg-[#22C55E] peer-checked:after:translate-x-5 peer-focus-visible:ring-4 peer-focus-visible:ring-[var(--color-accent-soft)] peer-disabled:opacity-45`} />
+          </label>
+        </div>
 
-            {isConfirmingDelete ? (
-              <>
-                <span className="text-xs font-semibold text-[var(--color-danger)]">
-                  {copy.links.deleteConfirm}
-                </span>
-                <button
-                  className="button-danger min-h-9 px-3 text-xs"
-                  disabled={disabled}
-                  onClick={async () => {
-                    const deleted = await onDelete(link.id);
-                    if (!deleted) setIsConfirmingDelete(false);
-                  }}
-                  type="button"
-                >
-                  {copy.links.delete}
-                </button>
-                <button
-                  className="button-secondary min-h-9 px-3 text-xs"
-                  disabled={disabled}
-                  onClick={() => setIsConfirmingDelete(false)}
-                  type="button"
-                >
-                  {copy.links.cancel}
-                </button>
-              </>
-            ) : (
+        <div className="mt-5 flex min-h-9 items-center justify-between gap-3 border-t border-[var(--color-border)] pt-3">
+          <span className="text-xs font-medium text-[var(--color-muted)]">
+            {link.is_active ? copy.links.active : copy.links.inactive}
+          </span>
+
+          {isConfirmingDelete ? (
+            <div className="flex flex-wrap items-center justify-end gap-2">
+              <span className="text-xs font-semibold text-[var(--color-danger)]">
+                {copy.links.deleteConfirm}
+              </span>
               <button
-                className="button-delete button-quiet min-h-9 px-3 text-xs text-[var(--color-danger)]"
+                className="button-danger min-h-8 px-3 text-xs"
                 disabled={disabled}
-                onClick={() => setIsConfirmingDelete(true)}
+                onClick={async () => {
+                  const deleted = await onDelete(link.id);
+                  if (!deleted) setIsConfirmingDelete(false);
+                }}
                 type="button"
               >
                 {copy.links.delete}
               </button>
-            )}
-          </div>
+              <button
+                className="button-secondary min-h-8 px-3 text-xs"
+                disabled={disabled}
+                onClick={() => setIsConfirmingDelete(false)}
+                type="button"
+              >
+                {copy.links.cancel}
+              </button>
+            </div>
+          ) : (
+            <button
+              aria-label={copy.links.delete}
+              className={styles.linkDeleteButton}
+              disabled={disabled}
+              onClick={() => setIsConfirmingDelete(true)}
+              type="button"
+            >
+              <svg aria-hidden="true" fill="none" height="16" viewBox="0 0 16 16" width="16"><path d="M3.5 4.5h9M6 4.5V3h4v1.5M5 6.5v6h6v-6M7 8v2.5M9 8v2.5" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.25" /></svg>
+            </button>
+          )}
         </div>
       </div>
     </article>

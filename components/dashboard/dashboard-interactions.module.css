@@ -1,3 +1,402 @@
+.dashboardLogout {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.45);
+  border-radius: 30px;
+  color: white;
+  font-size: 0.75rem;
+  font-weight: 600;
+  min-height: 2rem;
+  padding: 0 1rem;
+  transition:
+    background-color 220ms cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 220ms cubic-bezier(0.22, 1, 0.36, 1),
+    color 220ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.dashboardLogout:hover,
+.dashboardLogout:active {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.72);
+}
+
+.dashboardColumns {
+  display: grid;
+  min-height: calc(100dvh - 3.5rem);
+}
+
+.editorPane {
+  min-width: 0;
+  padding: 2rem 1rem 4rem;
+}
+
+.editorContent {
+  margin-inline: auto;
+  max-width: 45rem;
+  min-width: 0;
+}
+
+.addLinkButton {
+  align-items: center;
+  background: var(--color-accent);
+  border: 1px solid var(--color-accent);
+  border-radius: 30px;
+  color: white;
+  display: flex;
+  font-size: 1rem;
+  font-weight: 600;
+  gap: 0.45rem;
+  justify-content: center;
+  margin-top: 1.2rem;
+  min-height: 3rem;
+  transition:
+    background-color 220ms cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 220ms cubic-bezier(0.22, 1, 0.36, 1),
+    color 220ms cubic-bezier(0.22, 1, 0.36, 1);
+  width: 100%;
+}
+
+.addLinkButton:not(:disabled):hover {
+  background: var(--color-accent-strong);
+  border-color: var(--color-accent-strong);
+}
+
+.addLinkButton:not(:disabled):active {
+  background: var(--color-accent-active);
+  border-color: var(--color-accent-active);
+}
+
+.addLinkButton:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.placeholderActions {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  margin: 1.35rem 0 1.4rem;
+}
+
+.placeholderButton,
+.placeholderLink {
+  align-items: center;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  color: var(--color-muted);
+  display: inline-flex;
+  font-size: 0.8rem;
+  font-weight: 500;
+  gap: 0.5rem;
+  min-height: 2.45rem;
+  padding: 0 0.9rem;
+}
+
+.placeholderButton {
+  border-radius: 18px;
+}
+
+.placeholderLink {
+  border-color: transparent;
+  border-radius: 14px;
+}
+
+.placeholderButton:disabled,
+.placeholderLink:disabled {
+  cursor: not-allowed;
+  opacity: 0.58;
+}
+
+.socialProfileButton {
+  align-items: center;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 50%;
+  color: var(--color-muted);
+  display: inline-flex;
+  height: 1.9rem;
+  justify-content: center;
+  padding: 0;
+  position: relative;
+  transition:
+    background-color 220ms cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 220ms cubic-bezier(0.22, 1, 0.36, 1),
+    color 220ms cubic-bezier(0.22, 1, 0.36, 1);
+  width: 1.9rem;
+}
+
+.socialProfileButton:hover {
+  background: var(--color-surface-hover);
+  border-color: var(--color-border-strong);
+  color: var(--color-text);
+}
+
+.socialProfileButtonConnected {
+  background: var(--color-text);
+  border-color: var(--color-text);
+  color: white;
+}
+
+.socialProfileButtonConnected:hover {
+  background: #2a2d35;
+  border-color: #2a2d35;
+  color: white;
+}
+
+.socialAddBadge {
+  align-items: center;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 50%;
+  bottom: -0.18rem;
+  display: flex;
+  font-size: 0.62rem;
+  font-weight: 700;
+  height: 0.85rem;
+  justify-content: center;
+  line-height: 1;
+  position: absolute;
+  right: -0.18rem;
+  width: 0.85rem;
+}
+
+.socialHandleInput,
+.linkPickerField {
+  background: #f4f4f2;
+  border: 1px solid transparent;
+  color: var(--color-text);
+  min-height: 3rem;
+  outline: none;
+  transition:
+    background-color 220ms cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 220ms cubic-bezier(0.22, 1, 0.36, 1),
+    color 220ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.socialHandleInput {
+  border-radius: 0.65rem;
+  padding: 0.85rem 1rem;
+}
+
+.socialHandleInput:focus,
+.linkPickerField:focus-within {
+  background: var(--color-surface);
+  border-color: var(--color-accent);
+}
+
+.socialSaveButton {
+  align-items: center;
+  background: var(--color-accent);
+  border: 1px solid var(--color-accent);
+  border-radius: 30px;
+  color: white;
+  display: inline-flex;
+  font-weight: 700;
+  justify-content: center;
+  transition:
+    background-color 220ms cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 220ms cubic-bezier(0.22, 1, 0.36, 1),
+    color 220ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.socialSaveButton:not(:disabled):hover {
+  background: var(--color-accent-strong);
+  border-color: var(--color-accent-strong);
+}
+
+.socialSaveButton:disabled {
+  background: var(--color-border);
+  border-color: var(--color-border);
+  color: var(--color-inactive);
+  cursor: not-allowed;
+}
+
+.linkPickerField {
+  min-height: 3.25rem;
+}
+
+.linkPickerResult {
+  align-items: center;
+  background: transparent;
+  border: 0;
+  border-radius: 1rem;
+  color: var(--color-text);
+  display: flex;
+  gap: 1rem;
+  min-height: 4rem;
+  padding: 0.65rem 0.75rem;
+  text-align: left;
+  transition:
+    background-color 220ms cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 220ms cubic-bezier(0.22, 1, 0.36, 1),
+    color 220ms cubic-bezier(0.22, 1, 0.36, 1);
+  width: 100%;
+}
+
+.linkPickerResult:hover {
+  background: var(--color-surface-hover);
+}
+
+.linkPickerResultIcon {
+  align-items: center;
+  border: 1px solid var(--color-border);
+  border-radius: 50%;
+  color: var(--color-accent-strong);
+  display: inline-flex;
+  flex-shrink: 0;
+  height: 2.8rem;
+  justify-content: center;
+  width: 2.8rem;
+}
+
+.linkCard,
+.linkEditorCard {
+  border-radius: 1.5rem;
+}
+
+.linkCard {
+  align-items: flex-start;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  display: flex;
+  gap: 0.65rem;
+  min-height: 7.5rem;
+  padding: 1.15rem 1.2rem 0.85rem 0.55rem;
+  transition:
+    background-color 220ms cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 220ms cubic-bezier(0.22, 1, 0.36, 1),
+    color 220ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.linkCard:hover,
+.linkCard:focus-within,
+.linkCard[data-dragging="true"] {
+  border-color: var(--color-border-strong);
+}
+
+.linkDragHandle {
+  align-items: center;
+  background: transparent;
+  border: 0;
+  color: var(--color-muted);
+  display: inline-flex;
+  flex-shrink: 0;
+  height: 2.25rem;
+  justify-content: center;
+  padding: 0;
+  touch-action: none;
+  width: 2.25rem;
+}
+
+.linkDragHandle:disabled {
+  cursor: not-allowed;
+  opacity: 0.4;
+}
+
+.inlineEditButton,
+.linkDeleteButton {
+  align-items: center;
+  background: transparent;
+  border: 0;
+  border-radius: 50%;
+  color: var(--color-muted);
+  display: inline-flex;
+  justify-content: center;
+  padding: 0;
+  transition:
+    background-color 220ms cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 220ms cubic-bezier(0.22, 1, 0.36, 1),
+    color 220ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.inlineEditButton {
+  height: 1.75rem;
+  width: 1.75rem;
+}
+
+.linkDeleteButton {
+  height: 2rem;
+  width: 2rem;
+}
+
+.inlineEditButton:hover,
+.linkDeleteButton:hover {
+  background: var(--color-surface-hover);
+  color: var(--color-text);
+}
+
+.previewPane {
+  border-top: 1px solid var(--color-border);
+  min-width: 0;
+  padding: 2rem 1rem 4rem;
+}
+
+.previewSticky {
+  margin-inline: auto;
+  max-width: 25rem;
+}
+
+.phoneFrame {
+  background: #eef0f3;
+  border: 1px solid var(--color-border);
+  border-radius: 2.15rem;
+  margin-inline: auto;
+  max-width: 20.75rem;
+  padding: 0.7rem;
+}
+
+.phoneScreen {
+  background: #eceef2;
+  border-radius: 1.7rem;
+  min-height: 37rem;
+  padding: 4.5rem 0.85rem 2rem;
+}
+
+@media (min-width: 640px) {
+  .editorPane {
+    padding-inline: 2rem;
+  }
+}
+
+@media (min-width: 1280px) {
+  .dashboardColumns {
+    grid-template-columns: minmax(0, 3fr) minmax(19rem, 1fr);
+  }
+
+  .editorPane {
+    padding: 1.75rem clamp(2rem, 5vw, 5.75rem) 5rem;
+  }
+
+  .previewPane {
+    border-left: 1px solid var(--color-border);
+    border-top: 0;
+    min-height: calc(100dvh - 3.5rem);
+    padding: 2rem 1.75rem 4rem;
+  }
+
+  .previewSticky {
+    position: sticky;
+    top: 1.25rem;
+  }
+}
+
+@media (max-width: 639px) {
+  .placeholderActions {
+    align-items: stretch;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .placeholderButton,
+  .placeholderLink {
+    justify-content: center;
+    width: 100%;
+  }
+
+  .phoneScreen {
+    min-height: 32rem;
+  }
+}
+
 .toggleTrack.toggleTrack {
   transition-duration: 200ms;
   transition-property: background-color;

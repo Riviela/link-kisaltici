@@ -187,21 +187,21 @@ export function ProfilePreview({
   return (
     <aside
       aria-label={copy.dashboard.preview}
-      className="min-w-0 border-t border-[var(--color-border)] pt-8 xl:border-l xl:border-t-0 xl:pl-8 xl:pt-0"
+      className={styles.previewPane}
     >
-      <div className="sticky top-5">
-        <div className="mb-4 flex items-center justify-between px-1">
-          <h2 className="text-sm font-bold text-[var(--color-text)]">
+      <div className={styles.previewSticky}>
+        <div className="sr-only">
+          <h2>
             {copy.dashboard.preview}
           </h2>
         </div>
 
-        <div className="relative mb-4" ref={shareContainerRef}>
+        <div className="relative mx-auto mb-5 w-full max-w-[23rem]" ref={shareContainerRef}>
           <button
             aria-expanded={
               shareState === "entering" || shareState === "open"
             }
-            className={`${styles.previewUrlButton} w-full select-none gap-3 px-4 py-3 text-sm`}
+            className={`${styles.previewUrlButton} w-full select-none gap-3 px-5 py-3 text-sm`}
             onClick={() => {
               if (shareState === "closing") return;
 
@@ -327,29 +327,29 @@ export function ProfilePreview({
           ) : null}
         </div>
 
-        <div className="mx-auto max-w-[22rem] rounded-[2.5rem] border border-[var(--color-surface)] bg-[var(--color-page)] p-3 shadow-[0_28px_70px_rgba(62,54,120,0.16)] ring-1 ring-[var(--color-border)]">
-          <div className="min-h-[34rem] rounded-[2rem] bg-[var(--color-surface)] px-5 pb-8 pt-9 sm:min-h-[38rem]">
+        <div className={styles.phoneFrame}>
+          <div className={styles.phoneScreen}>
             <div className="text-center">
               <ProfileAvatar
                 avatarUrl={avatarUrl}
-                className="mx-auto size-20"
+                className="mx-auto size-[4.75rem]"
               />
-              <h3 className="mt-5 text-xl font-bold tracking-[-0.03em] text-[var(--color-text)]">
+              <h3 className="mt-4 text-lg font-bold tracking-[-0.03em] text-[var(--color-text)]">
                 @{username}
               </h3>
               {bio ? (
-                <p className="mx-auto mt-3 line-clamp-3 max-w-60 whitespace-pre-wrap text-sm leading-5 text-[var(--color-muted)]">
+                <p className="mx-auto mt-2 line-clamp-3 max-w-60 whitespace-pre-wrap text-xs leading-5 text-[var(--color-muted)]">
                   {bio}
                 </p>
               ) : null}
-              <SocialLinks className="mt-4" handles={socialHandles} />
+              <SocialLinks className="mt-3" handles={socialHandles} />
             </div>
 
-            <div className="mt-7 space-y-2.5">
+            <div className="mt-6 space-y-2.5">
               {activeLinks.length > 0 ? (
                 activeLinks.map((link) => (
                   <div
-                    className="preview-item flex min-h-12 items-center justify-between gap-3 rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface-raised)] px-4 py-3 text-sm font-bold text-[var(--color-text)]"
+                    className="preview-item flex min-h-12 items-center justify-between gap-3 rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] px-4 py-3 text-xs font-semibold text-[var(--color-text)]"
                     key={link.id}
                   >
                     <span className="truncate">{link.title}</span>

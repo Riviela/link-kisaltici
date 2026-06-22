@@ -15,6 +15,8 @@ import {
   type CurrentProfileResult,
 } from "@/lib/profile/get-current-profile";
 
+import styles from "@/components/dashboard/dashboard-interactions.module.css";
+
 export default async function DashboardPage() {
   let current: CurrentProfileResult;
 
@@ -53,12 +55,34 @@ export default async function DashboardPage() {
   }
 
   return (
-    <main className="min-h-dvh bg-[var(--color-page)]">
-      <div className="xl:grid xl:grid-cols-[5.25rem_minmax(0,1fr)]">
-        <nav className="hidden min-h-dvh border-r border-[var(--color-border)] bg-[var(--color-surface)] xl:sticky xl:top-0 xl:flex xl:h-dvh xl:flex-col xl:items-center xl:py-7">
+    <main className="min-h-dvh overflow-x-hidden bg-[var(--color-surface)]">
+      <header className="flex h-14 items-center justify-between bg-[var(--color-text)] px-5 text-white sm:px-8">
+        <p className="text-sm font-bold tracking-[-0.01em]">
+          {copy.metadata.title}
+        </p>
+        <form action={logoutAction}>
+          <button
+            className={styles.dashboardLogout}
+            type="submit"
+          >
+            {copy.dashboard.logout}
+          </button>
+        </form>
+      </header>
+
+      <div className="xl:grid xl:grid-cols-[84px_minmax(0,1fr)]">
+        <nav className="hidden min-h-[calc(100dvh-3.5rem)] border-r border-[var(--color-border)] bg-[var(--color-surface)] xl:sticky xl:top-0 xl:flex xl:h-[calc(100dvh-3.5rem)] xl:flex-col xl:items-center">
+          <div
+            aria-hidden="true"
+            className="mt-5 grid size-10 place-items-center rounded-full border border-[var(--color-border)] text-[var(--color-text)]"
+          >
+            <svg fill="none" height="18" viewBox="0 0 18 18" width="18">
+              <path d="M4 5h10M4 9h10M4 13h10" stroke="currentColor" strokeLinecap="round" strokeWidth="1.5" />
+            </svg>
+          </div>
           <a
             aria-current="page"
-            className="mt-24 flex w-full flex-col items-center gap-2 border-r-2 border-[var(--color-accent)] py-3 text-[var(--color-accent-strong)]"
+            className="mt-auto mb-[42vh] flex w-full flex-col items-center gap-2 border-r-2 border-[var(--color-text)] py-3 text-[var(--color-text)]"
             href="#content"
           >
             <svg
@@ -81,33 +105,17 @@ export default async function DashboardPage() {
           </a>
         </nav>
 
-        <div className="min-w-0">
-          <header className="flex items-center justify-between border-b border-[var(--color-border)] bg-[var(--color-surface)] px-5 py-4 sm:px-8 lg:px-10">
-            <p className="font-extrabold tracking-[-0.025em] text-[var(--color-text)]">
-              {copy.metadata.title}
-            </p>
-            <form action={logoutAction}>
-              <button
-                className="button-secondary px-4 text-sm"
-                type="submit"
-              >
-                {copy.dashboard.logout}
-              </button>
-            </form>
-          </header>
-
-          <div className="mx-auto max-w-[100rem] px-4 py-5 sm:px-7 sm:py-8 lg:px-9">
-            <div id="content">
-              <LinkManager
-                initialLinks={initialLinks}
-                profile={{
-                  avatarUrl: current.profile.avatarUrl,
-                  bio: current.profile.bio,
-                  socialHandles: current.profile.socialHandles,
-                  username: current.profile.username,
-                }}
-              />
-            </div>
+        <div className="min-w-0" id="content">
+          <div className="mx-auto max-w-[118rem]">
+            <LinkManager
+              initialLinks={initialLinks}
+              profile={{
+                avatarUrl: current.profile.avatarUrl,
+                bio: current.profile.bio,
+                socialHandles: current.profile.socialHandles,
+                username: current.profile.username,
+              }}
+            />
           </div>
         </div>
       </div>

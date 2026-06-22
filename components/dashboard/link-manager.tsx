@@ -18,6 +18,8 @@ import { copy } from "@/lib/copy";
 import type { LinkItem } from "@/lib/links/types";
 import type { SocialHandles } from "@/lib/profile/social";
 
+import styles from "./dashboard-interactions.module.css";
+
 interface LinkManagerProps {
   initialLinks: LinkItem[];
   profile: {
@@ -255,30 +257,65 @@ export function LinkManager({ initialLinks, profile }: LinkManagerProps) {
   }, [feedback, isReordering]);
 
   return (
-    <section className="grid gap-8 xl:grid-cols-[minmax(0,3fr)_minmax(18rem,1fr)] xl:gap-0">
-      <div className="min-w-0 space-y-6 xl:pr-8">
-        <DashboardProfileHeader
-          avatarUrl={profile.avatarUrl}
-          bio={profileBio}
-          onBioSaved={setProfileBio}
-          onSocialSaved={(handles) => {
-            setProfileSocialHandles(handles);
-            router.refresh();
-          }}
-          socialHandles={profileSocialHandles}
-          username={profile.username}
-        />
+    <section className={styles.dashboardColumns}>
+      <div className={styles.editorPane}>
+        <div className={styles.editorContent}>
+          <div className="mb-9 flex items-center justify-between border-b border-[var(--color-border)] pb-4">
+            <p className="text-base font-bold text-[var(--color-text)]">Links</p>
+            <span className="text-xs font-semibold text-[var(--color-muted)]">Content</span>
+          </div>
 
-        <div className="surface-panel min-w-0 p-5 sm:p-7">
-          <div className="mb-6 flex min-h-11 items-center justify-between gap-4">
+          <DashboardProfileHeader
+            avatarUrl={profile.avatarUrl}
+            bio={profileBio}
+            onBioSaved={setProfileBio}
+            onSocialSaved={(handles) => {
+              setProfileSocialHandles(handles);
+              router.refresh();
+            }}
+            socialHandles={profileSocialHandles}
+            username={profile.username}
+          />
+
+          <button
+            className={styles.addLinkButton}
+            disabled={isBusy}
+            onClick={() => setIsAddModalOpen(true)}
+            type="button"
+          >
+            <span aria-hidden="true">+</span>
+            <span>Add</span>
+          </button>
+
+          <div className={styles.placeholderActions}>
             <button
-              className="button-primary px-5"
-              disabled={isBusy}
-              onClick={() => setIsAddModalOpen(true)}
+              aria-disabled="true"
+              className={styles.placeholderButton}
+              disabled
               type="button"
             >
-              {copy.links.addCompact}
+              <svg aria-hidden="true" fill="none" height="18" viewBox="0 0 18 18" width="18">
+                <path d="M3 5.5h12v9H3zM5 3.5h8v2H5z" stroke="currentColor" strokeWidth="1.3" />
+              </svg>
+              Add collection
             </button>
+            <button
+              aria-disabled="true"
+              className={styles.placeholderLink}
+              disabled
+              type="button"
+            >
+              <svg aria-hidden="true" fill="none" height="16" viewBox="0 0 16 16" width="16">
+                <path d="M3 5.5h10v7H3zM5 3.5h6v2H5z" stroke="currentColor" strokeWidth="1.2" />
+              </svg>
+              View archive
+              <svg aria-hidden="true" fill="none" height="14" viewBox="0 0 14 14" width="14">
+                <path d="m5 3 4 4-4 4" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.3" />
+              </svg>
+            </button>
+          </div>
+
+          <div className="mb-3 flex min-h-6 items-center justify-end">
             {managerStatus ? (
               <p
                 aria-live="polite"
@@ -316,7 +353,7 @@ export function LinkManager({ initialLinks, profile }: LinkManagerProps) {
             onSuccess={handleFormSuccess}
           />
         ) : null}
-      </div>
+        </div>
 
       <ProfilePreview
         avatarUrl={profile.avatarUrl}
