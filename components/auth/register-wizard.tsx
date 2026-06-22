@@ -32,14 +32,18 @@ const stepNumbers: Record<RegisterStep, number> = {
   password: 3,
 };
 
-export function RegisterWizard() {
+interface RegisterWizardProps {
+  initialUsername?: string;
+}
+
+export function RegisterWizard({ initialUsername = "" }: RegisterWizardProps) {
   const [state, formAction, isPending] = useActionState<
     AuthActionState,
     FormData
   >(registerAction, initialAuthActionState);
   const [step, setStep] = useState<RegisterStep>("email");
   const [email, setEmail] = useState("");
-  const [username, setUsername] = useState("");
+  const [username, setUsername] = useState(initialUsername);
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 

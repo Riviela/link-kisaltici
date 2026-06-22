@@ -16,6 +16,9 @@
   --color-danger-soft: #fff0f3;
   --color-success: #16794c;
   --color-success-soft: #ecf8f1;
+  --color-landing-cta: #123c2a;
+  --color-landing-cta-hover: #0f3323;
+  --color-landing-cta-active: #0c291d;
   --space-1: 0.25rem;
   --space-2: 0.5rem;
   --space-3: 0.75rem;
@@ -183,6 +186,24 @@ textarea:disabled,
 .button-primary:not(:disabled):active {
   background: #4b3bd7;
   border-color: #4b3bd7;
+}
+
+.button-landing-signup {
+  background: var(--color-landing-cta);
+  border-color: var(--color-landing-cta);
+  color: white;
+}
+
+.button-landing-signup:not(:disabled):hover {
+  background: var(--color-landing-cta-hover);
+  border-color: var(--color-landing-cta-hover);
+  color: white;
+}
+
+.button-landing-signup:not(:disabled):active {
+  background: var(--color-landing-cta-active);
+  border-color: var(--color-landing-cta-active);
+  color: white;
 }
 
 .button-secondary {

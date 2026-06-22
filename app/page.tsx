@@ -1,5 +1,6 @@
 import Link from "next/link";
 
+import { UsernameSignup } from "@/components/home/username-signup";
 import { copy } from "@/lib/copy";
 
 export default function Home() {
@@ -17,7 +18,7 @@ export default function Home() {
             {copy.navigation.login}
           </Link>
           <Link
-            className="button-primary min-h-10 px-4 text-sm"
+            className="button-landing-signup button-primary min-h-10 px-4 text-sm"
             href="/register"
           >
             {copy.navigation.register}
@@ -36,12 +37,7 @@ export default function Home() {
           <p className="mt-7 max-w-xl text-lg leading-8 text-[var(--color-muted)]">
             {copy.home.description}
           </p>
-          <Link
-            className="button-primary mt-9 px-7 py-3.5"
-            href="/register"
-          >
-            {copy.navigation.register}
-          </Link>
+          <UsernameSignup />
         </div>
 
         <div aria-hidden="true" className="relative mx-auto w-full max-w-lg">

@@ -1,11 +1,13 @@
+import { APP_NAME } from "@/lib/config/site";
+
 export const copy = {
   metadata: {
-    title: "Canvas Links",
+    title: APP_NAME,
     description: "A focused home for the links that matter.",
   },
   navigation: {
     login: "Log in",
-    register: "Create account",
+    register: "Sign up free",
     dashboard: "Dashboard",
   },
   home: {
@@ -13,6 +15,13 @@ export const copy = {
     title: "Make every link feel intentional.",
     description:
       "Create a simple home for your work, ideas, and the places people can find you online.",
+    signup: {
+      cta: "Get started for free",
+      label: "Choose your username",
+      placeholder: "yourname",
+      error:
+        "Use 3-30 lowercase letters, numbers, or underscores, starting with a letter or number.",
+    },
   },
   auth: {
     emailLabel: "Email address",
@@ -30,13 +39,15 @@ export const copy = {
       title: "Welcome back",
       description: "Log in to continue to your dashboard.",
       submit: "Log in",
-      alternatePrompt: "New here?",
-      alternateLink: "Create an account",
+      alternatePrompt: `New to ${APP_NAME}?`,
+      alternateLink: "Sign up free",
     },
     register: {
-      title: "Create your account",
-      description: "Create your profile in a few focused steps.",
-      submit: "Create account",
+      title: `Join ${APP_NAME}`,
+      titleWithUsername: (username: string) =>
+        `Join ${APP_NAME} with @${username}`,
+      description: "Set up your profile in a few focused steps.",
+      submit: `Join ${APP_NAME}`,
       continue: "Continue",
       back: "Back",
       stepLabel: "Step",
