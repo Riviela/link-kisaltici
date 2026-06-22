@@ -10,12 +10,13 @@ import {
   reorderLinksAction,
   toggleLinkAction,
 } from "@/app/actions/links";
+import { AddLinkModal } from "@/components/dashboard/add-link-modal";
 import { DashboardProfileHeader } from "@/components/dashboard/dashboard-profile-header";
-import { LinkForm } from "@/components/dashboard/link-form";
 import { ProfilePreview } from "@/components/dashboard/profile-preview";
 import { SortableLinkList } from "@/components/dashboard/sortable-link-list";
 import { copy } from "@/lib/copy";
 import type { LinkItem } from "@/lib/links/types";
+import type { SocialHandles } from "@/lib/profile/social";
 
 interface LinkManagerProps {
   initialLinks: LinkItem[];
@@ -23,7 +24,7 @@ interface LinkManagerProps {
     avatarUrl: string | null;
     username: string;
     bio: string | null;
-    isPublished: boolean;
+    socialHandles: SocialHandles;
   };
 }
 
@@ -60,6 +61,10 @@ export function LinkManager({ initialLinks, profile }: LinkManagerProps) {
   const [isReordering, setIsReordering] = useState(false);
   const [feedback, setFeedback] = useState<FeedbackMessage | null>(null);
   const [profileBio, setProfileBio] = useState(profile.bio);
+  const [profileSocialHandles, setProfileSocialHandles] = useState(
+    profile.socialHandles,
+  );
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const isBusy = isMutating || isReordering;
   const [reconciliationState, setReconciliationState] =
     useState<ReconciliationState>({
@@ -255,45 +260,25 @@ export function LinkManager({ initialLinks, profile }: LinkManagerProps) {
         <DashboardProfileHeader
           avatarUrl={profile.avatarUrl}
           bio={profileBio}
-          isPublished={profile.isPublished}
           onBioSaved={setProfileBio}
+          onSocialSaved={(handles) => {
+            setProfileSocialHandles(handles);
+            router.refresh();
+          }}
+          socialHandles={profileSocialHandles}
           username={profile.username}
         />
 
-        <div className="surface-panel p-5 sm:p-7">
-          <div className="flex items-center justify-between gap-4">
-            <div>
-              <p className="text-xs font-bold text-[var(--color-accent-strong)]">
-                {copy.links.eyebrow}
-              </p>
-              <h2 className="mt-1 text-xl font-bold tracking-[-0.025em] text-[var(--color-text)]">
-                {copy.links.add}
-              </h2>
-            </div>
-            <div className="grid size-10 place-items-center rounded-2xl bg-[var(--color-accent-soft)] text-xl font-medium text-[var(--color-accent-strong)]">
-              +
-            </div>
-          </div>
-          <div className="mt-6">
-            <LinkForm
-              disabled={isBusy}
-              mode="create"
-              onPendingChange={setIsMutating}
-              onSuccess={handleFormSuccess}
-            />
-          </div>
-        </div>
-
         <div className="surface-panel min-w-0 p-5 sm:p-7">
-          <div className="mb-6 flex min-h-6 items-center justify-between gap-4">
-            <div>
-              <h2 className="text-xl font-bold tracking-[-0.025em] text-[var(--color-text)]">
-                {copy.links.listTitle}
-              </h2>
-              <p className="mt-1 text-sm text-[var(--color-muted)]">
-                {copy.links.description}
-              </p>
-            </div>
+          <div className="mb-6 flex min-h-11 items-center justify-between gap-4">
+            <button
+              className="button-primary px-5"
+              disabled={isBusy}
+              onClick={() => setIsAddModalOpen(true)}
+              type="button"
+            >
+              {copy.links.addCompact}
+            </button>
             {managerStatus ? (
               <p
                 aria-live="polite"
@@ -323,12 +308,21 @@ export function LinkManager({ initialLinks, profile }: LinkManagerProps) {
             onUpdate={handleFormSuccess}
           />
         </div>
+
+        {isAddModalOpen ? (
+          <AddLinkModal
+            onClose={() => setIsAddModalOpen(false)}
+            onPendingChange={setIsMutating}
+            onSuccess={handleFormSuccess}
+          />
+        ) : null}
       </div>
 
       <ProfilePreview
         avatarUrl={profile.avatarUrl}
         bio={profileBio}
         links={links}
+        socialHandles={profileSocialHandles}
         username={profile.username}
       />
     </section>

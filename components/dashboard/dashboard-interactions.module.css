@@ -51,7 +51,7 @@
   border-radius: 30px;
   color: var(--color-text);
   display: flex;
-  font-weight: 700;
+  font-weight: 400;
   justify-content: space-between;
   min-height: 2.75rem;
   transition:

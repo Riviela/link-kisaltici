@@ -20,12 +20,17 @@ import {
 import {
   type ProfileActionState,
   type ProfileBioActionState,
-  type ProfileVisibilityActionState,
   type ProfileDetailsValidationResult,
   validateProfileDetails,
   validateProfileBio,
   validateProfileUsername,
 } from "@/lib/profile/validation";
+import {
+  isSocialPlatform,
+  SOCIAL_PLATFORM_CONFIG,
+  type SocialHandleActionState,
+  validateSocialHandle,
+} from "@/lib/profile/social";
 import { createClient } from "@/lib/supabase/server";
 
 const USERNAME_CONSTRAINTS = [
@@ -277,61 +282,6 @@ export async function createProfileAction(
   };
 }
 
-export async function updateProfileVisibilityAction(
-  previousState: ProfileVisibilityActionState,
-  formData: FormData,
-): Promise<ProfileVisibilityActionState> {
-  const requestedValue = formData.get("isPublished");
-
-  if (requestedValue !== "true" && requestedValue !== "false") {
-    return {
-      status: "error",
-      message: copy.profileVisibility.failure.update,
-      isPublished: previousState.isPublished,
-    };
-  }
-
-  const supabase = await createClient();
-  const { data: claimsData, error: claimsError } =
-    await supabase.auth.getClaims();
-  const userId = claimsData?.claims?.sub;
-
-  if (claimsError || typeof userId !== "string" || userId.length === 0) {
-    return {
-      status: "error",
-      message: copy.profileVisibility.failure.authentication,
-      isPublished: previousState.isPublished,
-    };
-  }
-
-  const isPublished = requestedValue === "true";
-  const { data: profile, error } = await supabase
-    .from("profiles")
-    .update({ is_published: isPublished })
-    .eq("id", userId)
-    .select("username, is_published")
-    .maybeSingle();
-
-  if (error || !profile) {
-    return {
-      status: "error",
-      message: copy.profileVisibility.failure.update,
-      isPublished: previousState.isPublished,
-    };
-  }
-
-  revalidatePath("/dashboard");
-  revalidatePath(`/${profile.username}`);
-
-  return {
-    status: "success",
-    message: profile.is_published
-      ? copy.profileVisibility.success.published
-      : copy.profileVisibility.success.private,
-    isPublished: profile.is_published,
-  };
-}
-
 export async function updateProfileBioAction(
   previousState: ProfileBioActionState,
   formData: FormData,
@@ -381,5 +331,79 @@ export async function updateProfileBioAction(
     status: "success",
     message: copy.profileDetails.success,
     bio: profile.bio,
+  };
+}
+
+export async function updateSocialHandleAction(
+  previousState: SocialHandleActionState,
+  formData: FormData,
+): Promise<SocialHandleActionState> {
+  const platformValue = formData.get("platform");
+
+  if (!isSocialPlatform(platformValue)) {
+    return {
+      status: "error",
+      message: copy.socialProfiles.failure.invalidPlatform,
+      socialHandles: previousState.socialHandles,
+    };
+  }
+
+  const validatedHandle = validateSocialHandle(
+    platformValue,
+    formData.get("handle"),
+  );
+
+  if (!validatedHandle.success) {
+    return {
+      status: "error",
+      message: copy.socialProfiles.failure.invalidHandle,
+      socialHandles: previousState.socialHandles,
+    };
+  }
+
+  const supabase = await createClient();
+  const { data: claimsData, error: claimsError } =
+    await supabase.auth.getClaims();
+  const userId = claimsData?.claims?.sub;
+
+  if (claimsError || typeof userId !== "string" || userId.length === 0) {
+    return {
+      status: "error",
+      message: copy.socialProfiles.failure.authentication,
+      socialHandles: previousState.socialHandles,
+    };
+  }
+
+  const column = SOCIAL_PLATFORM_CONFIG[platformValue].column;
+  const { data: profile, error } = await supabase
+    .from("profiles")
+    .update({ [column]: validatedHandle.handle })
+    .eq("id", userId)
+    .select(
+      "username, instagram_handle, tiktok_handle, youtube_handle",
+    )
+    .maybeSingle();
+
+  if (error || !profile) {
+    return {
+      status: "error",
+      message: copy.socialProfiles.failure.update,
+      socialHandles: previousState.socialHandles,
+    };
+  }
+
+  const socialHandles = {
+    instagram: profile.instagram_handle,
+    tiktok: profile.tiktok_handle,
+    youtube: profile.youtube_handle,
+  };
+
+  revalidatePath("/dashboard");
+  revalidatePath(`/${profile.username}`);
+
+  return {
+    status: "success",
+    message: copy.socialProfiles.success,
+    socialHandles,
   };
 }

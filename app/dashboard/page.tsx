@@ -103,7 +103,7 @@ export default async function DashboardPage() {
                 profile={{
                   avatarUrl: current.profile.avatarUrl,
                   bio: current.profile.bio,
-                  isPublished: current.profile.is_published,
+                  socialHandles: current.profile.socialHandles,
                   username: current.profile.username,
                 }}
               />

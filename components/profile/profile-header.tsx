@@ -1,15 +1,19 @@
 import { ProfileAvatar } from "@/components/profile/profile-avatar";
+import { SocialLinks } from "@/components/profile/social-links";
+import type { SocialHandles } from "@/lib/profile/social";
 
 interface ProfileHeaderProps {
   avatarUrl: string | null;
   username: string;
   bio: string | null;
+  socialHandles: SocialHandles;
 }
 
 export function ProfileHeader({
   avatarUrl,
   username,
   bio,
+  socialHandles,
 }: ProfileHeaderProps) {
   return (
     <header className="text-center">
@@ -27,6 +31,7 @@ export function ProfileHeader({
           {bio}
         </p>
       ) : null}
+      <SocialLinks className="mt-5" handles={socialHandles} />
     </header>
   );
 }

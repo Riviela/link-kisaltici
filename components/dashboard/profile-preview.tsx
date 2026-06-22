@@ -3,9 +3,11 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 
 import { ProfileAvatar } from "@/components/profile/profile-avatar";
+import { SocialLinks } from "@/components/profile/social-links";
 import { PUBLIC_PROFILE_HOST } from "@/lib/config/site";
 import { copy } from "@/lib/copy";
 import type { LinkItem } from "@/lib/links/types";
+import type { SocialHandles } from "@/lib/profile/social";
 
 import styles from "./dashboard-interactions.module.css";
 
@@ -14,6 +16,7 @@ interface ProfilePreviewProps {
   username: string;
   bio: string | null;
   links: LinkItem[];
+  socialHandles: SocialHandles;
 }
 
 function copyWithFallback(value: string) {
@@ -95,6 +98,7 @@ export function ProfilePreview({
   username,
   bio,
   links,
+  socialHandles,
 }: ProfilePreviewProps) {
   const activeLinks = links.filter((link) => link.is_active);
   const [shareState, setShareState] = useState<
@@ -338,6 +342,7 @@ export function ProfilePreview({
                   {bio}
                 </p>
               ) : null}
+              <SocialLinks className="mt-4" handles={socialHandles} />
             </div>
 
             <div className="mt-7 space-y-2.5">

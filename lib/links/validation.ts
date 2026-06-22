@@ -22,24 +22,52 @@ interface InvalidLinkInput {
 
 export type LinkValidationResult = ValidLinkInput | InvalidLinkInput;
 
+export type LinkUrlValidationResult =
+  | { success: true; url: string }
+  | { success: false; message: string };
+
 export function normalizeLinkUrl(value: string): string {
+  const trimmedValue = value.trim();
+
   if (
-    SUPPORTED_PROTOCOL_PATTERN.test(value) ||
-    EXPLICIT_PROTOCOL_PATTERN.test(value)
+    SUPPORTED_PROTOCOL_PATTERN.test(trimmedValue) ||
+    EXPLICIT_PROTOCOL_PATTERN.test(trimmedValue)
   ) {
-    return value;
+    return trimmedValue;
   }
 
-  return `https://${value}`;
+  return `https://${trimmedValue}`;
+}
+
+export function validateLinkUrlValue(value: unknown): LinkUrlValidationResult {
+  const url = normalizeLinkUrl(typeof value === "string" ? value : "");
+
+  if (
+    url.length === 0 ||
+    url.length > LINK_URL_MAX_LENGTH ||
+    CONTROL_OR_WHITESPACE_PATTERN.test(url) ||
+    !ALLOWED_URL_PATTERN.test(url)
+  ) {
+    return { success: false, message: copy.links.validation.url };
+  }
+
+  return { success: true, url };
+}
+
+export function deriveLinkTitle(url: string) {
+  if (/^https?:\/\//i.test(url)) {
+    return new URL(url).hostname;
+  }
+
+  const protocolSeparator = url.indexOf(":");
+  return url.slice(protocolSeparator + 1);
 }
 
 export function validateLinkInput(formData: FormData): LinkValidationResult {
   const titleValue = formData.get("title");
   const urlValue = formData.get("url");
   const title = typeof titleValue === "string" ? titleValue.trim() : "";
-  const url = normalizeLinkUrl(
-    typeof urlValue === "string" ? urlValue : "",
-  );
+  const validatedUrl = validateLinkUrlValue(urlValue);
 
   if (title.length === 0 || title.length > LINK_TITLE_MAX_LENGTH) {
     return {
@@ -49,10 +77,7 @@ export function validateLinkInput(formData: FormData): LinkValidationResult {
   }
 
   if (
-    url.length === 0 ||
-    url.length > LINK_URL_MAX_LENGTH ||
-    CONTROL_OR_WHITESPACE_PATTERN.test(url) ||
-    !ALLOWED_URL_PATTERN.test(url)
+    !validatedUrl.success
   ) {
     return {
       success: false,
@@ -63,7 +88,7 @@ export function validateLinkInput(formData: FormData): LinkValidationResult {
   return {
     success: true,
     title,
-    url,
+    url: validatedUrl.url,
     isActive: formData.get("isActive") === "on",
   };
 }

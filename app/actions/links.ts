@@ -10,12 +10,15 @@ import type {
   LinkFormActionState,
   LinkItem,
   LinkMutationResult,
+  LinkPickerActionState,
   ReorderLinksResult,
 } from "@/lib/links/types";
 import {
+  deriveLinkTitle,
   isValidLinkIdList,
   parseLinkId,
   validateLinkInput,
+  validateLinkUrlValue,
 } from "@/lib/links/validation";
 import { createClient } from "@/lib/supabase/server";
 
@@ -96,6 +99,60 @@ export async function createLinkAction(
       title: input.title,
       url: input.url,
       is_active: input.isActive,
+    })
+    .select(LINK_SELECT)
+    .single();
+
+  if (error || !data) {
+    return { status: "error", message: copy.links.failure.create };
+  }
+
+  revalidatePath("/dashboard");
+
+  return {
+    status: "success",
+    message: copy.links.success.created,
+    link: data,
+  };
+}
+
+export async function createLinkFromUrlAction(
+  previousState: LinkPickerActionState,
+  formData: FormData,
+): Promise<LinkPickerActionState> {
+  void previousState;
+
+  const auth = await getAuthenticatedContext();
+
+  if (!auth.success) {
+    return { status: "error", message: auth.failure.message };
+  }
+
+  const validatedUrl = validateLinkUrlValue(formData.get("url"));
+
+  if (!validatedUrl.success) {
+    return { status: "error", message: copy.linkPicker.invalid };
+  }
+
+  let title: string;
+
+  try {
+    title = deriveLinkTitle(validatedUrl.url).trim().slice(0, 120);
+  } catch {
+    return { status: "error", message: copy.linkPicker.invalid };
+  }
+
+  if (title.length === 0) {
+    return { status: "error", message: copy.linkPicker.invalid };
+  }
+
+  const { data, error } = await auth.supabase
+    .from("links")
+    .insert({
+      user_id: auth.userId,
+      title,
+      url: validatedUrl.url,
+      is_active: true,
     })
     .select(LINK_SELECT)
     .single();

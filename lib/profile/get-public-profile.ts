@@ -5,6 +5,7 @@ import {
   normalizePublicUsername,
 } from "@/lib/profile/public-username";
 import { getPublicAvatarUrl } from "@/lib/profile/avatar-url";
+import type { SocialHandles } from "@/lib/profile/social";
 import { createClient } from "@/lib/supabase/server";
 
 export interface PublicProfileLink {
@@ -19,6 +20,7 @@ export interface PublicProfileData {
     username: string;
     bio: string | null;
     avatarUrl: string | null;
+    socialHandles: SocialHandles;
   };
   links: PublicProfileLink[];
 }
@@ -42,7 +44,9 @@ export async function getPublicProfile(
   const supabase = await createClient();
   const { data: profile, error: profileError } = await supabase
     .from("profiles")
-    .select("id, username, bio, avatar_path")
+    .select(
+      "id, username, bio, avatar_path, instagram_handle, tiktok_handle, youtube_handle",
+    )
     .eq("username", normalizedUsername)
     .eq("is_published", true)
     .maybeSingle();
@@ -76,6 +80,11 @@ export async function getPublicProfile(
         profile.id,
         profile.avatar_path,
       ),
+      socialHandles: {
+        instagram: profile.instagram_handle,
+        tiktok: profile.tiktok_handle,
+        youtube: profile.youtube_handle,
+      },
     },
     links,
   };

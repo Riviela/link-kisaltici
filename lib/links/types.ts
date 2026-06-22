@@ -57,3 +57,13 @@ export const initialLinkFormActionState: LinkFormActionState = {
   status: "idle",
   message: "",
 };
+
+export type LinkPickerActionState =
+  | { status: "idle"; message: "" }
+  | { status: "error"; message: string }
+  | { status: "success"; message: string; link: LinkItem };
+
+export const initialLinkPickerActionState: LinkPickerActionState = {
+  status: "idle",
+  message: "",
+};

@@ -20,6 +20,7 @@ export function PublicProfile({ data }: PublicProfileProps) {
           <ProfileHeader
             avatarUrl={data.profile.avatarUrl}
             bio={data.profile.bio}
+            socialHandles={data.profile.socialHandles}
             username={data.profile.username}
           />
 

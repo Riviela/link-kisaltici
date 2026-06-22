@@ -17,12 +17,6 @@ export const initialProfileActionState: ProfileActionState = {
   showUsernameFallback: false,
 };
 
-export interface ProfileVisibilityActionState {
-  status: "idle" | "success" | "error";
-  message: string;
-  isPublished: boolean;
-}
-
 export interface ProfileBioActionState {
   status: "idle" | "success" | "error";
   message: string;
