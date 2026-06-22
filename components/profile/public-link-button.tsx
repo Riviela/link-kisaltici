@@ -7,7 +7,7 @@ interface PublicLinkButtonProps {
 export function PublicLinkButton({ link }: PublicLinkButtonProps) {
   return (
     <a
-      className="public-link-button group flex items-center justify-between gap-4 border border-[var(--color-border)] bg-[var(--color-surface-raised)] px-5 py-4 font-bold text-[var(--color-text)] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[#d7d3ff]"
+      className="public-link-button group flex items-center justify-between gap-4 border border-[var(--color-border)] bg-[var(--color-surface-raised)] px-5 py-4 font-bold text-[var(--color-text)] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[var(--color-accent-soft)]"
       href={link.url}
     >
       <span className="min-w-0 break-words">{link.title}</span>

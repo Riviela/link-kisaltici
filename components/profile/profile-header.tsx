@@ -15,7 +15,7 @@ export function ProfileHeader({
     <header className="text-center">
       <div
         aria-hidden="true"
-        className="mx-auto grid size-24 place-items-center rounded-[2rem] bg-[var(--color-accent-soft)] text-3xl font-bold text-[var(--color-accent-strong)] ring-1 ring-[#d8d4ff]"
+        className="mx-auto grid size-24 place-items-center rounded-[2rem] bg-[var(--color-accent-soft)] text-3xl font-bold text-[var(--color-accent-strong)] ring-1 ring-[var(--color-accent)]"
       >
         {monogram}
       </div>

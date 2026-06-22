@@ -56,7 +56,7 @@ export default async function DashboardPage() {
   return (
     <main className="min-h-dvh bg-[var(--color-page)]">
       <div className="xl:grid xl:grid-cols-[5.25rem_minmax(0,1fr)]">
-        <nav className="hidden min-h-dvh border-r border-[var(--color-border)] bg-white xl:sticky xl:top-0 xl:flex xl:h-dvh xl:flex-col xl:items-center xl:py-7">
+        <nav className="hidden min-h-dvh border-r border-[var(--color-border)] bg-[var(--color-surface)] xl:sticky xl:top-0 xl:flex xl:h-dvh xl:flex-col xl:items-center xl:py-7">
           <a
             aria-current="page"
             className="mt-24 flex w-full flex-col items-center gap-2 border-r-2 border-[var(--color-accent)] py-3 text-[var(--color-accent-strong)]"
@@ -83,7 +83,7 @@ export default async function DashboardPage() {
         </nav>
 
         <div className="min-w-0">
-          <header className="flex items-center justify-between border-b border-[var(--color-border)] bg-white px-5 py-4 sm:px-8 lg:px-10">
+          <header className="flex items-center justify-between border-b border-[var(--color-border)] bg-[var(--color-surface)] px-5 py-4 sm:px-8 lg:px-10">
             <p className="font-extrabold tracking-[-0.025em] text-[var(--color-text)]">
               {copy.metadata.title}
             </p>

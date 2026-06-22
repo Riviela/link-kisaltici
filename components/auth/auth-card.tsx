@@ -22,7 +22,7 @@ export function AuthCard({
   children,
 }: AuthCardProps) {
   return (
-    <main className="grid min-h-dvh bg-white lg:grid-cols-[minmax(31rem,0.9fr)_minmax(34rem,1.1fr)]">
+    <main className="grid min-h-dvh bg-[var(--color-surface)] lg:grid-cols-[minmax(31rem,0.9fr)_minmax(34rem,1.1fr)]">
       <section className="flex min-h-dvh px-6 py-8 sm:px-10 lg:px-16 lg:py-12">
         <div className="mx-auto flex w-full max-w-md flex-col">
           <Link

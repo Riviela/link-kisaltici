@@ -29,7 +29,7 @@ export function ProfilePreview({
           </span>
         </div>
 
-        <div className="rounded-[2.5rem] border border-white bg-[#e8e9ef] p-3 shadow-[0_28px_70px_rgba(62,54,120,0.16)] ring-1 ring-[var(--color-border)]">
+        <div className="rounded-[2.5rem] border border-[var(--color-surface)] bg-[var(--color-page)] p-3 shadow-[0_28px_70px_rgba(62,54,120,0.16)] ring-1 ring-[var(--color-border)]">
           <div className="min-h-[38rem] rounded-[2rem] bg-[var(--color-surface)] px-5 pb-8 pt-10">
             <div className="text-center">
               <div className="mx-auto grid size-20 place-items-center rounded-[1.75rem] bg-[var(--color-accent-soft)] text-2xl font-bold text-[var(--color-accent-strong)]">

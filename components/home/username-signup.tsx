@@ -37,7 +37,7 @@ export function UsernameSignup() {
   return (
     <form className="mt-9 max-w-2xl" noValidate onSubmit={handleSubmit}>
       <div className="flex flex-col gap-3 sm:flex-row sm:items-stretch">
-        <label className="field-shell flex min-h-[3.25rem] min-w-0 flex-1 items-center rounded-[var(--radius-control)] border border-[var(--color-border)] bg-white pl-4 focus-within:border-[var(--color-accent)] focus-within:shadow-[0_0_0_4px_var(--color-accent-soft)]">
+        <label className="field-shell flex min-h-[3.25rem] min-w-0 flex-1 items-center rounded-[var(--radius-control)] border border-[var(--color-border)] bg-[var(--color-surface)] pl-4 focus-within:border-[var(--color-accent)] focus-within:shadow-[0_0_0_4px_var(--color-accent-soft)]">
           <span className="sr-only">{copy.home.signup.label}</span>
           <span
             aria-hidden="true"

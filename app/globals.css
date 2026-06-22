@@ -2,18 +2,27 @@
 
 :root {
   color-scheme: light;
-  --color-page: #f4f5f7;
+  --color-page: #f5f6f2;
   --color-surface: #ffffff;
-  --color-surface-raised: #fafafc;
-  --color-text: #17171c;
-  --color-muted: #6f7280;
-  --color-border: #e4e5ea;
-  --color-border-strong: #d3d5dd;
-  --color-accent: #6d5dfb;
-  --color-accent-strong: #5947ee;
-  --color-accent-soft: #eeecff;
+  --color-surface-raised: #fafaf7;
+  --color-surface-hover: #f0f1ec;
+  --color-surface-active: #e5e7df;
+  --color-text: #11131a;
+  --color-muted: #666a72;
+  --color-border: #e2e4dd;
+  --color-border-strong: #cdd0c7;
+  --color-lime: #c8ff1a;
+  --color-accent: #7067ff;
+  --color-accent-strong: #5148d8;
+  --color-accent-active: #4138bc;
+  --color-accent-soft: #e8e5ff;
+  --color-inactive: #a4a79e;
   --color-danger: #b4233f;
   --color-danger-soft: #fff0f3;
+  --color-danger-hover: #9d1f38;
+  --color-danger-active: #861a30;
+  --color-danger-border: #f3c5cf;
+  --color-danger-border-strong: #e9aebc;
   --color-success: #16794c;
   --color-success-soft: #ecf8f1;
   --color-landing-cta: #123c2a;
@@ -184,8 +193,8 @@ textarea:disabled,
 }
 
 .button-primary:not(:disabled):active {
-  background: #4b3bd7;
-  border-color: #4b3bd7;
+  background: var(--color-accent-active);
+  border-color: var(--color-accent-active);
 }
 
 .button-landing-signup {
@@ -214,14 +223,14 @@ textarea:disabled,
 
 .button-secondary:not(:disabled):hover,
 .button-quiet:not(.drag-handle):not(:disabled):hover {
-  background: #f1f1f5;
+  background: var(--color-surface-hover);
   border-color: var(--color-border-strong);
   color: var(--color-accent-strong);
 }
 
 .button-secondary:not(:disabled):active,
 .button-quiet:not(.drag-handle):not(:disabled):active {
-  background: #e8e9ee;
+  background: var(--color-surface-active);
   border-color: var(--color-border-strong);
   color: var(--color-accent-strong);
 }
@@ -233,13 +242,13 @@ textarea:disabled,
 }
 
 .button-danger:not(:disabled):hover {
-  background: #9d1f38;
-  border-color: #9d1f38;
+  background: var(--color-danger-hover);
+  border-color: var(--color-danger-hover);
 }
 
 .button-danger:not(:disabled):active {
-  background: #861a30;
-  border-color: #861a30;
+  background: var(--color-danger-active);
+  border-color: var(--color-danger-active);
 }
 
 .button-quiet {
@@ -250,23 +259,23 @@ textarea:disabled,
 
 .button-delete:not(:disabled):hover {
   background: var(--color-danger-soft);
-  border-color: #f3c5cf;
+  border-color: var(--color-danger-border);
   color: var(--color-danger);
 }
 
 .button-delete:not(:disabled):active {
-  background: #ffe0e7;
-  border-color: #e9aebc;
+  background: var(--color-danger-border);
+  border-color: var(--color-danger-border-strong);
   color: var(--color-danger);
 }
 
 .public-link-button:hover {
-  background: #f1f1f5;
+  background: var(--color-surface-hover);
   border-color: var(--color-border-strong);
 }
 
 .public-link-button:active {
-  background: #e8e9ee;
+  background: var(--color-surface-active);
   border-color: var(--color-border-strong);
 }
 
@@ -275,7 +284,7 @@ textarea:disabled,
 .button-danger:focus-visible,
 .button-quiet:focus-visible,
 a:focus-visible {
-  outline: 3px solid #c9c4ff;
+  outline: 3px solid var(--color-accent);
   outline-offset: 2px;
 }
 
@@ -319,12 +328,12 @@ a:focus-visible {
 
 .interactive-card:hover,
 .interactive-card:focus-within {
-  border-color: #c9c4ff;
+  border-color: var(--color-accent);
   box-shadow: var(--shadow-interactive);
 }
 
 .interactive-card[data-dragging="true"] {
-  border-color: #bbb4ff;
+  border-color: var(--color-accent);
   box-shadow: 0 22px 50px rgba(62, 54, 120, 0.18);
 }
 

@@ -45,7 +45,7 @@ export function LinkCard({
   if (isEditing) {
     return (
       <article
-        className="interactive-card rounded-[var(--radius-card)] border border-[#cbc6ff] bg-[#f7f6ff] p-5"
+        className="interactive-card rounded-[var(--radius-card)] border border-[var(--color-accent)] bg-[var(--color-accent-soft)] p-5"
         ref={setNodeRef}
         style={style}
       >
@@ -63,7 +63,7 @@ export function LinkCard({
 
   return (
     <article
-      className={`interactive-card rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-surface)] p-4 sm:p-5 ${isDragging ? "z-10 scale-[1.01] border-[#bbb4ff] shadow-[0_22px_50px_rgba(62,54,120,0.18)]" : "shadow-[0_8px_24px_rgba(62,54,120,0.05)]"}`}
+      className={`interactive-card rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-surface)] p-4 sm:p-5 ${isDragging ? "z-10 scale-[1.01] border-[var(--color-accent)] shadow-[0_22px_50px_rgba(62,54,120,0.18)]" : "shadow-[0_8px_24px_rgba(62,54,120,0.05)]"}`}
       data-dragging={isDragging ? "true" : undefined}
       ref={setNodeRef}
       style={style}
@@ -115,7 +115,7 @@ export function LinkCard({
                 }}
                 type="checkbox"
               />
-              <span className="toggle-track relative h-6 w-11 rounded-full bg-[#d9dbe2] after:absolute after:left-1 after:top-1 after:size-4 after:rounded-full after:bg-white after:shadow-sm peer-checked:bg-[var(--color-accent)] peer-checked:after:translate-x-5 peer-focus-visible:ring-4 peer-focus-visible:ring-[#d7d3ff] peer-disabled:opacity-45" />
+              <span className="toggle-track relative h-6 w-11 rounded-full bg-[var(--color-border-strong)] after:absolute after:left-1 after:top-1 after:size-4 after:rounded-full after:bg-[var(--color-surface)] after:shadow-sm peer-checked:bg-[var(--color-lime)] peer-checked:after:translate-x-5 peer-focus-visible:ring-4 peer-focus-visible:ring-[var(--color-accent-soft)] peer-disabled:opacity-45" />
               {link.is_active ? copy.links.active : copy.links.inactive}
             </label>
           </div>

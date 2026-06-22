@@ -29,7 +29,7 @@ export function ProfileVisibilityControl({
         <span className="flex items-center gap-2 text-sm font-bold text-[var(--color-text)]">
           <span
             aria-hidden="true"
-            className={`status-badge size-2.5 rounded-full ${state.isPublished ? "bg-[var(--color-accent)]" : "bg-[#a6a8b2]"}`}
+            className={`status-badge size-2.5 rounded-full ${state.isPublished ? "bg-[var(--color-lime)]" : "bg-[var(--color-inactive)]"}`}
           />
           {state.isPublished
             ? copy.profileVisibility.published
