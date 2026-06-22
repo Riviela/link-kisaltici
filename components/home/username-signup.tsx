@@ -10,6 +10,7 @@ import {
 import { PUBLIC_PROFILE_HOST } from "@/lib/config/site";
 import { copy } from "@/lib/copy";
 import { USERNAME_MAX_LENGTH } from "@/lib/profile/validation";
+import styles from "@/app/landing.module.css";
 
 export function UsernameSignup() {
   const router = useRouter();
@@ -37,11 +38,11 @@ export function UsernameSignup() {
   return (
     <form className="mt-9 max-w-2xl" noValidate onSubmit={handleSubmit}>
       <div className="flex flex-col gap-3 sm:flex-row sm:items-stretch">
-        <label className="field-shell flex min-h-[3.25rem] min-w-0 flex-1 items-center rounded-[var(--radius-control)] border border-[var(--color-border)] bg-[var(--color-surface)] pl-4 focus-within:border-[var(--color-accent)] focus-within:shadow-[0_0_0_4px_var(--color-accent-soft)]">
+        <label className={`${styles.usernameField} field-shell flex min-h-[3.25rem] min-w-0 flex-1 items-center rounded-[var(--radius-control)] border pl-4`}>
           <span className="sr-only">{copy.home.signup.label}</span>
           <span
             aria-hidden="true"
-            className="pointer-events-none shrink-0 select-none text-sm font-semibold text-[var(--color-muted)]"
+            className={`${styles.prefix} pointer-events-none shrink-0 select-none text-sm font-semibold`}
           >
             {PUBLIC_PROFILE_HOST}/
           </span>
@@ -50,7 +51,7 @@ export function UsernameSignup() {
             aria-invalid={error ? true : undefined}
             autoCapitalize="none"
             autoComplete="username"
-            className="min-w-0 flex-1 bg-transparent px-1 py-3 pr-4 text-sm font-semibold text-[var(--color-text)] outline-none"
+            className={`${styles.usernameInput} min-w-0 flex-1 bg-transparent px-1 py-3 pr-4 text-sm font-semibold outline-none`}
             maxLength={USERNAME_MAX_LENGTH}
             onChange={(event) => {
               setUsername(normalizeUsernameInput(event.target.value));
@@ -64,7 +65,7 @@ export function UsernameSignup() {
         </label>
 
         <button
-          className="button-landing-signup button-primary shrink-0 px-7 py-3.5"
+          className={`${styles.focusable} button-landing-signup button-primary shrink-0 px-7 py-3.5`}
           type="submit"
         >
           {copy.home.signup.cta}

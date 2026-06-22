@@ -1,0 +1,90 @@
+.page {
+  --landing-lime: #c8ff1a;
+  --landing-ink: #123c2a;
+  --landing-ink-hover: #0f3323;
+  --landing-ink-active: #0c291d;
+  --landing-muted: #426451;
+  --landing-border: rgba(18, 60, 42, 0.22);
+  background: var(--landing-lime);
+  color: var(--landing-ink);
+}
+
+.header {
+  overflow: hidden;
+  border-color: var(--landing-border);
+  border-radius: 35px;
+  background: #ffffff;
+  box-shadow: 0 10px 30px rgba(18, 60, 42, 0.08);
+}
+
+.headerText,
+.heading,
+.eyebrow {
+  color: var(--landing-ink);
+}
+
+.description,
+.prefix {
+  color: var(--landing-muted);
+}
+
+.page .headerLink:hover {
+  border-color: var(--landing-border);
+  background: #eef4ed;
+  color: var(--landing-ink-hover);
+}
+
+.page .headerLink:active {
+  border-color: var(--landing-border);
+  background: #e2ebe1;
+  color: var(--landing-ink-active);
+}
+
+.page .focusable:focus-visible {
+  outline-color: var(--landing-ink);
+}
+
+.usernameField {
+  border-color: var(--landing-border);
+  background: #ffffff;
+}
+
+.page .usernameField:focus-within {
+  border-color: var(--landing-ink);
+  box-shadow: 0 0 0 4px rgba(18, 60, 42, 0.18);
+}
+
+.usernameInput {
+  color: var(--landing-ink);
+}
+
+.visualSquare {
+  background: rgba(18, 60, 42, 0.14);
+}
+
+.visualCircle {
+  background: rgba(255, 255, 255, 0.62);
+}
+
+.profileCard {
+  border-color: rgba(18, 60, 42, 0.16);
+  background: #ffffff;
+  box-shadow: 0 35px 90px rgba(18, 60, 42, 0.18);
+}
+
+.avatarPlaceholder {
+  background: var(--landing-lime);
+  color: var(--landing-ink);
+}
+
+.profileTitle {
+  background: var(--landing-ink);
+}
+
+.profileSubtitle {
+  background: #a9bcae;
+}
+
+.profileLink {
+  background: #eef4ed;
+}
