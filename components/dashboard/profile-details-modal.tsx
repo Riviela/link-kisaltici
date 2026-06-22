@@ -39,9 +39,7 @@ export function ProfileDetailsModal({
     updateProfileBioAction,
     initialState,
   );
-  const [phase, setPhase] = useState<"mounting" | "open" | "closing">(
-    "mounting",
-  );
+  const [phase, setPhase] = useState<"open" | "closing">("open");
   const hasClosedRef = useRef(false);
   const completeCloseModal = useCallback(() => {
     if (hasClosedRef.current) return;
@@ -54,26 +52,9 @@ export function ProfileDetailsModal({
   }, [isPending]);
 
   useEffect(() => {
-    if (phase !== "mounting") return;
-
-    let openFrameId = 0;
-    const completeOpen = () => setPhase("open");
-    const mountFrameId = requestAnimationFrame(() => {
-      openFrameId = requestAnimationFrame(completeOpen);
-    });
-    const timeoutId = window.setTimeout(completeOpen, 80);
-
-    return () => {
-      cancelAnimationFrame(mountFrameId);
-      cancelAnimationFrame(openFrameId);
-      window.clearTimeout(timeoutId);
-    };
-  }, [phase]);
-
-  useEffect(() => {
     if (phase !== "closing") return;
 
-    const timeoutId = window.setTimeout(completeCloseModal, 240);
+    const timeoutId = window.setTimeout(completeCloseModal, 280);
     return () => window.clearTimeout(timeoutId);
   }, [completeCloseModal, phase]);
 
@@ -100,13 +81,12 @@ export function ProfileDetailsModal({
   return (
     <div
       aria-hidden={phase === "closing" ? true : undefined}
-      className={`${styles.modalOverlay} ${phase === "open" ? styles.modalOverlayOpen : ""} ${phase === "closing" ? styles.modalOverlayClosing : ""} fixed inset-0 z-50 grid place-items-center bg-[rgba(17,19,26,0.36)] p-4`}
+      className={`${styles.modalOverlay} ${phase === "closing" ? styles.modalOverlayClosing : ""} fixed inset-0 z-50 grid place-items-center bg-[rgba(17,19,26,0.36)] p-4`}
       data-phase={phase}
-      onTransitionEnd={(event) => {
+      onAnimationEnd={(event) => {
         if (
           phase === "closing" &&
-          event.target === event.currentTarget &&
-          event.propertyName === "opacity"
+          event.target === event.currentTarget
         ) {
           completeCloseModal();
         }
@@ -118,7 +98,7 @@ export function ProfileDetailsModal({
       <section
         aria-labelledby="profileDetailsTitle"
         aria-modal="true"
-        className={`${styles.modalSurface} ${phase === "open" ? styles.modalSurfaceOpen : ""} ${phase === "closing" ? styles.modalSurfaceClosing : ""} w-full max-w-lg rounded-[var(--radius-panel)] border border-[var(--color-border)] bg-[var(--color-surface)] p-6 shadow-[var(--shadow-panel)] sm:p-8`}
+        className={`${styles.modalSurface} ${phase === "closing" ? styles.modalSurfaceClosing : ""} w-full max-w-lg rounded-[var(--radius-panel)] border border-[var(--color-border)] bg-[var(--color-surface)] p-6 shadow-[var(--shadow-panel)] sm:p-8`}
         role="dialog"
       >
         <h2
