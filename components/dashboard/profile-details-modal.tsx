@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState, useEffect } from "react";
+import { useActionState, useCallback, useEffect, useState } from "react";
 
 import { updateProfileBioAction } from "@/app/actions/profile";
 import { copy } from "@/lib/copy";
@@ -8,6 +8,8 @@ import {
   BIO_MAX_LENGTH,
   type ProfileBioActionState,
 } from "@/lib/profile/validation";
+
+import styles from "./dashboard-interactions.module.css";
 
 interface ProfileDetailsModalProps {
   bio: string | null;
@@ -31,33 +33,46 @@ export function ProfileDetailsModal({
     updateProfileBioAction,
     initialState,
   );
+  const [isClosing, setIsClosing] = useState(false);
+  const requestCloseModal = useCallback(() => {
+    if (!isPending) setIsClosing(true);
+  }, [isPending]);
 
   useEffect(() => {
     function handleKeyDown(event: KeyboardEvent) {
-      if (event.key === "Escape" && !isPending) onClose();
+      if (event.key === "Escape") requestCloseModal();
     }
 
     document.addEventListener("keydown", handleKeyDown);
     return () => document.removeEventListener("keydown", handleKeyDown);
-  }, [isPending, onClose]);
+  }, [requestCloseModal]);
 
   useEffect(() => {
-    if (state.status === "success") {
+    if (state.status !== "success" || isClosing) return;
+
+    const frameId = requestAnimationFrame(() => {
       onSaved(state.bio);
-    }
-  }, [onSaved, state.bio, state.status]);
+      requestCloseModal();
+    });
+
+    return () => cancelAnimationFrame(frameId);
+  }, [isClosing, onSaved, requestCloseModal, state.bio, state.status]);
 
   return (
     <div
-      className="fixed inset-0 z-50 grid place-items-center bg-[rgba(17,19,26,0.36)] p-4"
+      aria-hidden={isClosing ? true : undefined}
+      className={`${styles.modalOverlay} ${isClosing ? styles.modalOverlayClosing : ""} fixed inset-0 z-50 grid place-items-center bg-[rgba(17,19,26,0.36)] p-4`}
+      onAnimationEnd={(event) => {
+        if (isClosing && event.target === event.currentTarget) onClose();
+      }}
       onMouseDown={(event) => {
-        if (event.target === event.currentTarget && !isPending) onClose();
+        if (event.target === event.currentTarget) requestCloseModal();
       }}
     >
       <section
         aria-labelledby="profileDetailsTitle"
         aria-modal="true"
-        className="w-full max-w-lg rounded-[var(--radius-panel)] border border-[var(--color-border)] bg-[var(--color-surface)] p-6 shadow-[var(--shadow-panel)] sm:p-8"
+        className={`${styles.modalSurface} ${isClosing ? styles.modalSurfaceClosing : ""} w-full max-w-lg rounded-[var(--radius-panel)] border border-[var(--color-border)] bg-[var(--color-surface)] p-6 shadow-[var(--shadow-panel)] sm:p-8`}
         role="dialog"
       >
         <h2
@@ -115,7 +130,7 @@ export function ProfileDetailsModal({
             <button
               className="button-secondary px-5"
               disabled={isPending}
-              onClick={onClose}
+              onClick={requestCloseModal}
               type="button"
             >
               {copy.profileDetails.cancel}

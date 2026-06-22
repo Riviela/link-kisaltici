@@ -6,6 +6,8 @@ import { ProfileDetailsModal } from "@/components/dashboard/profile-details-moda
 import { ProfileVisibilityControl } from "@/components/dashboard/profile-visibility-control";
 import { ProfileAvatar } from "@/components/profile/profile-avatar";
 
+import styles from "./dashboard-interactions.module.css";
+
 interface DashboardProfileHeaderProps {
   avatarUrl: string | null;
   bio: string | null;
@@ -30,11 +32,11 @@ export function DashboardProfileHeader({
         <div className="flex min-w-0 items-center gap-4">
           <ProfileAvatar
             avatarUrl={avatarUrl}
-            className="size-14 rounded-[1.15rem]"
+            className="size-14"
           />
           <div className="min-w-0">
             <button
-              className="button-quiet min-h-0 max-w-full border-0 p-0 text-left text-2xl font-bold tracking-[-0.035em] text-[var(--color-text)] hover:text-[var(--color-accent-strong)]"
+              className={`${styles.usernameButton} max-w-full text-2xl font-bold tracking-[-0.035em]`}
               onClick={() => setIsModalOpen(true)}
               type="button"
             >
@@ -54,12 +56,8 @@ export function DashboardProfileHeader({
       {isModalOpen ? (
         <ProfileDetailsModal
           bio={bio}
-          key={bio ?? "empty-bio"}
           onClose={closeModal}
-          onSaved={(savedBio) => {
-            onBioSaved(savedBio);
-            closeModal();
-          }}
+          onSaved={onBioSaved}
           username={username}
         />
       ) : null}

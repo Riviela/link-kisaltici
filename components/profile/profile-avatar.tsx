@@ -8,24 +8,31 @@ interface ProfileAvatarProps {
 }
 
 const subscribeToHydration = () => () => {};
+const DEFAULT_AVATAR_URL = "/default-profile-avatar.svg";
 
 export function ProfileAvatar({
   avatarUrl,
-  className = "size-20 rounded-[1.75rem]",
+  className = "size-20",
 }: ProfileAvatarProps) {
   const isHydrated = useSyncExternalStore(
     subscribeToHydration,
     () => true,
     () => false,
   );
-  const [failedUrl, setFailedUrl] = useState<string | null>(null);
-  const imageUrl =
-    isHydrated && avatarUrl && failedUrl !== avatarUrl ? avatarUrl : null;
+  const [failedUrls, setFailedUrls] = useState<string[]>([]);
+  const preferredImageUrl =
+    avatarUrl && !failedUrls.includes(avatarUrl)
+      ? avatarUrl
+      : !failedUrls.includes(DEFAULT_AVATAR_URL)
+        ? DEFAULT_AVATAR_URL
+        : null;
+  const imageUrl = isHydrated ? preferredImageUrl : null;
 
   return (
     <div
       aria-hidden="true"
       className={`${className} relative grid shrink-0 place-items-center overflow-hidden bg-[var(--color-surface-raised)] text-[var(--color-muted)] ring-1 ring-[var(--color-border)]`}
+      style={{ borderRadius: "50%" }}
     >
       {imageUrl ? (
         // Storage paths are constrained to the public avatars bucket.
@@ -33,7 +40,11 @@ export function ProfileAvatar({
         <img
           alt=""
           className="absolute inset-0 size-full object-cover"
-          onError={() => setFailedUrl(imageUrl)}
+          onError={() =>
+            setFailedUrls((current) =>
+              current.includes(imageUrl) ? current : [...current, imageUrl],
+            )
+          }
           src={imageUrl}
         />
       ) : (
