@@ -98,7 +98,7 @@ export function ProfilePreview({
 }: ProfilePreviewProps) {
   const activeLinks = links.filter((link) => link.is_active);
   const [shareState, setShareState] = useState<
-    "closed" | "open" | "closing"
+    "closed" | "mounting" | "open" | "closing"
   >("closed");
   const [copyStatus, setCopyStatus] = useState<"idle" | "copied" | "error">(
     "idle",
@@ -111,6 +111,35 @@ export function ProfilePreview({
       current === "closed" ? current : "closing",
     );
   }, []);
+  const completeCloseShare = useCallback(() => setShareState("closed"), []);
+
+  useEffect(() => {
+    if (shareState !== "mounting") return;
+
+    let openFrameId = 0;
+    const completeOpen = () => {
+      setShareState((current) =>
+        current === "mounting" ? "open" : current,
+      );
+    };
+    const mountFrameId = requestAnimationFrame(() => {
+      openFrameId = requestAnimationFrame(completeOpen);
+    });
+    const timeoutId = window.setTimeout(completeOpen, 80);
+
+    return () => {
+      cancelAnimationFrame(mountFrameId);
+      cancelAnimationFrame(openFrameId);
+      window.clearTimeout(timeoutId);
+    };
+  }, [shareState]);
+
+  useEffect(() => {
+    if (shareState !== "closing") return;
+
+    const timeoutId = window.setTimeout(completeCloseShare, 240);
+    return () => window.clearTimeout(timeoutId);
+  }, [completeCloseShare, shareState]);
 
   useEffect(() => {
     if (shareState === "closed") return;
@@ -178,16 +207,18 @@ export function ProfilePreview({
 
         <div className="relative mb-4" ref={shareContainerRef}>
           <button
-            aria-expanded={shareState === "open"}
+            aria-expanded={
+              shareState === "mounting" || shareState === "open"
+            }
             className={`${styles.previewUrlButton} w-full select-none gap-3 px-4 py-3 text-sm`}
             onClick={() => {
               if (shareState === "closing") return;
 
               setCopyStatus("idle");
-              if (shareState === "open") {
-                requestCloseShare();
+              if (shareState === "closed") {
+                setShareState("mounting");
               } else {
-                setShareState("open");
+                requestCloseShare();
               }
             }}
             type="button"
@@ -213,13 +244,15 @@ export function ProfilePreview({
 
           {shareState !== "closed" ? (
             <section
-              className={`${styles.sharePanel} ${shareState === "closing" ? styles.sharePanelClosing : ""} absolute inset-x-0 top-full z-20 mt-2 rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-surface)]`}
-              onAnimationEnd={(event) => {
+              className={`${styles.sharePanel} ${shareState === "open" ? styles.sharePanelOpen : ""} ${shareState === "closing" ? styles.sharePanelClosing : ""} absolute inset-x-0 top-full z-20 mt-2 rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-surface)]`}
+              data-phase={shareState}
+              onTransitionEnd={(event) => {
                 if (
                   shareState === "closing" &&
-                  event.target === event.currentTarget
+                  event.target === event.currentTarget &&
+                  event.propertyName === "opacity"
                 ) {
-                  setShareState("closed");
+                  completeCloseShare();
                 }
               }}
             >

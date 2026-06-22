@@ -36,7 +36,7 @@ export function DashboardProfileHeader({
           />
           <div className="min-w-0">
             <button
-              className={`${styles.usernameButton} max-w-full text-2xl font-bold tracking-[-0.035em]`}
+              className={`${styles.usernameButton} max-w-full`}
               onClick={() => setIsModalOpen(true)}
               type="button"
             >
