@@ -2,7 +2,6 @@ import { redirect } from "next/navigation";
 
 import { logoutAction } from "@/app/actions/auth";
 import { LinkManager } from "@/components/dashboard/link-manager";
-import { ProfileVisibilityControl } from "@/components/dashboard/profile-visibility-control";
 import { copy } from "@/lib/copy";
 import {
   getCurrentLinks,
@@ -97,38 +96,14 @@ export default async function DashboardPage() {
             </form>
           </header>
 
-          <div className="mx-auto max-w-[91rem] px-4 py-5 sm:px-7 sm:py-8 lg:px-9">
-            <section className="surface-panel mb-7 p-6 sm:p-8">
-              <div className="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
-                <div className="flex min-w-0 items-center gap-4">
-                  <div className="grid size-14 shrink-0 place-items-center rounded-[1.15rem] bg-[var(--color-accent-soft)] text-lg font-bold text-[var(--color-accent-strong)]">
-                    {current.profile.display_name.trim().charAt(0).toUpperCase()}
-                  </div>
-                  <div className="min-w-0">
-                    <p className="text-xs font-bold text-[var(--color-accent-strong)]">
-                      {copy.dashboard.eyebrow}
-                    </p>
-                    <h1 className="mt-1 truncate text-2xl font-bold tracking-[-0.035em] text-[var(--color-text)] sm:text-3xl">
-                      {copy.dashboard.titlePrefix}, {current.profile.display_name}
-                    </h1>
-                    <p className="mt-1 text-sm font-semibold text-[var(--color-muted)]">
-                      @{current.profile.username}
-                    </p>
-                  </div>
-                </div>
-
-                <ProfileVisibilityControl
-                  initialIsPublished={current.profile.is_published}
-                />
-              </div>
-            </section>
-
+          <div className="mx-auto max-w-[100rem] px-4 py-5 sm:px-7 sm:py-8 lg:px-9">
             <div id="content">
               <LinkManager
                 initialLinks={initialLinks}
                 profile={{
+                  avatarUrl: current.profile.avatarUrl,
                   bio: current.profile.bio,
-                  displayName: current.profile.display_name,
+                  isPublished: current.profile.is_published,
                   username: current.profile.username,
                 }}
               />

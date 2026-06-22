@@ -19,9 +19,11 @@ import {
 } from "@/lib/profile/get-pending-username";
 import {
   type ProfileActionState,
+  type ProfileBioActionState,
   type ProfileVisibilityActionState,
   type ProfileDetailsValidationResult,
   validateProfileDetails,
+  validateProfileBio,
   validateProfileUsername,
 } from "@/lib/profile/validation";
 import { createClient } from "@/lib/supabase/server";
@@ -124,7 +126,6 @@ async function insertProfile(
   return supabase.from("profiles").insert({
     id: userId,
     username,
-    display_name: details.displayName,
     bio: details.bio,
   });
 }
@@ -328,5 +329,57 @@ export async function updateProfileVisibilityAction(
       ? copy.profileVisibility.success.published
       : copy.profileVisibility.success.private,
     isPublished: profile.is_published,
+  };
+}
+
+export async function updateProfileBioAction(
+  previousState: ProfileBioActionState,
+  formData: FormData,
+): Promise<ProfileBioActionState> {
+  const validatedBio = validateProfileBio(formData.get("bio"));
+
+  if (!validatedBio.success) {
+    return {
+      status: "error",
+      message: validatedBio.message,
+      bio: previousState.bio,
+    };
+  }
+
+  const supabase = await createClient();
+  const { data: claimsData, error: claimsError } =
+    await supabase.auth.getClaims();
+  const userId = claimsData?.claims?.sub;
+
+  if (claimsError || typeof userId !== "string" || userId.length === 0) {
+    return {
+      status: "error",
+      message: copy.profileDetails.failure.authentication,
+      bio: previousState.bio,
+    };
+  }
+
+  const { data: profile, error } = await supabase
+    .from("profiles")
+    .update({ bio: validatedBio.bio })
+    .eq("id", userId)
+    .select("username, bio")
+    .maybeSingle();
+
+  if (error || !profile) {
+    return {
+      status: "error",
+      message: copy.profileDetails.failure.update,
+      bio: previousState.bio,
+    };
+  }
+
+  revalidatePath("/dashboard");
+  revalidatePath(`/${profile.username}`);
+
+  return {
+    status: "success",
+    message: copy.profileDetails.success,
+    bio: profile.bio,
   };
 }

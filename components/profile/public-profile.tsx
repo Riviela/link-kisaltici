@@ -18,8 +18,8 @@ export function PublicProfile({ data }: PublicProfileProps) {
       <article className="relative mx-auto min-h-dvh w-full bg-[var(--color-surface)] px-5 pb-14 pt-12 sm:min-h-[calc(100dvh-5rem)] sm:max-w-[32rem] sm:rounded-[2.75rem] sm:border sm:border-[var(--color-surface)] sm:px-8 sm:pt-14 sm:shadow-[0_30px_90px_rgba(40,38,66,0.18)] sm:ring-1 sm:ring-[var(--color-border)]">
         <div className="mx-auto max-w-md">
           <ProfileHeader
+            avatarUrl={data.profile.avatarUrl}
             bio={data.profile.bio}
-            displayName={data.profile.displayName}
             username={data.profile.username}
           />
 

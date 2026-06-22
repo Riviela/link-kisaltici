@@ -76,7 +76,7 @@ export function SortableLinkList({
         items={links.map((link) => link.id)}
         strategy={verticalListSortingStrategy}
       >
-        <div className="space-y-3">
+        <div className="space-y-3 overflow-x-clip">
           {links.map((link) => (
             <LinkCard
               disabled={disabled}

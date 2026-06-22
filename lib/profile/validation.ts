@@ -2,7 +2,6 @@ import { copy } from "@/lib/copy";
 
 export const USERNAME_MIN_LENGTH = 3;
 export const USERNAME_MAX_LENGTH = 30;
-export const DISPLAY_NAME_MAX_LENGTH = 80;
 export const BIO_MAX_LENGTH = 280;
 export const USERNAME_PATTERN = /^[a-z0-9][a-z0-9_]{2,29}$/;
 
@@ -24,9 +23,14 @@ export interface ProfileVisibilityActionState {
   isPublished: boolean;
 }
 
+export interface ProfileBioActionState {
+  status: "idle" | "success" | "error";
+  message: string;
+  bio: string | null;
+}
+
 interface ValidProfileDetails {
   success: true;
-  displayName: string;
   bio: string | null;
 }
 
@@ -42,22 +46,15 @@ export type ProfileDetailsValidationResult =
 export function validateProfileDetails(
   formData: FormData,
 ): ProfileDetailsValidationResult {
-  const displayNameValue = formData.get("displayName");
   const bioValue = formData.get("bio");
 
-  const displayName =
-    typeof displayNameValue === "string" ? displayNameValue.trim() : "";
-  const normalizedBio = typeof bioValue === "string" ? bioValue.trim() : "";
+  return validateProfileBio(bioValue);
+}
 
-  if (
-    displayName.length === 0 ||
-    displayName.length > DISPLAY_NAME_MAX_LENGTH
-  ) {
-    return {
-      success: false,
-      message: copy.onboarding.validation.displayName,
-    };
-  }
+export function validateProfileBio(
+  value: FormDataEntryValue | null,
+): ProfileDetailsValidationResult {
+  const normalizedBio = typeof value === "string" ? value.trim() : "";
 
   if (normalizedBio.length > BIO_MAX_LENGTH) {
     return {
@@ -68,7 +65,6 @@ export function validateProfileDetails(
 
   return {
     success: true,
-    displayName,
     bio: normalizedBio.length > 0 ? normalizedBio : null,
   };
 }

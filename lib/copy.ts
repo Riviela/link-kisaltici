@@ -102,8 +102,6 @@ export const copy = {
     usernamePreview: "yourdomain.com/yourname",
     profileUrlLabel: "Your profile URL",
     profileUrlHint: "This is the address you selected during registration.",
-    displayNameLabel: "Display name",
-    displayNamePlaceholder: "Your name",
     bioLabel: "Bio",
     bioOptional: "Optional",
     bioPlaceholder: "A short introduction about you.",
@@ -112,8 +110,6 @@ export const copy = {
     validation: {
       username:
         "Use 3-30 lowercase letters, numbers, or underscores, starting with a letter or number.",
-      displayName:
-        "Display name is required and must be 80 characters or fewer.",
       bio: "Bio must be 280 characters or fewer.",
     },
     failure: {
@@ -125,11 +121,31 @@ export const copy = {
     },
   },
   dashboard: {
-    eyebrow: "Dashboard",
-    titlePrefix: "Welcome",
     content: "Content",
     preview: "Live preview",
     logout: "Log out",
+  },
+  profileDetails: {
+    title: "Profile details",
+    description: "Add a short line to introduce yourself.",
+    usernameLabel: "Username",
+    bioLabel: "Bio",
+    cancel: "Cancel",
+    save: "Save changes",
+    saving: "Saving...",
+    success: "Your profile details were updated.",
+    failure: {
+      authentication: "Your session has expired. Please log in again.",
+      update: "We could not update your profile. Please try again.",
+    },
+  },
+  share: {
+    title: "Share",
+    copy: "Copy",
+    copied: "Copied",
+    copyFailed: "Could not copy the link.",
+    close: "Close share panel",
+    placeholders: ["Canvas Links", "Cards", "QR code", "Instagram", "TikTok"],
   },
   profileVisibility: {
     published: "Published",

@@ -1,12 +1,13 @@
 import "server-only";
 
+import { getPublicAvatarUrl } from "@/lib/profile/avatar-url";
 import { createClient } from "@/lib/supabase/server";
 
 export interface CurrentProfile {
   id: string;
   username: string;
-  display_name: string;
   bio: string | null;
+  avatarUrl: string | null;
   is_published: boolean;
 }
 
@@ -41,7 +42,7 @@ export async function getCurrentProfile(): Promise<CurrentProfileResult> {
 
   const { data: profile, error: profileError } = await supabase
     .from("profiles")
-    .select("id, username, display_name, bio, is_published")
+    .select("id, username, bio, avatar_path, is_published")
     .eq("id", userId)
     .maybeSingle();
 
@@ -51,6 +52,18 @@ export async function getCurrentProfile(): Promise<CurrentProfileResult> {
 
   return {
     userId,
-    profile,
+    profile: profile
+      ? {
+          id: profile.id,
+          username: profile.username,
+          bio: profile.bio,
+          avatarUrl: getPublicAvatarUrl(
+            supabase,
+            profile.id,
+            profile.avatar_path,
+          ),
+          is_published: profile.is_published,
+        }
+      : null,
   };
 }

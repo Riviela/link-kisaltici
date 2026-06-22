@@ -8,13 +8,10 @@ import { PUBLIC_PROFILE_HOST } from "@/lib/config/site";
 import { copy } from "@/lib/copy";
 import {
   BIO_MAX_LENGTH,
-  DISPLAY_NAME_MAX_LENGTH,
   initialProfileActionState,
   USERNAME_MAX_LENGTH,
   USERNAME_MIN_LENGTH,
 } from "@/lib/profile/validation";
-
-const DISPLAY_NAME_PATTERN = String.raw`.*\S.*`;
 
 interface ProfileFormProps {
   pendingUsername: string | null;
@@ -85,26 +82,6 @@ export function ProfileForm({ pendingUsername }: ProfileFormProps) {
           </p>
         </div>
       ) : null}
-
-      <div className="space-y-2">
-        <label
-          className="text-sm font-semibold text-[var(--color-text)]"
-          htmlFor="displayName"
-        >
-          {copy.onboarding.displayNameLabel}
-        </label>
-        <input
-          autoComplete="name"
-          className="field-control"
-          id="displayName"
-          maxLength={DISPLAY_NAME_MAX_LENGTH}
-          name="displayName"
-          pattern={DISPLAY_NAME_PATTERN}
-          placeholder={copy.onboarding.displayNamePlaceholder}
-          required
-          type="text"
-        />
-      </div>
 
       <div className="space-y-2">
         <div className="flex items-center justify-between gap-4">

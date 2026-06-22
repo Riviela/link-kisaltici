@@ -8,6 +8,8 @@ import { LinkForm } from "@/components/dashboard/link-form";
 import { copy } from "@/lib/copy";
 import type { LinkItem } from "@/lib/links/types";
 
+import styles from "./dashboard-interactions.module.css";
+
 interface LinkCardProps {
   link: LinkItem;
   disabled: boolean;
@@ -39,7 +41,9 @@ export function LinkCard({
   } = useSortable({ id: link.id, disabled });
 
   const style = {
-    transform: CSS.Transform.toString(transform),
+    transform: CSS.Transform.toString(
+      transform ? { ...transform, x: 0 } : null,
+    ),
   };
 
   if (isEditing) {
@@ -115,7 +119,7 @@ export function LinkCard({
                 }}
                 type="checkbox"
               />
-              <span className="toggle-track relative h-6 w-11 rounded-full bg-[var(--color-border-strong)] after:absolute after:left-1 after:top-1 after:size-4 after:rounded-full after:bg-[var(--color-surface)] after:shadow-sm peer-checked:bg-[var(--color-lime)] peer-checked:after:translate-x-5 peer-focus-visible:ring-4 peer-focus-visible:ring-[var(--color-accent-soft)] peer-disabled:opacity-45" />
+              <span className={`${styles.toggleTrack} toggle-track relative h-6 w-11 rounded-full bg-[var(--color-border-strong)] after:absolute after:left-1 after:top-1 after:size-4 after:rounded-full after:bg-[var(--color-surface)] peer-checked:bg-[#22C55E] peer-checked:after:translate-x-5 peer-focus-visible:ring-4 peer-focus-visible:ring-[var(--color-accent-soft)] peer-disabled:opacity-45`} />
               {link.is_active ? copy.links.active : copy.links.inactive}
             </label>
           </div>

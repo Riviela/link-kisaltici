@@ -1,0 +1,11 @@
+.toggleTrack.toggleTrack {
+  transition-duration: 200ms;
+  transition-property: background-color;
+  transition-timing-function: var(--motion-ease-standard);
+}
+
+.toggleTrack.toggleTrack::after {
+  transition-duration: 200ms;
+  transition-property: background-color;
+  transition-timing-function: var(--motion-ease-standard);
+}

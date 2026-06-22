@@ -10,6 +10,7 @@ import {
   reorderLinksAction,
   toggleLinkAction,
 } from "@/app/actions/links";
+import { DashboardProfileHeader } from "@/components/dashboard/dashboard-profile-header";
 import { LinkForm } from "@/components/dashboard/link-form";
 import { ProfilePreview } from "@/components/dashboard/profile-preview";
 import { SortableLinkList } from "@/components/dashboard/sortable-link-list";
@@ -19,9 +20,10 @@ import type { LinkItem } from "@/lib/links/types";
 interface LinkManagerProps {
   initialLinks: LinkItem[];
   profile: {
-    displayName: string;
+    avatarUrl: string | null;
     username: string;
     bio: string | null;
+    isPublished: boolean;
   };
 }
 
@@ -57,6 +59,7 @@ export function LinkManager({ initialLinks, profile }: LinkManagerProps) {
   const [isMutating, setIsMutating] = useState(false);
   const [isReordering, setIsReordering] = useState(false);
   const [feedback, setFeedback] = useState<FeedbackMessage | null>(null);
+  const [profileBio, setProfileBio] = useState(profile.bio);
   const isBusy = isMutating || isReordering;
   const [reconciliationState, setReconciliationState] =
     useState<ReconciliationState>({
@@ -247,8 +250,16 @@ export function LinkManager({ initialLinks, profile }: LinkManagerProps) {
   }, [feedback, isReordering]);
 
   return (
-    <section className="grid items-start gap-8 xl:grid-cols-[minmax(0,1fr)_22rem]">
-      <div className="min-w-0 space-y-6">
+    <section className="grid gap-8 xl:grid-cols-[minmax(0,3fr)_minmax(18rem,1fr)] xl:gap-0">
+      <div className="min-w-0 space-y-6 xl:pr-8">
+        <DashboardProfileHeader
+          avatarUrl={profile.avatarUrl}
+          bio={profileBio}
+          isPublished={profile.isPublished}
+          onBioSaved={setProfileBio}
+          username={profile.username}
+        />
+
         <div className="surface-panel p-5 sm:p-7">
           <div className="flex items-center justify-between gap-4">
             <div>
@@ -315,8 +326,8 @@ export function LinkManager({ initialLinks, profile }: LinkManagerProps) {
       </div>
 
       <ProfilePreview
-        bio={profile.bio}
-        displayName={profile.displayName}
+        avatarUrl={profile.avatarUrl}
+        bio={profileBio}
         links={links}
         username={profile.username}
       />
