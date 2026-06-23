@@ -173,8 +173,7 @@ textarea:disabled,
 .button-primary,
 .button-secondary,
 .button-danger,
-.button-quiet,
-.public-link-button {
+.button-quiet {
   border-radius: 30px;
   transition-duration: 220ms;
   transition-property: background-color, border-color, color;
@@ -267,16 +266,6 @@ textarea:disabled,
   background: var(--color-danger-border);
   border-color: var(--color-danger-border-strong);
   color: var(--color-danger);
-}
-
-.public-link-button:hover {
-  background: var(--color-surface-hover);
-  border-color: var(--color-border-strong);
-}
-
-.public-link-button:active {
-  background: var(--color-surface-active);
-  border-color: var(--color-border-strong);
 }
 
 .button-primary:focus-visible,
@@ -377,17 +366,6 @@ a:focus-visible {
     border-color var(--motion-duration-base) var(--motion-ease-standard),
     box-shadow var(--motion-duration-base) var(--motion-ease-standard),
     color var(--motion-duration-fast) var(--motion-ease-standard);
-}
-
-.public-link-button {
-  min-height: 4rem;
-}
-
-.preview-item {
-  transition:
-    background-color var(--motion-duration-fast) var(--motion-ease-standard),
-    border-color var(--motion-duration-fast) var(--motion-ease-standard),
-    opacity var(--motion-duration-fast) var(--motion-ease-standard);
 }
 
 .motion-step-enter {

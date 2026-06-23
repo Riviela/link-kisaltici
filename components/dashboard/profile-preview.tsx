@@ -2,8 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 
-import { ProfileAvatar } from "@/components/profile/profile-avatar";
-import { SocialLinks } from "@/components/profile/social-links";
+import { PublicProfileSurface } from "@/components/profile/public-profile-surface";
 import { PUBLIC_PROFILE_HOST } from "@/lib/config/site";
 import { copy } from "@/lib/copy";
 import type { LinkItem } from "@/lib/links/types";
@@ -329,57 +328,16 @@ export function ProfilePreview({
           ) : null}
         </div>
 
-        <div className={styles.phoneFrame}>
-          <div className={styles.phoneScreen}>
-            <div className="text-center">
-              <ProfileAvatar
-                avatarUrl={avatarUrl}
-                className="mx-auto size-[4.75rem]"
-              />
-              <h3 className="mt-4 text-lg font-bold tracking-[-0.03em] text-[var(--color-text)]">
-                @{username}
-              </h3>
-              {bio ? (
-                <p className="mx-auto mt-2 line-clamp-3 max-w-60 whitespace-pre-wrap text-xs leading-5 text-[var(--color-muted)]">
-                  {bio}
-                </p>
-              ) : null}
-              <SocialLinks className="mt-3" handles={socialHandles} />
-            </div>
-
-            <div className="mt-6 space-y-2.5">
-              {activeLinks.length > 0 ? (
-                activeLinks.map((link) => (
-                  <div
-                    className="preview-item flex min-h-12 items-center justify-between gap-3 rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] px-4 py-3 text-xs font-semibold text-[var(--color-text)]"
-                    key={link.id}
-                  >
-                    <span className="truncate">{link.title}</span>
-                    <svg
-                      aria-hidden="true"
-                      className="shrink-0 text-[var(--color-accent)]"
-                      fill="none"
-                      height="14"
-                      viewBox="0 0 14 14"
-                      width="14"
-                    >
-                      <path
-                        d="M3 11 11 3M5 3h6v6"
-                        stroke="currentColor"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="1.6"
-                      />
-                    </svg>
-                  </div>
-                ))
-              ) : (
-                <div className="rounded-2xl border border-dashed border-[var(--color-border-strong)] px-4 py-8 text-center text-xs leading-5 text-[var(--color-muted)]">
-                  {copy.publicProfile.empty}
-                </div>
-              )}
-            </div>
-          </div>
+        <div className={styles.previewDevice}>
+          <PublicProfileSurface
+            avatarUrl={avatarUrl}
+            bio={bio}
+            links={activeLinks}
+            mode="preview"
+            profileUrl={publicUrl}
+            socialHandles={socialHandles}
+            username={username}
+          />
         </div>
       </div>
     </aside>

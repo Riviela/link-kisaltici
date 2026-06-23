@@ -55,8 +55,8 @@ export default async function DashboardPage() {
   }
 
   return (
-    <main className="min-h-dvh overflow-x-hidden bg-[var(--color-surface)]">
-      <header className="flex h-14 items-center justify-end bg-[var(--color-text)] px-5 text-white sm:px-8">
+    <main className={styles.dashboardPage}>
+      <header className={styles.dashboardTopBar}>
         <form action={logoutAction}>
           <button
             className={styles.dashboardLogout}
@@ -67,8 +67,8 @@ export default async function DashboardPage() {
         </form>
       </header>
 
-      <div className="xl:grid xl:grid-cols-[84px_minmax(0,1fr)]">
-        <nav className="hidden min-h-[calc(100dvh-3.5rem)] border-r border-[var(--color-border)] bg-[var(--color-surface)] xl:sticky xl:top-0 xl:flex xl:h-[calc(100dvh-3.5rem)] xl:flex-col xl:items-center">
+      <div className={styles.dashboardShell}>
+        <nav className={styles.dashboardRail}>
           <div
             aria-hidden="true"
             className="mt-5 grid size-10 place-items-center rounded-full border border-[var(--color-border)] text-[var(--color-text)]"
@@ -102,18 +102,16 @@ export default async function DashboardPage() {
           </a>
         </nav>
 
-        <div className="min-w-0" id="content">
-          <div className="mx-auto max-w-[118rem]">
-            <LinkManager
-              initialLinks={initialLinks}
-              profile={{
-                avatarUrl: current.profile.avatarUrl,
-                bio: current.profile.bio,
-                socialHandles: current.profile.socialHandles,
-                username: current.profile.username,
-              }}
-            />
-          </div>
+        <div className={styles.dashboardWorkspace} id="content">
+          <LinkManager
+            initialLinks={initialLinks}
+            profile={{
+              avatarUrl: current.profile.avatarUrl,
+              bio: current.profile.bio,
+              socialHandles: current.profile.socialHandles,
+              username: current.profile.username,
+            }}
+          />
         </div>
       </div>
     </main>

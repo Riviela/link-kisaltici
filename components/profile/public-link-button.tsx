@@ -1,22 +1,24 @@
-import type { PublicProfileLink } from "@/lib/profile/get-public-profile";
-
 import styles from "./public-profile.module.css";
 
-interface PublicLinkButtonProps {
-  link: PublicProfileLink;
+interface PublicLink {
+  id: number;
+  title: string;
+  url: string;
 }
 
-export function PublicLinkButton({ link }: PublicLinkButtonProps) {
+interface PublicLinkButtonProps {
+  inert?: boolean;
+  link: PublicLink;
+}
+
+export function PublicLinkButton({ inert = false, link }: PublicLinkButtonProps) {
   const thumbnailUrl =
     "thumbnailUrl" in link && typeof link.thumbnailUrl === "string"
       ? link.thumbnailUrl
       : null;
 
-  return (
-    <a
-      className={styles.publicLinkButton}
-      href={link.url}
-    >
+  const content = (
+    <>
       {thumbnailUrl ? (
         <span className={styles.publicLinkThumb}>
           {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -35,6 +37,20 @@ export function PublicLinkButton({ link }: PublicLinkButtonProps) {
         <span />
         <span />
       </span>
+    </>
+  );
+
+  if (inert) {
+    return (
+      <div aria-disabled="true" className={styles.publicLinkButton}>
+        {content}
+      </div>
+    );
+  }
+
+  return (
+    <a className={styles.publicLinkButton} href={link.url}>
+      {content}
     </a>
   );
 }
