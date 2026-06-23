@@ -8,6 +8,7 @@ export interface LinkItem {
   position: number;
   layout: LinkLayout;
   thumbnail_path: string | null;
+  thumbnail_updated_at: string | null;
   thumbnailUrl: string | null;
 }
 

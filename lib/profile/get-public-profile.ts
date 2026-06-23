@@ -71,7 +71,9 @@ export async function getPublicProfile(
 
   const { data: links, error: linksError } = await supabase
     .from("links")
-    .select("id, title, url, position, layout, thumbnail_path")
+    .select(
+      "id, title, url, position, layout, thumbnail_path, thumbnail_updated_at",
+    )
     .eq("user_id", profile.id)
     .eq("is_active", true)
     .order("position", { ascending: true })
@@ -103,7 +105,11 @@ export async function getPublicProfile(
       url: link.url,
       position: link.position,
       layout: normalizeLinkLayout(link.layout),
-      thumbnailUrl: getPublicLinkThumbnailUrl(supabase, link.thumbnail_path),
+      thumbnailUrl: getPublicLinkThumbnailUrl(
+        supabase,
+        link.thumbnail_path,
+        link.thumbnail_updated_at,
+      ),
     })),
   };
 }

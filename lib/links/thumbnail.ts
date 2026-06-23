@@ -95,6 +95,7 @@ export function isValidLinkThumbnailPath(
 export function getPublicLinkThumbnailUrl(
   supabase: Awaited<ReturnType<typeof createClient>>,
   thumbnailPath: string | null,
+  thumbnailRevision?: string | null,
 ) {
   if (!thumbnailPath) return null;
 
@@ -102,5 +103,18 @@ export function getPublicLinkThumbnailUrl(
     .from(LINK_THUMBNAILS_BUCKET)
     .getPublicUrl(thumbnailPath);
 
-  return data.publicUrl;
+  if (!thumbnailRevision) {
+    return data.publicUrl;
+  }
+
+  const revisionTime = Date.parse(thumbnailRevision);
+
+  if (!Number.isFinite(revisionTime)) {
+    return data.publicUrl;
+  }
+
+  const publicUrl = new URL(data.publicUrl);
+  publicUrl.searchParams.set("v", String(revisionTime));
+
+  return publicUrl.toString();
 }

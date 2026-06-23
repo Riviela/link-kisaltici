@@ -5,7 +5,8 @@ import { normalizeLinkLayout } from "@/lib/links/layout";
 import { getPublicLinkThumbnailUrl } from "@/lib/links/thumbnail";
 import type { LinkItem } from "@/lib/links/types";
 
-const LINK_SELECT = "id, title, url, is_active, position, layout, thumbnail_path";
+const LINK_SELECT =
+  "id, title, url, is_active, position, layout, thumbnail_path, thumbnail_updated_at";
 
 type ServerSupabaseClient = Awaited<ReturnType<typeof createClient>>;
 
@@ -17,6 +18,7 @@ export interface LinkRow {
   position: number;
   layout: string | null;
   thumbnail_path: string | null;
+  thumbnail_updated_at: string | null;
 }
 
 export class LinksAuthenticationError extends Error {
@@ -45,7 +47,12 @@ export function mapLinkRow(
     position: link.position,
     layout: normalizeLinkLayout(link.layout),
     thumbnail_path: link.thumbnail_path,
-    thumbnailUrl: getPublicLinkThumbnailUrl(supabase, link.thumbnail_path),
+    thumbnail_updated_at: link.thumbnail_updated_at,
+    thumbnailUrl: getPublicLinkThumbnailUrl(
+      supabase,
+      link.thumbnail_path,
+      link.thumbnail_updated_at,
+    ),
   };
 }
 

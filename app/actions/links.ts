@@ -437,13 +437,34 @@ export async function uploadLinkThumbnailAction(
     linkId,
     validatedFile.extension,
   );
+  const isSameThumbnailPath = existingLink.thumbnail_path === thumbnailPath;
+
+  if (isSameThumbnailPath) {
+    const { error: removeExistingError } = await auth.supabase.storage
+      .from(LINK_THUMBNAILS_BUCKET)
+      .remove([thumbnailPath]);
+
+    if (removeExistingError) {
+      logLinkThumbnailError(
+        "remove-existing-thumbnail-before-replace",
+        linkId,
+        removeExistingError,
+      );
+
+      return {
+        success: false,
+        code: "UPDATE_FAILED",
+        message: copy.links.failure.thumbnail,
+      };
+    }
+  }
 
   const { error: uploadError } = await auth.supabase.storage
     .from(LINK_THUMBNAILS_BUCKET)
     .upload(thumbnailPath, file, {
       cacheControl: "3600",
       contentType: validatedFile.mimeType,
-      upsert: true,
+      upsert: false,
     });
 
   if (uploadError) {
@@ -458,7 +479,10 @@ export async function uploadLinkThumbnailAction(
 
   const { data, error } = await auth.supabase
     .from("links")
-    .update({ thumbnail_path: thumbnailPath })
+    .update({
+      thumbnail_path: thumbnailPath,
+      thumbnail_updated_at: new Date().toISOString(),
+    })
     .eq("id", linkId)
     .eq("user_id", auth.userId)
     .select(LINK_SELECT)
@@ -469,7 +493,7 @@ export async function uploadLinkThumbnailAction(
       logLinkThumbnailError("update-thumbnail-path", linkId, error);
     }
 
-    if (existingLink.thumbnail_path !== thumbnailPath) {
+    if (!isSameThumbnailPath) {
       await auth.supabase.storage
         .from(LINK_THUMBNAILS_BUCKET)
         .remove([thumbnailPath]);
@@ -542,7 +566,7 @@ export async function removeLinkThumbnailAction(
 
   const { data, error } = await auth.supabase
     .from("links")
-    .update({ thumbnail_path: null })
+    .update({ thumbnail_path: null, thumbnail_updated_at: null })
     .eq("id", linkId)
     .eq("user_id", auth.userId)
     .select(LINK_SELECT)
