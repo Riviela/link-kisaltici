@@ -84,6 +84,44 @@ function toFormFailure(failure: LinkActionFailure): LinkFormActionState {
   return { status: "error", message: failure.message };
 }
 
+function logLinkThumbnailError(
+  stage: string,
+  linkId: number,
+  error: unknown,
+) {
+  if (error && typeof error === "object") {
+    const details = error as {
+      code?: unknown;
+      message?: unknown;
+      name?: unknown;
+      status?: unknown;
+      statusCode?: unknown;
+    };
+
+    console.error("[link-thumbnail]", {
+      code: typeof details.code === "string" ? details.code : undefined,
+      linkId,
+      message:
+        typeof details.message === "string" ? details.message : undefined,
+      name: typeof details.name === "string" ? details.name : undefined,
+      stage,
+      status:
+        typeof details.status === "number" ||
+        typeof details.status === "string"
+          ? details.status
+          : undefined,
+      statusCode:
+        typeof details.statusCode === "number" ||
+        typeof details.statusCode === "string"
+          ? details.statusCode
+          : undefined,
+    });
+    return;
+  }
+
+  console.error("[link-thumbnail]", { linkId, stage });
+}
+
 function toLinkItem(
   supabase: ServerSupabaseClient,
   link: LinkRow,
@@ -383,6 +421,10 @@ export async function uploadLinkThumbnailAction(
     .maybeSingle();
 
   if (lookupError || !existingLink) {
+    if (lookupError) {
+      logLinkThumbnailError("lookup-owned-link", linkId, lookupError);
+    }
+
     return {
       success: false,
       code: "NOT_FOUND",
@@ -405,6 +447,8 @@ export async function uploadLinkThumbnailAction(
     });
 
   if (uploadError) {
+    logLinkThumbnailError("storage-upload", linkId, uploadError);
+
     return {
       success: false,
       code: "UPDATE_FAILED",
@@ -421,6 +465,10 @@ export async function uploadLinkThumbnailAction(
     .maybeSingle();
 
   if (error || !data) {
+    if (error) {
+      logLinkThumbnailError("update-thumbnail-path", linkId, error);
+    }
+
     if (existingLink.thumbnail_path !== thumbnailPath) {
       await auth.supabase.storage
         .from(LINK_THUMBNAILS_BUCKET)
@@ -438,9 +486,13 @@ export async function uploadLinkThumbnailAction(
     existingLink.thumbnail_path &&
     existingLink.thumbnail_path !== thumbnailPath
   ) {
-    await auth.supabase.storage
+    const { error: removeOldError } = await auth.supabase.storage
       .from(LINK_THUMBNAILS_BUCKET)
       .remove([existingLink.thumbnail_path]);
+
+    if (removeOldError) {
+      logLinkThumbnailError("remove-replaced-thumbnail", linkId, removeOldError);
+    }
   }
 
   await revalidateLinkSurfaces(auth.supabase, auth.userId);
@@ -477,6 +529,10 @@ export async function removeLinkThumbnailAction(
     .maybeSingle();
 
   if (lookupError || !existingLink) {
+    if (lookupError) {
+      logLinkThumbnailError("remove-lookup-owned-link", linkId, lookupError);
+    }
+
     return {
       success: false,
       code: "NOT_FOUND",
@@ -493,6 +549,10 @@ export async function removeLinkThumbnailAction(
     .maybeSingle();
 
   if (error || !data) {
+    if (error) {
+      logLinkThumbnailError("clear-thumbnail-path", linkId, error);
+    }
+
     return {
       success: false,
       code: "UPDATE_FAILED",
@@ -501,9 +561,13 @@ export async function removeLinkThumbnailAction(
   }
 
   if (existingLink.thumbnail_path) {
-    await auth.supabase.storage
+    const { error: removeError } = await auth.supabase.storage
       .from(LINK_THUMBNAILS_BUCKET)
       .remove([existingLink.thumbnail_path]);
+
+    if (removeError) {
+      logLinkThumbnailError("remove-thumbnail-object", linkId, removeError);
+    }
   }
 
   await revalidateLinkSurfaces(auth.supabase, auth.userId);
