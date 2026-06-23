@@ -3,7 +3,7 @@
 import { arrayMove } from "@dnd-kit/sortable";
 import type { DragEndEvent } from "@dnd-kit/core";
 import { useRouter } from "next/navigation";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
 
 import {
   deleteLinkAction,
@@ -217,6 +217,9 @@ export function LinkManager({ initialLinks, profile }: LinkManagerProps) {
   );
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [openPanel, setOpenPanel] = useState<OpenPanelState | null>(null);
+  const desiredLayoutByLinkRef = useRef(new Map<number, LinkLayout>());
+  const layoutInFlightByLinkRef = useRef(new Set<number>());
+  const layoutCanonicalByLinkRef = useRef(new Map<number, LinkItem>());
   const isBusy = isMutating || isReordering || pendingPanel !== null;
   const isAppearanceDirty = !areAppearancesEqual(
     appearanceDraft,
@@ -284,6 +287,14 @@ export function LinkManager({ initialLinks, profile }: LinkManagerProps) {
     });
   }, []);
 
+  const clearQueuedInitialLinks = useCallback(() => {
+    setReconciliationState({
+      initialLinks,
+      isBusy: false,
+      pendingSnapshot: null,
+    });
+  }, [initialLinks]);
+
   const handleFormSuccess = useCallback(
     (returnedLink: LinkItem, message: string) => {
       applyReturnedLink(returnedLink);
@@ -320,13 +331,91 @@ export function LinkManager({ initialLinks, profile }: LinkManagerProps) {
     [applyReturnedLink, isBusy, router],
   );
 
+  const persistLatestLayout = useCallback(
+    async (linkId: number) => {
+      if (layoutInFlightByLinkRef.current.has(linkId)) return;
+
+      layoutInFlightByLinkRef.current.add(linkId);
+      setPendingPanel({ linkId, type: "layout" });
+
+      try {
+        while (true) {
+          const targetLayout = desiredLayoutByLinkRef.current.get(linkId);
+          if (!targetLayout) break;
+
+          const result = await updateLinkLayoutAction(linkId, targetLayout);
+          const latestLayout = desiredLayoutByLinkRef.current.get(linkId);
+
+          if (result.success) {
+            layoutCanonicalByLinkRef.current.set(linkId, result.link);
+
+            if (latestLayout !== targetLayout) {
+              continue;
+            }
+
+            desiredLayoutByLinkRef.current.delete(linkId);
+            applyReturnedLink(result.link);
+            clearQueuedInitialLinks();
+            setPanelMessage({ linkId, text: result.message });
+            router.refresh();
+            break;
+          }
+
+          if (latestLayout !== targetLayout) {
+            continue;
+          }
+
+          desiredLayoutByLinkRef.current.delete(linkId);
+          const canonicalLink = layoutCanonicalByLinkRef.current.get(linkId);
+
+          if (canonicalLink) {
+            applyReturnedLink(canonicalLink);
+          }
+
+          clearQueuedInitialLinks();
+          setPanelMessage({ linkId, text: result.message });
+          break;
+        }
+      } catch {
+        const latestLayout = desiredLayoutByLinkRef.current.get(linkId);
+
+        if (latestLayout) {
+          desiredLayoutByLinkRef.current.delete(linkId);
+          const canonicalLink = layoutCanonicalByLinkRef.current.get(linkId);
+
+          if (canonicalLink) {
+            applyReturnedLink(canonicalLink);
+          }
+
+          clearQueuedInitialLinks();
+          setPanelMessage({ linkId, text: copy.links.failure.update });
+        }
+      } finally {
+        layoutInFlightByLinkRef.current.delete(linkId);
+        setPendingPanel((current) =>
+          current?.linkId === linkId && current.type === "layout"
+            ? null
+            : current,
+        );
+      }
+    },
+    [applyReturnedLink, clearQueuedInitialLinks, router],
+  );
+
   const handleLayoutChange = useCallback(
-    async (linkId: number, layout: LinkLayout) => {
-      if (isBusy) return;
+    (linkId: number, layout: LinkLayout) => {
+      if (isMutating || isReordering || pendingPanel?.type === "thumbnail") {
+        return;
+      }
 
-      const previousLink = links.find((link) => link.id === linkId);
-      if (!previousLink || previousLink.layout === layout) return;
+      const currentLink = links.find((link) => link.id === linkId);
+      if (!currentLink || currentLink.layout === layout) return;
 
+      if (!layoutCanonicalByLinkRef.current.has(linkId)) {
+        layoutCanonicalByLinkRef.current.set(linkId, currentLink);
+      }
+
+      desiredLayoutByLinkRef.current.set(linkId, layout);
       setPanelMessage(null);
       setPendingPanel({ linkId, type: "layout" });
       setLinkState((currentState) => ({
@@ -337,26 +426,15 @@ export function LinkManager({ initialLinks, profile }: LinkManagerProps) {
         ),
         safe: currentState.safe,
       }));
-
-      try {
-        const result = await updateLinkLayoutAction(linkId, layout);
-
-        if (result.success) {
-          applyReturnedLink(result.link);
-          setPanelMessage({ linkId, text: result.message });
-          router.refresh();
-        } else {
-          applyReturnedLink(previousLink);
-          setPanelMessage({ linkId, text: result.message });
-        }
-      } catch {
-        applyReturnedLink(previousLink);
-        setPanelMessage({ linkId, text: copy.links.failure.update });
-      } finally {
-        setPendingPanel(null);
-      }
+      void persistLatestLayout(linkId);
     },
-    [applyReturnedLink, isBusy, links, router],
+    [
+      isMutating,
+      isReordering,
+      links,
+      pendingPanel?.type,
+      persistLatestLayout,
+    ],
   );
 
   const handleThumbnailUpload = useCallback(

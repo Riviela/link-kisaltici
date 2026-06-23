@@ -95,7 +95,7 @@ async function revalidateLinkSurfaces(
   supabase: ServerSupabaseClient,
   userId: string,
 ) {
-  await revalidateLinkSurfaces(auth.supabase, auth.userId);
+  revalidatePath("/dashboard");
 
   const { data } = await supabase
     .from("profiles")

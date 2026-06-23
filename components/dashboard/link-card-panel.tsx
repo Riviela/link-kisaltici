@@ -86,9 +86,10 @@ function LayoutPanel({
     <div className={styles.panelBody}>
       <p className={styles.panelDescription}>Choose a layout for your link.</p>
       <button
+        aria-busy={isPending && isClassic ? "true" : undefined}
         aria-pressed={isClassic}
         className={`${styles.layoutChoice} ${isClassic ? styles.layoutChoiceSelected : ""}`}
-        disabled={isPending || isClassic}
+        disabled={isClassic}
         onClick={() => onLayoutChange("classic")}
         type="button"
       >
@@ -105,9 +106,10 @@ function LayoutPanel({
       </button>
 
       <button
+        aria-busy={isPending && !isClassic ? "true" : undefined}
         aria-pressed={!isClassic}
         className={`${styles.layoutChoice} ${!isClassic ? styles.layoutChoiceSelected : ""}`}
-        disabled={isPending || !isClassic}
+        disabled={!isClassic}
         onClick={() => onLayoutChange("featured")}
         type="button"
       >
