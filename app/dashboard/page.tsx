@@ -56,10 +56,7 @@ export default async function DashboardPage() {
 
   return (
     <main className="min-h-dvh overflow-x-hidden bg-[var(--color-surface)]">
-      <header className="flex h-14 items-center justify-between bg-[var(--color-text)] px-5 text-white sm:px-8">
-        <p className="text-sm font-bold tracking-[-0.01em]">
-          {copy.metadata.title}
-        </p>
+      <header className="flex h-14 items-center justify-end bg-[var(--color-text)] px-5 text-white sm:px-8">
         <form action={logoutAction}>
           <button
             className={styles.dashboardLogout}

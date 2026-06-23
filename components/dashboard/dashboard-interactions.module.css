@@ -1029,12 +1029,28 @@
   color: var(--color-text);
   display: flex;
   font-weight: 400;
-  justify-content: space-between;
+  justify-content: center;
   min-height: 2.75rem;
+  position: relative;
   transition:
     background-color 220ms cubic-bezier(0.22, 1, 0.36, 1),
     border-color 220ms cubic-bezier(0.22, 1, 0.36, 1),
     color 220ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.previewUrlLabel {
+  color: var(--color-text);
+  display: block;
+  font-weight: 400;
+  max-width: calc(100% - 4rem);
+  min-width: 0;
+  text-align: center;
+}
+
+.previewUrlIcon {
+  flex-shrink: 0;
+  position: absolute;
+  right: 1.15rem;
 }
 
 .previewUrlButton:hover {

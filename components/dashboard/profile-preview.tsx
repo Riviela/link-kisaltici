@@ -214,10 +214,12 @@ export function ProfilePreview({
             }}
             type="button"
           >
-            <span className="truncate">{publicPath}</span>
+            <span className={`${styles.previewUrlLabel} truncate`}>
+              {publicPath}
+            </span>
             <svg
               aria-hidden="true"
-              className="shrink-0"
+              className={styles.previewUrlIcon}
               fill="none"
               height="16"
               viewBox="0 0 16 16"

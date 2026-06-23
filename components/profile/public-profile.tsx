@@ -1,22 +1,67 @@
+import Link from "next/link";
+
 import { ProfileHeader } from "@/components/profile/profile-header";
 import { PublicLinkButton } from "@/components/profile/public-link-button";
+import { PublicShareButton } from "@/components/profile/public-share-button";
+import { APP_NAME, PUBLIC_PROFILE_HOST } from "@/lib/config/site";
 import { copy } from "@/lib/copy";
 import type { PublicProfileData } from "@/lib/profile/get-public-profile";
+
+import styles from "./public-profile.module.css";
 
 interface PublicProfileProps {
   data: PublicProfileData;
 }
 
-export function PublicProfile({ data }: PublicProfileProps) {
+function CanvasMark() {
   return (
-    <main className="min-h-dvh bg-[var(--color-page)] sm:px-6 sm:py-10">
-      <div
-        aria-hidden="true"
-        className="pointer-events-none fixed inset-x-0 top-0 h-64 bg-[radial-gradient(circle_at_top,var(--color-accent-soft)_0,transparent_68%)] opacity-75"
+    <svg
+      aria-hidden="true"
+      className={styles.brandMarkIcon}
+      fill="none"
+      viewBox="0 0 24 24"
+    >
+      <path
+        d="M12 4v16M4 12h16M6.4 6.4l11.2 11.2M17.6 6.4 6.4 17.6"
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeWidth="2.4"
       />
+    </svg>
+  );
+}
 
-      <article className="relative mx-auto min-h-dvh w-full bg-[var(--color-surface)] px-5 pb-14 pt-12 sm:min-h-[calc(100dvh-5rem)] sm:max-w-[32rem] sm:rounded-[2.75rem] sm:border sm:border-[var(--color-surface)] sm:px-8 sm:pt-14 sm:shadow-[0_30px_90px_rgba(40,38,66,0.18)] sm:ring-1 sm:ring-[var(--color-border)]">
-        <div className="mx-auto max-w-md">
+function DecorativeQr() {
+  return (
+    <aside aria-label="View on mobile" className={styles.qrDock}>
+      <p>View on mobile</p>
+      <div aria-hidden="true" className={styles.qrCode}>
+        <span className={styles.qrCorner} />
+        <span className={styles.qrCorner} />
+        <span className={styles.qrCorner} />
+      </div>
+    </aside>
+  );
+}
+
+export function PublicProfile({ data }: PublicProfileProps) {
+  const publicUrl = `https://${PUBLIC_PROFILE_HOST}/${data.profile.username}`;
+
+  return (
+    <main className={styles.publicCanvas}>
+      <article className={styles.profileSurface}>
+        <div className={styles.profileChrome}>
+          <div aria-label={APP_NAME} className={styles.brandMark}>
+            <CanvasMark />
+          </div>
+
+          <PublicShareButton
+            profileUrl={publicUrl}
+            username={data.profile.username}
+          />
+        </div>
+
+        <div className={styles.profileContent}>
           <ProfileHeader
             avatarUrl={data.profile.avatarUrl}
             bio={data.profile.bio}
@@ -24,24 +69,38 @@ export function PublicProfile({ data }: PublicProfileProps) {
             username={data.profile.username}
           />
 
-          <section aria-label="Links" className="mt-10 space-y-3">
+          <section aria-label="Links" className={styles.linkStack}>
             {data.links.length > 0 ? (
               data.links.map((link) => (
                 <PublicLinkButton key={link.id} link={link} />
               ))
             ) : (
-              <div className="rounded-[var(--radius-card)] border border-dashed border-[var(--color-border-strong)] bg-[var(--color-surface-raised)] px-6 py-12 text-center">
-                <div className="mx-auto grid size-11 place-items-center rounded-2xl bg-[var(--color-accent-soft)] text-xl text-[var(--color-accent-strong)]">
+              <div className={styles.emptyState}>
+                <div className={styles.emptyIcon}>
                   +
                 </div>
-                <p className="mx-auto mt-4 max-w-60 text-sm leading-6 text-[var(--color-muted)]">
+                <p>
                   {copy.publicProfile.empty}
                 </p>
               </div>
             )}
           </section>
         </div>
+
+        <div className={styles.profileFooter}>
+          <Link className={styles.joinCta} href="/register">
+            Join {APP_NAME}
+          </Link>
+
+          <nav aria-label="Public profile footer" className={styles.footerLinks}>
+            <span>Privacy</span>
+            <span>Report</span>
+            <span>About {APP_NAME}</span>
+          </nav>
+        </div>
       </article>
+
+      <DecorativeQr />
     </main>
   );
 }

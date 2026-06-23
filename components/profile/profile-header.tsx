@@ -22,16 +22,16 @@ export function ProfileHeader({
         className="mx-auto size-24"
       />
 
-      <h1 className="mt-7 text-3xl font-bold tracking-[-0.045em] text-[var(--color-text)] sm:text-4xl">
+      <h1 className="mt-4 text-[1.65rem] font-extrabold leading-tight tracking-[-0.045em] text-[var(--color-text)] sm:text-[1.8rem]">
         @{username}
       </h1>
 
       {bio ? (
-        <p className="mx-auto mt-4 max-w-md whitespace-pre-wrap text-pretty text-sm leading-6 text-[var(--color-muted)]">
+        <p className="mx-auto mt-1.5 max-w-md whitespace-pre-wrap text-pretty text-sm font-semibold leading-5 text-[var(--color-text)]">
           {bio}
         </p>
       ) : null}
-      <SocialLinks className="mt-5" handles={socialHandles} />
+      <SocialLinks className="mt-4" handles={socialHandles} />
     </header>
   );
 }
