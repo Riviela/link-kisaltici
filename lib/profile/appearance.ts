@@ -30,6 +30,13 @@ export const HEADER_LAYOUTS = [
   "shape",
 ] as const;
 
+export const HEADER_SHAPES = [
+  "flower",
+  "oval",
+  "rounded",
+  "burst",
+] as const;
+
 export const WALLPAPER_STYLES = [
   "fill",
   "gradient",
@@ -51,6 +58,7 @@ export const ALIGNMENTS = ["left", "center"] as const;
 
 export type ThemePreset = (typeof THEME_PRESETS)[number];
 export type HeaderLayout = (typeof HEADER_LAYOUTS)[number];
+export type HeaderShape = (typeof HEADER_SHAPES)[number];
 export type WallpaperStyle = (typeof WALLPAPER_STYLES)[number];
 export type FontPreset = (typeof FONT_PRESETS)[number];
 export type ButtonStyle = (typeof BUTTON_STYLES)[number];
@@ -73,6 +81,7 @@ export interface ProfileAppearance {
   tokens: AppearanceTokens;
   header: {
     layout: HeaderLayout;
+    shape: HeaderShape;
     alignment: AppearanceAlignment;
     titleStyle: "text";
     alternativeTitleFont: boolean;
@@ -118,6 +127,7 @@ export const DEFAULT_APPEARANCE: ProfileAppearance = {
   },
   header: {
     layout: "classic",
+    shape: "flower",
     alignment: "center",
     titleStyle: "text",
     alternativeTitleFont: false,
@@ -355,7 +365,8 @@ const EXACT_KEYS = {
     "buttonBackground",
     "buttonText",
   ],
-  header: ["layout", "alignment", "titleStyle", "alternativeTitleFont"],
+  header: ["layout", "shape", "alignment", "titleStyle", "alternativeTitleFont"],
+  legacyHeader: ["layout", "alignment", "titleStyle", "alternativeTitleFont"],
   wallpaper: ["style", "pattern"],
   text: ["font"],
   buttons: ["style", "radius", "shadow", "alignment"],
@@ -473,8 +484,15 @@ export function validateAppearanceUpdate(
     !isOneOf(value.themePreset, THEME_PRESETS) ||
     !tokens ||
     !isRecord(header) ||
-    !hasExactKeys(header, EXACT_KEYS.header) ||
+    !(
+      hasExactKeys(header, EXACT_KEYS.header) ||
+      hasExactKeys(header, EXACT_KEYS.legacyHeader)
+    ) ||
     !isOneOf(header.layout, HEADER_LAYOUTS) ||
+    !(
+      header.shape === undefined ||
+      isOneOf(header.shape, HEADER_SHAPES)
+    ) ||
     !isOneOf(header.alignment, ALIGNMENTS) ||
     header.titleStyle !== "text" ||
     typeof header.alternativeTitleFont !== "boolean" ||
@@ -510,6 +528,7 @@ export function validateAppearanceUpdate(
       tokens,
       header: {
         layout: header.layout,
+        shape: header.shape ?? "flower",
         alignment: header.alignment,
         titleStyle: "text",
         alternativeTitleFont: header.alternativeTitleFont,

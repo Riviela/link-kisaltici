@@ -114,6 +114,7 @@ export function PublicProfileSurface({
         styles.profileSurface,
         getWallpaperClass(appearance),
         getFontClass(appearance),
+        styles[`profileSurfaceHeader${appearance.header.layout}`],
         styles[`profileButtons${appearance.buttons.style}`],
         styles[`profileButtonRadius${appearance.buttons.radius}`],
         styles[`profileButtonShadow${appearance.buttons.shadow}`],

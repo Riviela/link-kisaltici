@@ -28,50 +28,88 @@ export function ProfileHeader({
 }: ProfileHeaderProps) {
   const isPreview = variant === "preview";
   const appearance = normalizeAppearance(appearanceInput);
+  const layout = appearance.header.layout;
+  const isHero = layout === "hero";
+  const isShape = layout === "shape";
+  const title = (
+    <h1
+      className={[
+        styles.profileTitle,
+        isShape ? styles.profileTitleShape : "",
+        isHero ? styles.profileTitleHero : "",
+        appearance.header.alternativeTitleFont
+          ? styles.profileTitleAlt
+          : "",
+        isPreview ? styles.profileTitlePreview : "",
+      ].join(" ")}
+    >
+      @{username}
+    </h1>
+  );
+  const bioElement = bio ? (
+    <p
+      className={[
+        styles.profileBio,
+        isPreview ? styles.profileBioPreview : "",
+      ].join(" ")}
+    >
+      {bio}
+    </p>
+  ) : null;
+  const socialElement = (
+    <SocialLinks
+      className={isPreview ? styles.profileSocialPreview : styles.profileSocial}
+      handles={socialHandles}
+      size={isPreview ? "preview" : "default"}
+    />
+  );
 
   return (
     <header
       className={[
         styles.profileHeader,
-        styles[`profileHeader${appearance.header.layout}`],
+        styles[`profileHeader${layout}`],
+        isShape ? styles[`profileHeaderShape${appearance.header.shape}`] : "",
         styles[`profileHeaderAlign${appearance.header.alignment}`],
         isPreview ? styles.profileHeaderPreview : "",
       ].join(" ")}
     >
-      <div className={styles.profileHeaderAvatarSlot}>
-        <ProfileAvatar
-          avatarUrl={avatarUrl}
-          className={isPreview ? "size-[4.6rem]" : "size-24"}
-        />
-      </div>
-
-      <h1
-        className={[
-          styles.profileTitle,
-          appearance.header.alternativeTitleFont
-            ? styles.profileTitleAlt
-            : "",
-          isPreview ? styles.profileTitlePreview : "",
-        ].join(" ")}
-      >
-        @{username}
-      </h1>
-
-      {bio ? (
-        <p
-          className={[
-            styles.profileBio,
-            isPreview ? styles.profileBioPreview : "",
-          ].join(" ")}
-        >
-          {bio}
-        </p>
+      {isHero ? (
+        <div className={styles.profileHeroMediaSlot}>
+          <ProfileAvatar
+            avatarUrl={avatarUrl}
+            className={styles.profileHeroMedia}
+            shape="none"
+          />
+        </div>
       ) : null}
-      <SocialLinks
-        className={isPreview ? styles.profileSocialPreview : styles.profileSocial}
-        handles={socialHandles}
-        size={isPreview ? "preview" : "default"}
-      />
+
+      {isShape ? title : null}
+
+      {isShape ? (
+        <div className={styles.profileShapeMediaSlot}>
+          <ProfileAvatar
+            avatarUrl={avatarUrl}
+            className={styles.profileShapeMedia}
+            shape="none"
+          />
+        </div>
+      ) : null}
+
+      {!isHero && !isShape ? (
+        <div className={styles.profileHeaderAvatarSlot}>
+          <ProfileAvatar
+            avatarUrl={avatarUrl}
+            className={isPreview ? styles.profileAvatarPreview : styles.profileAvatar}
+          />
+        </div>
+      ) : null}
+
+      <div className={styles.profileHeaderTextBlock}>
+        {isShape ? null : title}
+        {bioElement}
+        {socialElement}
+      </div>
     </header>
   );
 }

@@ -9,6 +9,7 @@ import {
   BUTTON_SHADOWS,
   BUTTON_STYLES,
   FONT_PRESETS,
+  HEADER_SHAPES,
   HEADER_LAYOUTS,
   normalizeHexColor,
   THEME_PRESETS,
@@ -19,6 +20,7 @@ import {
   type ButtonStyle,
   type FontPreset,
   type HeaderLayout,
+  type HeaderShape,
   type ProfileAppearance,
   type ThemePreset,
   type WallpaperStyle,
@@ -44,6 +46,7 @@ interface DesignEditorProps {
   onChange: (appearance: ProfileAppearance) => void;
   onSave: () => void;
   status: { tone: "success" | "error" | "neutral"; text: string } | null;
+  avatarUrl: string | null;
   username: string;
 }
 
@@ -101,6 +104,13 @@ const HEADER_LABELS: Record<HeaderLayout, string> = {
   banner: "Banner",
   cutout: "Cutout",
   shape: "Shape",
+};
+
+const SHAPE_LABELS: Record<HeaderShape, string> = {
+  flower: "Flower",
+  oval: "Oval",
+  rounded: "Rounded",
+  burst: "Burst",
 };
 
 const WALLPAPER_LABELS: Record<WallpaperStyle, string> = {
@@ -335,6 +345,23 @@ function CornerRoundnessControl({
   );
 }
 
+function HeaderPreviewAvatar({
+  avatarUrl,
+  className = "",
+}: {
+  avatarUrl: string | null;
+  className?: string;
+}) {
+  return (
+    <span className={`${styles.headerPreviewAvatar} ${className}`}>
+      {avatarUrl ? (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img alt="" src={avatarUrl} />
+      ) : null}
+    </span>
+  );
+}
+
 function ThemePanel({
   appearance,
   onChange,
@@ -376,10 +403,12 @@ function ThemePanel({
 
 function HeaderPanel({
   appearance,
+  avatarUrl,
   onChange,
   username,
 }: {
   appearance: ProfileAppearance;
+  avatarUrl: string | null;
   onChange: (appearance: ProfileAppearance) => void;
   username: string;
 }) {
@@ -399,13 +428,58 @@ function HeaderPanel({
               type="button"
             >
               <span className={`${styles.headerPreview} ${styles[`headerPreview${layout}`]}`}>
-                <span />
+                {layout === "classic" ? (
+                  <HeaderPreviewAvatar avatarUrl={avatarUrl} />
+                ) : layout === "hero" ? (
+                  <HeaderPreviewAvatar
+                    avatarUrl={avatarUrl}
+                    className={styles.headerPreviewAvatarHero}
+                  />
+                ) : layout === "shape" ? (
+                  <HeaderPreviewAvatar
+                    avatarUrl={avatarUrl}
+                    className={`${styles.headerPreviewAvatarShape} ${
+                      styles[`shapePreview${appearance.header.shape}`]
+                    }`}
+                  />
+                ) : (
+                  <span />
+                )}
               </span>
               <span className={styles.cardLabel}>{HEADER_LABELS[layout]}</span>
             </button>
           ))}
         </div>
       </section>
+
+      {appearance.header.layout === "shape" ? (
+        <section className={styles.controlGroup}>
+          <h3 className={styles.groupTitle}>Shape</h3>
+          <div className={`${styles.visualChoiceGrid} ${styles.shapeChoiceGrid}`}>
+            {HEADER_SHAPES.map((shape) => (
+              <button
+                aria-pressed={appearance.header.shape === shape}
+                className={styles.visualChoiceButton}
+                data-selected={appearance.header.shape === shape}
+                key={shape}
+                onClick={() =>
+                  onChange(patchAppearance(appearance, { header: { shape } }))
+                }
+                type="button"
+              >
+                <span className={styles.shapeChoiceSurface}>
+                  <span
+                    className={`${styles.shapeChoicePreview} ${
+                      styles[`shapePreview${shape}`]
+                    }`}
+                  />
+                </span>
+                <span className={styles.cardLabel}>{SHAPE_LABELS[shape]}</span>
+              </button>
+            ))}
+          </div>
+        </section>
+      ) : null}
 
       <section className={styles.profileImageRow}>
         <h3 className={styles.groupTitle}>Profile image</h3>
@@ -679,6 +753,7 @@ function PlaceholderPanel({ type }: { type: "stickers" | "footer" }) {
 
 export function DesignEditor({
   appearance,
+  avatarUrl,
   isDirty,
   isSaving,
   onChange,
@@ -749,6 +824,7 @@ export function DesignEditor({
             {activeTab === "header" ? (
               <HeaderPanel
                 appearance={appearance}
+                avatarUrl={avatarUrl}
                 onChange={onChange}
                 username={username}
               />

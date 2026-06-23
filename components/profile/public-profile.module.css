@@ -37,6 +37,45 @@
   width: 100%;
 }
 
+.profileSurfaceHeaderhero {
+  padding: 0 0 2.4rem;
+}
+
+.profileSurfacePreview.profileSurfaceHeaderhero {
+  padding: 0 0 1.35rem;
+}
+
+.profileSurfaceHeaderhero .profileChrome {
+  inset: 1.45rem 1.45rem auto;
+  position: absolute;
+  z-index: 4;
+}
+
+.profileSurfacePreview.profileSurfaceHeaderhero .profileChrome {
+  inset: 0.75rem 0.75rem auto;
+}
+
+.profileSurfaceHeaderhero .profileContent {
+  margin-top: 0;
+  max-width: none;
+}
+
+.profileSurfaceHeaderhero .linkStack {
+  margin-inline: 1.75rem;
+}
+
+.profileSurfacePreview.profileSurfaceHeaderhero .linkStack {
+  margin-inline: 0.75rem;
+}
+
+.profileSurfaceHeaderhero .profileFooter {
+  padding-inline: 1.75rem;
+}
+
+.profileSurfacePreview.profileSurfaceHeaderhero .profileFooter {
+  padding-inline: 0.75rem;
+}
+
 .profileWallpaperFill {
   background: var(--profile-background, #eef0f3);
 }
@@ -186,6 +225,21 @@
   position: relative;
 }
 
+.profileAvatar {
+  height: 6rem;
+  width: 6rem;
+}
+
+.profileAvatarPreview {
+  height: 4.6rem;
+  width: 4.6rem;
+}
+
+.profileHeaderTextBlock {
+  position: relative;
+  z-index: 1;
+}
+
 .profileHeaderhero,
 .profileHeaderbanner,
 .profileHeadercutout,
@@ -196,13 +250,49 @@
   padding: 1rem 1rem 0;
 }
 
+.profileHeaderclassic {
+  margin-inline: auto;
+  max-width: 30rem;
+}
+
+.profileHeaderhero {
+  border-radius: 0;
+  max-width: none;
+  overflow: hidden;
+  padding: 0;
+}
+
 .profileHeaderhero::before {
+  content: none;
+}
+
+.profileHeroMediaSlot {
+  border-radius: 1.55rem 1.55rem 0 0;
+  height: 18.8rem;
+  overflow: hidden;
+  position: relative;
+}
+
+.profileHeroMediaSlot::after {
   background:
-    radial-gradient(circle at 50% 22%, rgba(255, 255, 255, 0.68), transparent 26%),
-    linear-gradient(180deg, color-mix(in srgb, var(--profile-button-background, #ffffff) 64%, transparent), transparent);
-  border-radius: 1.35rem;
-  height: 8.8rem;
-  inset: 0 0 auto;
+    linear-gradient(180deg, transparent 0 42%, rgba(255, 255, 255, 0.06) 58%, var(--profile-background, #eef0f3) 95%),
+    radial-gradient(ellipse at 50% 85%, color-mix(in srgb, var(--profile-background, #eef0f3) 88%, transparent) 0 34%, transparent 70%);
+  content: "";
+  inset: 0;
+  pointer-events: none;
+  position: absolute;
+}
+
+.profileHeroMedia {
+  border-radius: 0;
+  height: 100%;
+  width: 100%;
+}
+
+.profileHeaderhero .profileHeaderTextBlock {
+  margin: -3.95rem auto 0;
+  max-width: 31rem;
+  padding-inline: 1.75rem;
 }
 
 .profileHeaderbanner::before {
@@ -223,11 +313,48 @@
 }
 
 .profileHeadershape::before {
-  background:
-    radial-gradient(ellipse at 50% 44%, color-mix(in srgb, var(--profile-title, #000000) 20%, transparent) 0 32%, transparent 33%),
-    radial-gradient(ellipse at 44% 42%, color-mix(in srgb, var(--profile-button-background, #ffffff) 78%, transparent) 0 34%, transparent 35%);
-  height: 7.2rem;
-  inset: 0 0 auto;
+  content: none;
+}
+
+.profileHeadershape {
+  padding: 0;
+}
+
+.profileShapeMediaSlot {
+  aspect-ratio: 1.72;
+  margin: 1.5rem auto 0;
+  max-width: 31rem;
+  overflow: hidden;
+  position: relative;
+  width: 100%;
+}
+
+.profileShapeMedia {
+  border-radius: 0;
+  height: 100%;
+  width: 100%;
+}
+
+.profileHeaderShapeflower .profileShapeMediaSlot {
+  border-radius: 46% 54% 44% 56% / 43% 48% 52% 57%;
+  clip-path: polygon(4% 36%, 17% 20%, 36% 17%, 50% 10%, 66% 18%, 84% 23%, 96% 40%, 88% 55%, 96% 70%, 80% 84%, 58% 83%, 48% 92%, 32% 84%, 13% 80%, 3% 64%, 12% 50%);
+}
+
+.profileHeaderShapeoval .profileShapeMediaSlot {
+  border-radius: 50%;
+  clip-path: ellipse(49% 39% at 50% 50%);
+}
+
+.profileHeaderShaperounded .profileShapeMediaSlot {
+  border-radius: 1.7rem;
+}
+
+.profileHeaderShapeburst .profileShapeMediaSlot {
+  clip-path: polygon(50% 0, 57% 10%, 67% 5%, 72% 17%, 85% 15%, 86% 28%, 98% 34%, 90% 45%, 100% 55%, 88% 62%, 91% 76%, 77% 78%, 71% 91%, 60% 85%, 50% 100%, 40% 85%, 29% 91%, 23% 78%, 9% 76%, 12% 62%, 0 55%, 10% 45%, 2% 34%, 14% 28%, 15% 15%, 28% 17%, 33% 5%, 43% 10%);
+}
+
+.profileHeadershape .profileHeaderTextBlock {
+  margin-top: 1.2rem;
 }
 
 .profileHeaderAlignleft {
@@ -255,6 +382,21 @@
   margin: 1rem 0 0;
 }
 
+.profileTitleHero {
+  font-size: 2.05rem;
+  margin-top: 0;
+}
+
+.profileTitleShape {
+  font-size: clamp(3.1rem, 10vw, 4.6rem);
+  font-weight: 900;
+  letter-spacing: -0.075em;
+  line-height: 0.86;
+  margin: 0 auto;
+  max-width: 30rem;
+  overflow-wrap: anywhere;
+}
+
 .profileTitleAlt {
   font-family: Georgia, "Times New Roman", serif;
   font-style: italic;
@@ -264,6 +406,17 @@
 .profileTitlePreview {
   font-size: 1.32rem;
   margin-top: 1rem;
+}
+
+.profileSurfacePreview .profileTitleHero {
+  font-size: 1.58rem;
+  margin-top: 0;
+}
+
+.profileSurfacePreview .profileTitleShape {
+  font-size: 2.35rem;
+  margin-top: 0;
+  max-width: 17rem;
 }
 
 .profileBio {
@@ -300,6 +453,31 @@
 .profileSurfacePreview .profileContent {
   margin-top: 2.45rem;
   max-width: 19.1rem;
+}
+
+.profileSurfacePreview.profileSurfaceHeaderhero .profileContent {
+  margin-top: 0;
+  max-width: none;
+}
+
+.profileSurfacePreview .profileHeroMediaSlot {
+  border-radius: 1.3rem 1.3rem 0 0;
+  height: 12.6rem;
+}
+
+.profileSurfacePreview .profileHeaderhero .profileHeaderTextBlock {
+  margin-top: -2.55rem;
+  max-width: 19.1rem;
+  padding-inline: 0.75rem;
+}
+
+.profileSurfacePreview .profileShapeMediaSlot {
+  margin-top: 1rem;
+  max-width: 17.6rem;
+}
+
+.profileSurfacePreview .profileHeadershape .profileHeaderTextBlock {
+  margin-top: 1rem;
 }
 
 .linkStack {
@@ -648,6 +826,10 @@
     border-radius: 0;
     min-height: 100dvh;
     width: 100%;
+  }
+
+  .profileSurface.profileSurfaceHeaderhero {
+    padding: 0 0 2rem;
   }
 
   .qrDock {

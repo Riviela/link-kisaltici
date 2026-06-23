@@ -554,6 +554,7 @@ export function LinkManager({ initialLinks, profile }: LinkManagerProps) {
           ) : (
             <DesignEditor
               appearance={appearanceDraft}
+              avatarUrl={profile.avatarUrl}
               isDirty={isAppearanceDirty}
               isSaving={isSavingAppearance}
               onChange={handleAppearanceChange}

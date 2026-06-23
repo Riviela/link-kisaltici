@@ -5,6 +5,7 @@ import { useState, useSyncExternalStore } from "react";
 interface ProfileAvatarProps {
   avatarUrl: string | null;
   className?: string;
+  shape?: "circle" | "none";
 }
 
 const subscribeToHydration = () => () => {};
@@ -13,6 +14,7 @@ const DEFAULT_AVATAR_URL = "/default-profile-avatar.svg";
 export function ProfileAvatar({
   avatarUrl,
   className = "size-20",
+  shape = "circle",
 }: ProfileAvatarProps) {
   const isHydrated = useSyncExternalStore(
     subscribeToHydration,
@@ -32,7 +34,7 @@ export function ProfileAvatar({
     <div
       aria-hidden="true"
       className={`${className} relative grid shrink-0 place-items-center overflow-hidden bg-[var(--color-surface-raised)] text-[var(--color-muted)] ring-1 ring-[var(--color-border)]`}
-      style={{ borderRadius: "50%" }}
+      style={shape === "circle" ? { borderRadius: "50%" } : undefined}
     >
       {imageUrl ? (
         // Storage paths are constrained to the public avatars bucket.

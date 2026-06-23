@@ -290,7 +290,7 @@
   aspect-ratio: 1;
 }
 
-.headerPreview span {
+.headerPreview > span {
   background: #d94a45;
   border-radius: 50%;
   height: 2.3rem;
@@ -301,8 +301,42 @@
   width: 2.3rem;
 }
 
+.headerPreviewAvatar {
+  background:
+    radial-gradient(circle at 50% 35%, #ffffff 0 22%, transparent 23%),
+    radial-gradient(ellipse at 50% 100%, #ffffff 0 36%, transparent 37%),
+    #aeb2a9;
+  overflow: hidden;
+}
+
+.headerPreviewAvatar img {
+  display: block;
+  height: 100%;
+  object-fit: cover;
+  width: 100%;
+}
+
 .headerPreviewhero {
-  background: radial-gradient(circle at 50% 35%, #ffffff 0 20%, transparent 21%), linear-gradient(#e44842, #f2eeee);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0) 0 42%, #f0f0ee 86%),
+    #d7d8d4;
+}
+
+.headerPreview > .headerPreviewAvatarHero {
+  border-radius: 0.72rem 0.72rem 0 0;
+  height: 100%;
+  inset: 0;
+  transform: none;
+  width: 100%;
+}
+
+.headerPreviewhero::after {
+  background:
+    linear-gradient(180deg, transparent 0 32%, rgba(240, 240, 238, 0.72) 78%, #f0f0ee 100%);
+  content: "";
+  inset: 0;
+  pointer-events: none;
+  position: absolute;
 }
 
 .headerPreviewbanner {
@@ -314,7 +348,13 @@
 }
 
 .headerPreviewshape {
-  background: radial-gradient(ellipse at 50% 45%, #e44842 0 38%, #f0f0ee 39%);
+  background: #f0f0ee;
+}
+
+.headerPreview > .headerPreviewAvatarShape {
+  height: 2.85rem;
+  top: 42%;
+  width: 3.8rem;
 }
 
 .wallpaperPreviewfill {
@@ -468,6 +508,10 @@
   border: 2px solid var(--color-text);
 }
 
+.visualChoiceButton[data-selected="true"] .shapeChoiceSurface {
+  border: 2px solid var(--color-text);
+}
+
 .buttonStylePreview {
   display: block;
   height: 2.1rem;
@@ -520,6 +564,47 @@
 
 .radiusPreviewfull {
   border-radius: 999px 0 0 0;
+}
+
+.shapeChoiceGrid {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.shapeChoiceSurface {
+  align-items: center;
+  background: #f0efed;
+  border: 1px solid transparent;
+  border-radius: 0.86rem;
+  box-sizing: border-box;
+  display: grid;
+  min-height: 3.45rem;
+  padding: 0.65rem;
+  place-items: center;
+}
+
+.shapeChoicePreview {
+  background: #9ea39c;
+  display: block;
+  height: 1.15rem;
+  width: 2.1rem;
+}
+
+.shapePreviewflower {
+  border-radius: 46% 54% 44% 56% / 43% 48% 52% 57%;
+  clip-path: polygon(4% 36%, 17% 20%, 36% 17%, 50% 10%, 66% 18%, 84% 23%, 96% 40%, 88% 55%, 96% 70%, 80% 84%, 58% 83%, 48% 92%, 32% 84%, 13% 80%, 3% 64%, 12% 50%);
+}
+
+.shapePreviewoval {
+  border-radius: 50%;
+  clip-path: ellipse(49% 39% at 50% 50%);
+}
+
+.shapePreviewrounded {
+  border-radius: 0.42rem;
+}
+
+.shapePreviewburst {
+  clip-path: polygon(50% 0, 57% 10%, 67% 5%, 72% 17%, 85% 15%, 86% 28%, 98% 34%, 90% 45%, 100% 55%, 88% 62%, 91% 76%, 77% 78%, 71% 91%, 60% 85%, 50% 100%, 40% 85%, 29% 91%, 23% 78%, 9% 76%, 12% 62%, 0 55%, 10% 45%, 2% 34%, 14% 28%, 15% 15%, 28% 17%, 33% 5%, 43% 10%);
 }
 
 .colorField {
@@ -609,7 +694,8 @@
   .presetGrid,
   .segmentedGrid,
   .buttonStyleGrid,
-  .radiusGrid {
+  .radiusGrid,
+  .shapeChoiceGrid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
