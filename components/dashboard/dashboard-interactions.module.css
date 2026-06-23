@@ -578,15 +578,23 @@
 
 .layoutChoice {
   align-items: flex-start;
+  background: transparent;
   border: 1px solid #d8dbd3;
   border-radius: 1.45rem;
+  color: inherit;
   display: flex;
   gap: 1rem;
   padding: 1.15rem;
+  text-align: left;
+  width: 100%;
 }
 
 .layoutChoice + .layoutChoice {
   margin-top: 0.85rem;
+}
+
+.layoutChoice:disabled {
+  cursor: default;
 }
 
 .layoutChoiceSelected {
@@ -669,6 +677,22 @@
   width: 100%;
 }
 
+.panelOutlinePreview {
+  align-items: center;
+  background: var(--color-surface);
+  border: 1px solid #d8dbd3;
+  border-radius: 999px;
+  color: var(--color-text);
+  display: flex;
+  font-size: 0.9rem;
+  font-weight: 800;
+  gap: 0.45rem;
+  justify-content: center;
+  margin-top: 1rem;
+  min-height: 2.75rem;
+  width: 100%;
+}
+
 .featuredPlaceholder {
   align-items: flex-end;
   background: linear-gradient(135deg, #ff9800, #fd5f55 48%, #1f2937);
@@ -680,7 +704,25 @@
   height: 5.9rem;
   margin-top: 1rem;
   max-width: 10.75rem;
+  overflow: hidden;
   padding: 0.5rem;
+}
+
+.featuredPlaceholder img,
+.thumbnailPreview img {
+  display: block;
+  height: 100%;
+  object-fit: cover;
+  width: 100%;
+}
+
+.thumbnailPreview {
+  border-radius: 0.8rem;
+  height: 7.4rem;
+  margin: 0 auto 1rem;
+  max-width: 12rem;
+  overflow: hidden;
+  width: 100%;
 }
 
 .panelPrimaryButton,
@@ -700,11 +742,36 @@
   width: 100%;
 }
 
+.panelSecondaryButton {
+  align-items: center;
+  background: transparent;
+  border: 1px solid #d8dbd3;
+  border-radius: 999px;
+  color: var(--color-text);
+  display: inline-flex;
+  font-size: 0.9rem;
+  font-weight: 800;
+  justify-content: center;
+  margin-top: 0.75rem;
+  min-height: 2.65rem;
+  padding: 0 1.35rem;
+  width: 100%;
+}
+
 .panelPrimaryButton:disabled,
 .panelUpgradeButton:disabled,
-.panelOutlineButton:disabled {
+.panelOutlineButton:disabled,
+.panelSecondaryButton:disabled {
   cursor: default;
-  opacity: 1;
+  opacity: 0.72;
+}
+
+.panelStatus {
+  color: #5d625d;
+  font-size: 0.78rem;
+  font-weight: 700;
+  margin-top: 0.8rem;
+  text-align: center;
 }
 
 .panelOptionList {

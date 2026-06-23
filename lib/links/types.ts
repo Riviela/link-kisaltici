@@ -1,9 +1,14 @@
+import type { LinkLayout } from "@/lib/links/layout";
+
 export interface LinkItem {
   id: number;
   title: string;
   url: string;
   is_active: boolean;
   position: number;
+  layout: LinkLayout;
+  thumbnail_path: string | null;
+  thumbnailUrl: string | null;
 }
 
 export type LinkActionErrorCode =

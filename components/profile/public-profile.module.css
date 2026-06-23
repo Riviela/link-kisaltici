@@ -509,6 +509,63 @@
     color 180ms ease-out;
 }
 
+.publicLinkFeatured {
+  align-items: stretch;
+  display: grid;
+  gap: 0.75rem;
+  grid-template-columns: 1fr;
+  min-height: 8.25rem;
+  padding: 0.7rem;
+}
+
+.publicFeaturedMedia,
+.publicFeaturedMediaFallback {
+  border-radius: 0.32rem;
+  display: block;
+  min-height: 7.4rem;
+  overflow: hidden;
+  width: 100%;
+}
+
+.publicFeaturedMedia img {
+  display: block;
+  height: 100%;
+  object-fit: cover;
+  width: 100%;
+}
+
+.publicFeaturedMediaFallback {
+  align-items: center;
+  background:
+    radial-gradient(circle at 22% 16%, color-mix(in srgb, var(--profile-button-text, #0d0f12) 9%, transparent), transparent 30%),
+    linear-gradient(135deg, color-mix(in srgb, var(--profile-button-background, #ffffff) 68%, #eceef1), color-mix(in srgb, var(--profile-button-background, #ffffff) 88%, var(--profile-page-text, #0d0f12)));
+  display: flex;
+  justify-content: center;
+}
+
+.publicFeaturedMediaFallback::after {
+  background: color-mix(in srgb, var(--profile-button-text, #0d0f12) 18%, transparent);
+  border-radius: 999px;
+  content: "";
+  height: 2.5rem;
+  width: min(42%, 9rem);
+}
+
+.publicFeaturedRow {
+  align-items: center;
+  display: grid;
+  grid-template-columns: 2.4rem minmax(0, 1fr) 2.4rem;
+  min-height: 2.65rem;
+}
+
+.publicFeaturedRow .publicLinkTitle {
+  grid-column: 2;
+}
+
+.publicFeaturedRow .publicLinkMenu {
+  grid-column: 3;
+}
+
 .publicLinkButton:hover,
 .publicLinkButton:active {
   background: color-mix(in srgb, var(--profile-button-background, #ffffff) 92%, var(--profile-page-text, #0d0f12));
@@ -529,16 +586,36 @@
   border-radius: 0.08rem;
 }
 
+.profileButtonRadiussquare .publicFeaturedMedia,
+.profileButtonRadiussquare .publicFeaturedMediaFallback {
+  border-radius: 0.04rem;
+}
+
 .profileButtonRadiusround .publicLinkButton {
   border-radius: 0.58rem;
+}
+
+.profileButtonRadiusround .publicFeaturedMedia,
+.profileButtonRadiusround .publicFeaturedMediaFallback {
+  border-radius: 0.38rem;
 }
 
 .profileButtonRadiusrounder .publicLinkButton {
   border-radius: 0.92rem;
 }
 
+.profileButtonRadiusrounder .publicFeaturedMedia,
+.profileButtonRadiusrounder .publicFeaturedMediaFallback {
+  border-radius: 0.64rem;
+}
+
 .profileButtonRadiusfull .publicLinkButton {
   border-radius: 999px;
+}
+
+.profileButtonRadiusfull .publicFeaturedMedia,
+.profileButtonRadiusfull .publicFeaturedMediaFallback {
+  border-radius: 1.2rem;
 }
 
 .profileButtonShadownone .publicLinkButton {
@@ -571,6 +648,27 @@
   grid-template-columns: 2.35rem minmax(0, 1fr) 2.35rem;
   min-height: 3.2rem;
   padding: 0.42rem 0.46rem;
+}
+
+.profileSurfacePreview .publicLinkFeatured {
+  gap: 0.46rem;
+  grid-template-columns: 1fr;
+  min-height: 6.4rem;
+  padding: 0.42rem;
+}
+
+.profileSurfacePreview .publicFeaturedMedia,
+.profileSurfacePreview .publicFeaturedMediaFallback {
+  min-height: 4.9rem;
+}
+
+.profileSurfacePreview .publicFeaturedMediaFallback::after {
+  height: 1.65rem;
+}
+
+.profileSurfacePreview .publicFeaturedRow {
+  grid-template-columns: 1.9rem minmax(0, 1fr) 1.9rem;
+  min-height: 1.9rem;
 }
 
 .profileSurfacePreview.profileButtonRadiussquare .publicLinkButton {

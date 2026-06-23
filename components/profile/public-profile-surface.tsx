@@ -6,6 +6,7 @@ import { PublicLinkButton } from "@/components/profile/public-link-button";
 import { PublicShareButton } from "@/components/profile/public-share-button";
 import { APP_NAME } from "@/lib/config/site";
 import { copy } from "@/lib/copy";
+import type { LinkLayout } from "@/lib/links/layout";
 import {
   DEFAULT_APPEARANCE,
   normalizeAppearance,
@@ -19,6 +20,8 @@ export interface PublicProfileSurfaceLink {
   id: number;
   title: string;
   url: string;
+  layout?: LinkLayout;
+  thumbnailUrl?: string | null;
 }
 
 interface PublicProfileSurfaceProps {

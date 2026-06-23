@@ -20,6 +20,7 @@ import { useId } from "react";
 import { LinkCard } from "@/components/dashboard/link-card";
 import type { LinkPanelType } from "@/components/dashboard/link-card-panel";
 import { copy } from "@/lib/copy";
+import type { LinkLayout } from "@/lib/links/layout";
 import type { LinkItem } from "@/lib/links/types";
 
 interface OpenPanelState {
@@ -35,10 +36,19 @@ interface SortableLinkListProps {
   onDragEnd: (event: DragEndEvent) => void;
   onEdit: (linkId: number | null) => void;
   onFormPendingChange: (pending: boolean) => void;
+  onLayoutChange: (linkId: number, layout: LinkLayout) => void;
   onPanelToggle: (linkId: number, panel: LinkPanelType) => void;
+  onThumbnailRemove: (linkId: number) => void;
+  onThumbnailUpload: (linkId: number, file: File) => void;
   onToggle: (linkId: number, isActive: boolean) => Promise<void>;
   onUpdate: (link: LinkItem, message: string) => void;
   openPanel: OpenPanelState | null;
+  panelMessage:
+    | { linkId: number; text: string }
+    | null;
+  pendingPanel:
+    | { linkId: number; type: "layout" | "thumbnail" }
+    | null;
 }
 
 export function SortableLinkList({
@@ -49,10 +59,15 @@ export function SortableLinkList({
   onDragEnd,
   onEdit,
   onFormPendingChange,
+  onLayoutChange,
   onPanelToggle,
+  onThumbnailRemove,
+  onThumbnailUpload,
   onToggle,
   onUpdate,
   openPanel,
+  panelMessage,
+  pendingPanel,
 }: SortableLinkListProps) {
   const dndContextId = useId();
   const sensors = useSensors(
@@ -97,9 +112,16 @@ export function SortableLinkList({
               onDelete={onDelete}
               onEdit={onEdit}
               onFormPendingChange={onFormPendingChange}
+              onLayoutChange={onLayoutChange}
               onPanelToggle={onPanelToggle}
+              onThumbnailRemove={onThumbnailRemove}
+              onThumbnailUpload={onThumbnailUpload}
               onToggle={onToggle}
               onUpdate={onUpdate}
+              panelMessage={
+                panelMessage?.linkId === link.id ? panelMessage.text : null
+              }
+              pendingPanel={pendingPanel}
             />
           ))}
         </div>

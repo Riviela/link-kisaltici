@@ -7,8 +7,11 @@ import { useCallback, useMemo, useState } from "react";
 
 import {
   deleteLinkAction,
+  removeLinkThumbnailAction,
   reorderLinksAction,
   toggleLinkAction,
+  updateLinkLayoutAction,
+  uploadLinkThumbnailAction,
 } from "@/app/actions/links";
 import { updateProfileAppearanceAction } from "@/app/actions/profile";
 import { AddLinkModal } from "@/components/dashboard/add-link-modal";
@@ -18,6 +21,7 @@ import type { LinkPanelType } from "@/components/dashboard/link-card-panel";
 import { ProfilePreview } from "@/components/dashboard/profile-preview";
 import { SortableLinkList } from "@/components/dashboard/sortable-link-list";
 import { copy } from "@/lib/copy";
+import type { LinkLayout } from "@/lib/links/layout";
 import type { LinkItem } from "@/lib/links/types";
 import {
   normalizeAppearance,
@@ -57,6 +61,16 @@ interface LinkState {
 interface OpenPanelState {
   linkId: number;
   panel: LinkPanelType;
+}
+
+interface PendingPanelState {
+  linkId: number;
+  type: "layout" | "thumbnail";
+}
+
+interface PanelMessageState {
+  linkId: number;
+  text: string;
 }
 
 type DashboardMode = "content" | "design";
@@ -183,6 +197,12 @@ export function LinkManager({ initialLinks, profile }: LinkManagerProps) {
   const [editingLinkId, setEditingLinkId] = useState<number | null>(null);
   const [isMutating, setIsMutating] = useState(false);
   const [isReordering, setIsReordering] = useState(false);
+  const [pendingPanel, setPendingPanel] = useState<PendingPanelState | null>(
+    null,
+  );
+  const [panelMessage, setPanelMessage] = useState<PanelMessageState | null>(
+    null,
+  );
   const [isSavingAppearance, setIsSavingAppearance] = useState(false);
   const [feedback, setFeedback] = useState<FeedbackMessage | null>(null);
   const [appearanceFeedback, setAppearanceFeedback] =
@@ -197,7 +217,7 @@ export function LinkManager({ initialLinks, profile }: LinkManagerProps) {
   );
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [openPanel, setOpenPanel] = useState<OpenPanelState | null>(null);
-  const isBusy = isMutating || isReordering;
+  const isBusy = isMutating || isReordering || pendingPanel !== null;
   const isAppearanceDirty = !areAppearancesEqual(
     appearanceDraft,
     appearanceSaved,
@@ -298,6 +318,131 @@ export function LinkManager({ initialLinks, profile }: LinkManagerProps) {
       }
     },
     [applyReturnedLink, isBusy, router],
+  );
+
+  const handleLayoutChange = useCallback(
+    async (linkId: number, layout: LinkLayout) => {
+      if (isBusy) return;
+
+      const previousLink = links.find((link) => link.id === linkId);
+      if (!previousLink || previousLink.layout === layout) return;
+
+      setPanelMessage(null);
+      setPendingPanel({ linkId, type: "layout" });
+      setLinkState((currentState) => ({
+        current: sortLinks(
+          currentState.current.map((link) =>
+            link.id === linkId ? { ...link, layout } : link,
+          ),
+        ),
+        safe: currentState.safe,
+      }));
+
+      try {
+        const result = await updateLinkLayoutAction(linkId, layout);
+
+        if (result.success) {
+          applyReturnedLink(result.link);
+          setPanelMessage({ linkId, text: result.message });
+          router.refresh();
+        } else {
+          applyReturnedLink(previousLink);
+          setPanelMessage({ linkId, text: result.message });
+        }
+      } catch {
+        applyReturnedLink(previousLink);
+        setPanelMessage({ linkId, text: copy.links.failure.update });
+      } finally {
+        setPendingPanel(null);
+      }
+    },
+    [applyReturnedLink, isBusy, links, router],
+  );
+
+  const handleThumbnailUpload = useCallback(
+    async (linkId: number, file: File) => {
+      if (isBusy) return;
+
+      const previousLink = links.find((link) => link.id === linkId);
+      if (!previousLink) return;
+
+      const localPreviewUrl = URL.createObjectURL(file);
+      setPanelMessage(null);
+      setPendingPanel({ linkId, type: "thumbnail" });
+      setLinkState((currentState) => ({
+        current: sortLinks(
+          currentState.current.map((link) =>
+            link.id === linkId
+              ? { ...link, thumbnailUrl: localPreviewUrl }
+              : link,
+          ),
+        ),
+        safe: currentState.safe,
+      }));
+
+      try {
+        const formData = new FormData();
+        formData.set("thumbnail", file);
+        const result = await uploadLinkThumbnailAction(linkId, formData);
+
+        if (result.success) {
+          applyReturnedLink(result.link);
+          setPanelMessage({ linkId, text: result.message });
+          router.refresh();
+        } else {
+          applyReturnedLink(previousLink);
+          setPanelMessage({ linkId, text: result.message });
+        }
+      } catch {
+        applyReturnedLink(previousLink);
+        setPanelMessage({ linkId, text: copy.links.failure.thumbnail });
+      } finally {
+        URL.revokeObjectURL(localPreviewUrl);
+        setPendingPanel(null);
+      }
+    },
+    [applyReturnedLink, isBusy, links, router],
+  );
+
+  const handleThumbnailRemove = useCallback(
+    async (linkId: number) => {
+      if (isBusy) return;
+
+      const previousLink = links.find((link) => link.id === linkId);
+      if (!previousLink || !previousLink.thumbnailUrl) return;
+
+      setPanelMessage(null);
+      setPendingPanel({ linkId, type: "thumbnail" });
+      setLinkState((currentState) => ({
+        current: sortLinks(
+          currentState.current.map((link) =>
+            link.id === linkId
+              ? { ...link, thumbnail_path: null, thumbnailUrl: null }
+              : link,
+          ),
+        ),
+        safe: currentState.safe,
+      }));
+
+      try {
+        const result = await removeLinkThumbnailAction(linkId);
+
+        if (result.success) {
+          applyReturnedLink(result.link);
+          setPanelMessage({ linkId, text: result.message });
+          router.refresh();
+        } else {
+          applyReturnedLink(previousLink);
+          setPanelMessage({ linkId, text: result.message });
+        }
+      } catch {
+        applyReturnedLink(previousLink);
+        setPanelMessage({ linkId, text: copy.links.failure.thumbnail });
+      } finally {
+        setPendingPanel(null);
+      }
+    },
+    [applyReturnedLink, isBusy, links, router],
   );
 
   const handleDelete = useCallback(
@@ -532,6 +677,7 @@ export function LinkManager({ initialLinks, profile }: LinkManagerProps) {
             onDragEnd={handleDragEnd}
             onEdit={(linkId) => {
               setEditingLinkId(linkId);
+              setPanelMessage(null);
               if (linkId !== null) {
                 setOpenPanel((current) =>
                   current?.linkId === linkId ? null : current,
@@ -539,14 +685,20 @@ export function LinkManager({ initialLinks, profile }: LinkManagerProps) {
               }
             }}
             onFormPendingChange={setIsMutating}
+            onLayoutChange={handleLayoutChange}
             onPanelToggle={(linkId, panel) => {
+              setPanelMessage(null);
               setOpenPanel((current) =>
                 current?.linkId === linkId && current.panel === panel
                   ? null
                   : { linkId, panel },
               );
             }}
+            onThumbnailRemove={handleThumbnailRemove}
+            onThumbnailUpload={handleThumbnailUpload}
             openPanel={openPanel}
+            panelMessage={panelMessage}
+            pendingPanel={pendingPanel}
             onToggle={handleToggle}
             onUpdate={handleFormSuccess}
           />

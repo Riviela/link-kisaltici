@@ -4,6 +4,8 @@ import {
   isValidPublicUsername,
   normalizePublicUsername,
 } from "@/lib/profile/public-username";
+import { normalizeLinkLayout, type LinkLayout } from "@/lib/links/layout";
+import { getPublicLinkThumbnailUrl } from "@/lib/links/thumbnail";
 import {
   DEFAULT_APPEARANCE,
   normalizeAppearance,
@@ -18,6 +20,8 @@ export interface PublicProfileLink {
   title: string;
   url: string;
   position: number;
+  layout: LinkLayout;
+  thumbnailUrl: string | null;
 }
 
 export interface PublicProfileData {
@@ -67,7 +71,7 @@ export async function getPublicProfile(
 
   const { data: links, error: linksError } = await supabase
     .from("links")
-    .select("id, title, url, position")
+    .select("id, title, url, position, layout, thumbnail_path")
     .eq("user_id", profile.id)
     .eq("is_active", true)
     .order("position", { ascending: true })
@@ -93,6 +97,13 @@ export async function getPublicProfile(
         youtube: profile.youtube_handle,
       },
     },
-    links,
+    links: (links ?? []).map((link) => ({
+      id: link.id,
+      title: link.title,
+      url: link.url,
+      position: link.position,
+      layout: normalizeLinkLayout(link.layout),
+      thumbnailUrl: getPublicLinkThumbnailUrl(supabase, link.thumbnail_path),
+    })),
   };
 }

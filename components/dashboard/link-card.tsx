@@ -13,6 +13,7 @@ import {
 } from "@/components/dashboard/link-card-panel";
 import { LinkForm } from "@/components/dashboard/link-form";
 import { copy } from "@/lib/copy";
+import type { LinkLayout } from "@/lib/links/layout";
 import type { LinkItem } from "@/lib/links/types";
 
 import styles from "./dashboard-interactions.module.css";
@@ -25,9 +26,16 @@ interface LinkCardProps {
   onDelete: (linkId: number) => Promise<boolean>;
   onEdit: (linkId: number | null) => void;
   onFormPendingChange: (pending: boolean) => void;
+  onLayoutChange: (linkId: number, layout: LinkLayout) => void;
   onPanelToggle: (linkId: number, panel: LinkPanelType) => void;
+  onThumbnailRemove: (linkId: number) => void;
+  onThumbnailUpload: (linkId: number, file: File) => void;
   onToggle: (linkId: number, isActive: boolean) => Promise<void>;
   onUpdate: (link: LinkItem, message: string) => void;
+  panelMessage: string | null;
+  pendingPanel:
+    | { linkId: number; type: "layout" | "thumbnail" }
+    | null;
 }
 
 export function LinkCard({
@@ -38,9 +46,14 @@ export function LinkCard({
   onDelete,
   onEdit,
   onFormPendingChange,
+  onLayoutChange,
   onPanelToggle,
+  onThumbnailRemove,
+  onThumbnailUpload,
   onToggle,
   onUpdate,
+  panelMessage,
+  pendingPanel,
 }: LinkCardProps) {
   const [isConfirmingDelete, setIsConfirmingDelete] = useState(false);
   const { attributes, listeners, setNodeRef, transform, isDragging } =
@@ -222,7 +235,19 @@ export function LinkCard({
       {activePanel ? (
         <LinkCardPanels
           activePanel={activePanel}
+          isLayoutPending={
+            pendingPanel?.linkId === link.id && pendingPanel.type === "layout"
+          }
+          isThumbnailPending={
+            pendingPanel?.linkId === link.id &&
+            pendingPanel.type === "thumbnail"
+          }
+          link={link}
+          message={panelMessage}
           onClose={() => onPanelToggle(link.id, activePanel)}
+          onLayoutChange={(layout) => onLayoutChange(link.id, layout)}
+          onThumbnailRemove={() => onThumbnailRemove(link.id)}
+          onThumbnailUpload={(file) => onThumbnailUpload(link.id, file)}
         />
       ) : null}
     </article>

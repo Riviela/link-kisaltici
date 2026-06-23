@@ -3,7 +3,17 @@
 import { revalidatePath } from "next/cache";
 
 import { copy } from "@/lib/copy";
-import { LINK_SELECT } from "@/lib/links/get-current-links";
+import {
+  LINK_SELECT,
+  mapLinkRow,
+  type LinkRow,
+} from "@/lib/links/get-current-links";
+import { isLinkLayout, type LinkLayout } from "@/lib/links/layout";
+import {
+  getLinkThumbnailPath,
+  LINK_THUMBNAILS_BUCKET,
+  validateLinkThumbnailFile,
+} from "@/lib/links/thumbnail";
 import type {
   DeleteLinkResult,
   LinkActionFailure,
@@ -67,11 +77,35 @@ async function readOwnedLinks(
     .order("position", { ascending: true })
     .order("id", { ascending: true });
 
-  return error ? null : data;
+  return error ? null : (data ?? []).map((link) => mapLinkRow(supabase, link));
 }
 
 function toFormFailure(failure: LinkActionFailure): LinkFormActionState {
   return { status: "error", message: failure.message };
+}
+
+function toLinkItem(
+  supabase: ServerSupabaseClient,
+  link: LinkRow,
+): LinkItem {
+  return mapLinkRow(supabase, link);
+}
+
+async function revalidateLinkSurfaces(
+  supabase: ServerSupabaseClient,
+  userId: string,
+) {
+  await revalidateLinkSurfaces(auth.supabase, auth.userId);
+
+  const { data } = await supabase
+    .from("profiles")
+    .select("username")
+    .eq("id", userId)
+    .maybeSingle();
+
+  if (typeof data?.username === "string" && data.username.length > 0) {
+    revalidatePath(`/${data.username}`);
+  }
 }
 
 export async function createLinkAction(
@@ -107,12 +141,12 @@ export async function createLinkAction(
     return { status: "error", message: copy.links.failure.create };
   }
 
-  revalidatePath("/dashboard");
+  await revalidateLinkSurfaces(auth.supabase, auth.userId);
 
   return {
     status: "success",
     message: copy.links.success.created,
-    link: data,
+    link: toLinkItem(auth.supabase, data),
   };
 }
 
@@ -161,12 +195,12 @@ export async function createLinkFromUrlAction(
     return { status: "error", message: copy.links.failure.create };
   }
 
-  revalidatePath("/dashboard");
+  await revalidateLinkSurfaces(auth.supabase, auth.userId);
 
   return {
     status: "success",
     message: copy.links.success.created,
-    link: data,
+    link: toLinkItem(auth.supabase, data),
   };
 }
 
@@ -208,12 +242,12 @@ export async function updateLinkAction(
     return { status: "error", message: copy.links.failure.update };
   }
 
-  revalidatePath("/dashboard");
+  await revalidateLinkSurfaces(auth.supabase, auth.userId);
 
   return {
     status: "success",
     message: copy.links.success.updated,
-    link: data,
+    link: toLinkItem(auth.supabase, data),
   };
 }
 
@@ -251,12 +285,233 @@ export async function toggleLinkAction(
     };
   }
 
-  revalidatePath("/dashboard");
+  await revalidateLinkSurfaces(auth.supabase, auth.userId);
 
   return {
     success: true,
-    link: data,
+    link: toLinkItem(auth.supabase, data),
     message: copy.links.success.updated,
+  };
+}
+
+export async function updateLinkLayoutAction(
+  linkId: number,
+  layout: LinkLayout,
+): Promise<LinkMutationResult> {
+  const auth = await getAuthenticatedContext();
+
+  if (!auth.success) {
+    return auth.failure;
+  }
+
+  if (!Number.isSafeInteger(linkId) || linkId <= 0 || !isLinkLayout(layout)) {
+    return {
+      success: false,
+      code: "INVALID_INPUT",
+      message: copy.links.failure.invalid,
+    };
+  }
+
+  const { data, error } = await auth.supabase
+    .from("links")
+    .update({ layout })
+    .eq("id", linkId)
+    .eq("user_id", auth.userId)
+    .select(LINK_SELECT)
+    .maybeSingle();
+
+  if (error || !data) {
+    return {
+      success: false,
+      code: "UPDATE_FAILED",
+      message: copy.links.failure.update,
+    };
+  }
+
+  await revalidateLinkSurfaces(auth.supabase, auth.userId);
+
+  return {
+    success: true,
+    link: toLinkItem(auth.supabase, data),
+    message: copy.links.success.layoutUpdated,
+  };
+}
+
+export async function uploadLinkThumbnailAction(
+  linkId: number,
+  formData: FormData,
+): Promise<LinkMutationResult> {
+  const auth = await getAuthenticatedContext();
+
+  if (!auth.success) {
+    return auth.failure;
+  }
+
+  if (!Number.isSafeInteger(linkId) || linkId <= 0) {
+    return {
+      success: false,
+      code: "INVALID_INPUT",
+      message: copy.links.failure.invalid,
+    };
+  }
+
+  const file = formData.get("thumbnail");
+
+  if (!(file instanceof File)) {
+    return {
+      success: false,
+      code: "INVALID_INPUT",
+      message: copy.links.failure.thumbnail,
+    };
+  }
+
+  const validatedFile = validateLinkThumbnailFile(file);
+
+  if (!validatedFile.success) {
+    return {
+      success: false,
+      code: "INVALID_INPUT",
+      message: validatedFile.message,
+    };
+  }
+
+  const { data: existingLink, error: lookupError } = await auth.supabase
+    .from("links")
+    .select("id, thumbnail_path")
+    .eq("id", linkId)
+    .eq("user_id", auth.userId)
+    .maybeSingle();
+
+  if (lookupError || !existingLink) {
+    return {
+      success: false,
+      code: "NOT_FOUND",
+      message: copy.links.failure.update,
+    };
+  }
+
+  const thumbnailPath = getLinkThumbnailPath(
+    auth.userId,
+    linkId,
+    validatedFile.extension,
+  );
+
+  const { error: uploadError } = await auth.supabase.storage
+    .from(LINK_THUMBNAILS_BUCKET)
+    .upload(thumbnailPath, file, {
+      cacheControl: "3600",
+      contentType: validatedFile.mimeType,
+      upsert: true,
+    });
+
+  if (uploadError) {
+    return {
+      success: false,
+      code: "UPDATE_FAILED",
+      message: copy.links.failure.thumbnail,
+    };
+  }
+
+  const { data, error } = await auth.supabase
+    .from("links")
+    .update({ thumbnail_path: thumbnailPath })
+    .eq("id", linkId)
+    .eq("user_id", auth.userId)
+    .select(LINK_SELECT)
+    .maybeSingle();
+
+  if (error || !data) {
+    if (existingLink.thumbnail_path !== thumbnailPath) {
+      await auth.supabase.storage
+        .from(LINK_THUMBNAILS_BUCKET)
+        .remove([thumbnailPath]);
+    }
+
+    return {
+      success: false,
+      code: "UPDATE_FAILED",
+      message: copy.links.failure.thumbnail,
+    };
+  }
+
+  if (
+    existingLink.thumbnail_path &&
+    existingLink.thumbnail_path !== thumbnailPath
+  ) {
+    await auth.supabase.storage
+      .from(LINK_THUMBNAILS_BUCKET)
+      .remove([existingLink.thumbnail_path]);
+  }
+
+  await revalidateLinkSurfaces(auth.supabase, auth.userId);
+
+  return {
+    success: true,
+    link: toLinkItem(auth.supabase, data),
+    message: copy.links.success.thumbnailUpdated,
+  };
+}
+
+export async function removeLinkThumbnailAction(
+  linkId: number,
+): Promise<LinkMutationResult> {
+  const auth = await getAuthenticatedContext();
+
+  if (!auth.success) {
+    return auth.failure;
+  }
+
+  if (!Number.isSafeInteger(linkId) || linkId <= 0) {
+    return {
+      success: false,
+      code: "INVALID_INPUT",
+      message: copy.links.failure.invalid,
+    };
+  }
+
+  const { data: existingLink, error: lookupError } = await auth.supabase
+    .from("links")
+    .select("id, thumbnail_path")
+    .eq("id", linkId)
+    .eq("user_id", auth.userId)
+    .maybeSingle();
+
+  if (lookupError || !existingLink) {
+    return {
+      success: false,
+      code: "NOT_FOUND",
+      message: copy.links.failure.update,
+    };
+  }
+
+  const { data, error } = await auth.supabase
+    .from("links")
+    .update({ thumbnail_path: null })
+    .eq("id", linkId)
+    .eq("user_id", auth.userId)
+    .select(LINK_SELECT)
+    .maybeSingle();
+
+  if (error || !data) {
+    return {
+      success: false,
+      code: "UPDATE_FAILED",
+      message: copy.links.failure.thumbnail,
+    };
+  }
+
+  if (existingLink.thumbnail_path) {
+    await auth.supabase.storage
+      .from(LINK_THUMBNAILS_BUCKET)
+      .remove([existingLink.thumbnail_path]);
+  }
+
+  await revalidateLinkSurfaces(auth.supabase, auth.userId);
+
+  return {
+    success: true,
+    link: toLinkItem(auth.supabase, data),
+    message: copy.links.success.thumbnailRemoved,
   };
 }
 
@@ -277,6 +532,27 @@ export async function deleteLinkAction(
     };
   }
 
+  const { data: existingLink, error: lookupError } = await auth.supabase
+    .from("links")
+    .select("id, thumbnail_path")
+    .eq("id", linkId)
+    .eq("user_id", auth.userId)
+    .maybeSingle();
+
+  if (lookupError || !existingLink) {
+    return {
+      success: false,
+      code: "DELETE_FAILED",
+      message: copy.links.failure.delete,
+    };
+  }
+
+  if (existingLink.thumbnail_path) {
+    await auth.supabase.storage
+      .from(LINK_THUMBNAILS_BUCKET)
+      .remove([existingLink.thumbnail_path]);
+  }
+
   const { data, error } = await auth.supabase
     .from("links")
     .delete()
@@ -293,7 +569,7 @@ export async function deleteLinkAction(
     };
   }
 
-  revalidatePath("/dashboard");
+  await revalidateLinkSurfaces(auth.supabase, auth.userId);
 
   return {
     success: true,

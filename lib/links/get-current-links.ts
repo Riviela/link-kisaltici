@@ -1,9 +1,23 @@
 import "server-only";
 
 import { createClient } from "@/lib/supabase/server";
+import { normalizeLinkLayout } from "@/lib/links/layout";
+import { getPublicLinkThumbnailUrl } from "@/lib/links/thumbnail";
 import type { LinkItem } from "@/lib/links/types";
 
-const LINK_SELECT = "id, title, url, is_active, position";
+const LINK_SELECT = "id, title, url, is_active, position, layout, thumbnail_path";
+
+type ServerSupabaseClient = Awaited<ReturnType<typeof createClient>>;
+
+export interface LinkRow {
+  id: number;
+  title: string;
+  url: string;
+  is_active: boolean;
+  position: number;
+  layout: string | null;
+  thumbnail_path: string | null;
+}
 
 export class LinksAuthenticationError extends Error {
   constructor() {
@@ -17,6 +31,22 @@ export class LinksLookupError extends Error {
     super("Links could not be loaded.");
     this.name = "LinksLookupError";
   }
+}
+
+export function mapLinkRow(
+  supabase: ServerSupabaseClient,
+  link: LinkRow,
+): LinkItem {
+  return {
+    id: link.id,
+    title: link.title,
+    url: link.url,
+    is_active: link.is_active,
+    position: link.position,
+    layout: normalizeLinkLayout(link.layout),
+    thumbnail_path: link.thumbnail_path,
+    thumbnailUrl: getPublicLinkThumbnailUrl(supabase, link.thumbnail_path),
+  };
 }
 
 export async function getCurrentLinks(): Promise<LinkItem[]> {
@@ -40,7 +70,7 @@ export async function getCurrentLinks(): Promise<LinkItem[]> {
     throw new LinksLookupError();
   }
 
-  return data;
+  return (data ?? []).map((link) => mapLinkRow(supabase, link));
 }
 
 export { LINK_SELECT };

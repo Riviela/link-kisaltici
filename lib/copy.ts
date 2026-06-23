@@ -218,6 +218,9 @@ export const copy = {
       created: "Your link was added.",
       updated: "Your link was updated.",
       deleted: "Your link was deleted.",
+      layoutUpdated: "Your link layout was updated.",
+      thumbnailUpdated: "Your thumbnail was updated.",
+      thumbnailRemoved: "Your thumbnail was removed.",
     },
     failure: {
       authentication: "Your session has expired. Please log in again.",
@@ -230,6 +233,7 @@ export const copy = {
       reorder: "We could not save the new order. Please try again.",
       reorderRestored:
         "We could not save the new order. The latest saved order has been restored.",
+      thumbnail: "We could not update this thumbnail. Please try again.",
     },
   },
   linkPicker: {

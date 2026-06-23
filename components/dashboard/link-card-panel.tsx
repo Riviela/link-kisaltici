@@ -1,6 +1,10 @@
 "use client";
 
+import { useRef } from "react";
+
 import styles from "./dashboard-interactions.module.css";
+import type { LinkLayout } from "@/lib/links/layout";
+import type { LinkItem } from "@/lib/links/types";
 
 export const LINK_PANEL_TYPES = [
   "layout",
@@ -32,7 +36,14 @@ const LINK_PANEL_TITLES: Record<LinkPanelType, string> = {
 
 interface LinkCardPanelsProps {
   activePanel: LinkPanelType | null;
+  isLayoutPending: boolean;
+  isThumbnailPending: boolean;
+  link: LinkItem;
+  message: string | null;
   onClose: () => void;
+  onLayoutChange: (layout: LinkLayout) => void;
+  onThumbnailRemove: () => void;
+  onThumbnailUpload: (file: File) => void;
 }
 
 function RadioMark({ selected = false }: { selected?: boolean }) {
@@ -58,12 +69,30 @@ function UpgradeButton({ children = "Upgrade now" }: { children?: string }) {
   );
 }
 
-function LayoutPanel() {
+function LayoutPanel({
+  isPending,
+  link,
+  message,
+  onLayoutChange,
+}: {
+  isPending: boolean;
+  link: LinkItem;
+  message: string | null;
+  onLayoutChange: (layout: LinkLayout) => void;
+}) {
+  const isClassic = link.layout === "classic";
+
   return (
     <div className={styles.panelBody}>
       <p className={styles.panelDescription}>Choose a layout for your link.</p>
-      <div className={`${styles.layoutChoice} ${styles.layoutChoiceSelected}`}>
-        <RadioMark selected />
+      <button
+        aria-pressed={isClassic}
+        className={`${styles.layoutChoice} ${isClassic ? styles.layoutChoiceSelected : ""}`}
+        disabled={isPending || isClassic}
+        onClick={() => onLayoutChange("classic")}
+        type="button"
+      >
+        <RadioMark selected={isClassic} />
         <div className="min-w-0 flex-1">
           <p className={styles.panelOptionTitle}>Classic</p>
           <p className={styles.panelOptionDescription}>Efficient, direct and compact.</p>
@@ -73,35 +102,96 @@ function LayoutPanel() {
             <span aria-hidden="true">...</span>
           </div>
         </div>
-      </div>
+      </button>
 
-      <div className={styles.layoutChoice}>
-        <RadioMark />
+      <button
+        aria-pressed={!isClassic}
+        className={`${styles.layoutChoice} ${!isClassic ? styles.layoutChoiceSelected : ""}`}
+        disabled={isPending || !isClassic}
+        onClick={() => onLayoutChange("featured")}
+        type="button"
+      >
+        <RadioMark selected={!isClassic} />
         <div className="min-w-0 flex-1">
           <p className={styles.panelOptionTitle}>Featured</p>
           <p className={styles.panelOptionDescription}>
             Make your link stand out with a larger, more attractive display.
           </p>
-          <button aria-disabled="true" className={styles.panelOutlineButton} disabled type="button">
+          <div className={styles.panelOutlinePreview}>
             <span aria-hidden="true">&#9638;</span>
-            Add thumbnail
-          </button>
+            {link.thumbnailUrl ? "Thumbnail added" : "Add thumbnail"}
+          </div>
           <div aria-hidden="true" className={styles.featuredPlaceholder}>
-            <span>Preview image</span>
+            {link.thumbnailUrl ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img alt="" src={link.thumbnailUrl} />
+            ) : (
+              <span>Preview image</span>
+            )}
           </div>
         </div>
-      </div>
+      </button>
+      {message ? <p className={styles.panelStatus}>{message}</p> : null}
     </div>
   );
 }
 
-function ThumbnailPanel() {
+function ThumbnailPanel({
+  isPending,
+  link,
+  message,
+  onThumbnailRemove,
+  onThumbnailUpload,
+}: {
+  isPending: boolean;
+  link: LinkItem;
+  message: string | null;
+  onThumbnailRemove: () => void;
+  onThumbnailUpload: (file: File) => void;
+}) {
+  const inputRef = useRef<HTMLInputElement>(null);
+  const hasThumbnail = Boolean(link.thumbnailUrl);
+
   return (
     <div className={`${styles.panelBody} text-center`}>
       <p className={styles.panelDescription}>Add a thumbnail or icon to this link.</p>
-      <button aria-disabled="true" className={styles.panelPrimaryButton} disabled type="button">
-        Set thumbnail
+      {hasThumbnail ? (
+        <div className={styles.thumbnailPreview}>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img alt="" src={link.thumbnailUrl ?? ""} />
+        </div>
+      ) : null}
+      <input
+        accept="image/jpeg,image/png,image/webp,.jpg,.jpeg,.png,.webp"
+        className="sr-only"
+        disabled={isPending}
+        onChange={(event) => {
+          const file = event.currentTarget.files?.[0];
+          event.currentTarget.value = "";
+          if (file) onThumbnailUpload(file);
+        }}
+        ref={inputRef}
+        type="file"
+      />
+      <button
+        className={styles.panelPrimaryButton}
+        disabled={isPending}
+        onClick={() => inputRef.current?.click()}
+        type="button"
+      >
+        {isPending ? "Uploading..." : hasThumbnail ? "Replace thumbnail" : "Set thumbnail"}
       </button>
+      {hasThumbnail ? (
+        <button
+          className={styles.panelSecondaryButton}
+          disabled={isPending}
+          onClick={onThumbnailRemove}
+          type="button"
+        >
+          Remove thumbnail
+        </button>
+      ) : null}
+      {message ? <p className={styles.panelStatus}>{message}</p> : null}
     </div>
   );
 }
@@ -250,9 +340,39 @@ function InsightsPanel() {
   );
 }
 
-function PanelContent({ panel }: { panel: LinkPanelType }) {
-  if (panel === "layout") return <LayoutPanel />;
-  if (panel === "thumbnail") return <ThumbnailPanel />;
+function PanelContent({
+  isLayoutPending,
+  isThumbnailPending,
+  link,
+  message,
+  onLayoutChange,
+  onThumbnailRemove,
+  onThumbnailUpload,
+  panel,
+}: LinkCardPanelsProps & { panel: LinkPanelType }) {
+  if (panel === "layout") {
+    return (
+      <LayoutPanel
+        isPending={isLayoutPending}
+        link={link}
+        message={message}
+        onLayoutChange={onLayoutChange}
+      />
+    );
+  }
+
+  if (panel === "thumbnail") {
+    return (
+      <ThumbnailPanel
+        isPending={isThumbnailPending}
+        link={link}
+        message={message}
+        onThumbnailRemove={onThumbnailRemove}
+        onThumbnailUpload={onThumbnailUpload}
+      />
+    );
+  }
+
   if (panel === "prioritize") return <PrioritizePanel />;
   if (panel === "rules") return <RulesPanel />;
   if (panel === "schedule") return <SchedulePanel />;
@@ -278,7 +398,9 @@ export function LinkPanelIcon({ panel }: { panel: LinkPanelType }) {
   return <svg {...common}><path d="M4 16V11m4 5V7m4 9V9m4 7V4" stroke="currentColor" strokeLinecap="round" strokeWidth="1.6" /></svg>;
 }
 
-export function LinkCardPanels({ activePanel, onClose }: LinkCardPanelsProps) {
+export function LinkCardPanels(props: LinkCardPanelsProps) {
+  const { activePanel, onClose } = props;
+
   if (!activePanel) return null;
 
   return (
@@ -296,7 +418,7 @@ export function LinkCardPanels({ activePanel, onClose }: LinkCardPanelsProps) {
               <svg aria-hidden="true" fill="none" height="16" viewBox="0 0 16 16" width="16"><path d="m4 4 8 8m0-8-8 8" stroke="currentColor" strokeLinecap="round" strokeWidth="1.5" /></svg>
             </button>
           </div>
-          <PanelContent panel={activePanel} />
+          <PanelContent {...props} panel={activePanel} />
         </div>
       </div>
     </div>
