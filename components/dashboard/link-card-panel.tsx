@@ -4,6 +4,7 @@ import { useRef } from "react";
 
 import styles from "./dashboard-interactions.module.css";
 import type { LinkLayout } from "@/lib/links/layout";
+import { validateLinkThumbnailFile } from "@/lib/links/thumbnail";
 import type { LinkItem } from "@/lib/links/types";
 
 export const LINK_PANEL_TYPES = [
@@ -43,7 +44,7 @@ interface LinkCardPanelsProps {
   onClose: () => void;
   onLayoutChange: (layout: LinkLayout) => void;
   onThumbnailRemove: () => void;
-  onThumbnailUpload: (file: File) => void;
+  onThumbnailUpload: (file: File, validationMessage?: string) => void;
 }
 
 function RadioMark({ selected = false }: { selected?: boolean }) {
@@ -149,7 +150,7 @@ function ThumbnailPanel({
   link: LinkItem;
   message: string | null;
   onThumbnailRemove: () => void;
-  onThumbnailUpload: (file: File) => void;
+  onThumbnailUpload: (file: File, validationMessage?: string) => void;
 }) {
   const inputRef = useRef<HTMLInputElement>(null);
   const hasThumbnail = Boolean(link.thumbnailUrl);
@@ -170,7 +171,13 @@ function ThumbnailPanel({
         onChange={(event) => {
           const file = event.currentTarget.files?.[0];
           event.currentTarget.value = "";
-          if (file) onThumbnailUpload(file);
+          if (file) {
+            const validation = validateLinkThumbnailFile(file);
+            onThumbnailUpload(
+              file,
+              validation.success ? undefined : validation.message,
+            );
+          }
         }}
         ref={inputRef}
         type="file"

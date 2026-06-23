@@ -438,11 +438,16 @@ export function LinkManager({ initialLinks, profile }: LinkManagerProps) {
   );
 
   const handleThumbnailUpload = useCallback(
-    async (linkId: number, file: File) => {
+    async (linkId: number, file: File, validationMessage?: string) => {
       if (isBusy) return;
 
       const previousLink = links.find((link) => link.id === linkId);
       if (!previousLink) return;
+
+      if (validationMessage) {
+        setPanelMessage({ linkId, text: validationMessage });
+        return;
+      }
 
       const localPreviewUrl = URL.createObjectURL(file);
       setPanelMessage(null);
