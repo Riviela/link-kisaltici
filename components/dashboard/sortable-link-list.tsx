@@ -18,8 +18,14 @@ import {
 import { useId } from "react";
 
 import { LinkCard } from "@/components/dashboard/link-card";
+import type { LinkPanelType } from "@/components/dashboard/link-card-panel";
 import { copy } from "@/lib/copy";
 import type { LinkItem } from "@/lib/links/types";
+
+interface OpenPanelState {
+  linkId: number;
+  panel: LinkPanelType;
+}
 
 interface SortableLinkListProps {
   disabled: boolean;
@@ -29,8 +35,10 @@ interface SortableLinkListProps {
   onDragEnd: (event: DragEndEvent) => void;
   onEdit: (linkId: number | null) => void;
   onFormPendingChange: (pending: boolean) => void;
+  onPanelToggle: (linkId: number, panel: LinkPanelType) => void;
   onToggle: (linkId: number, isActive: boolean) => Promise<void>;
   onUpdate: (link: LinkItem, message: string) => void;
+  openPanel: OpenPanelState | null;
 }
 
 export function SortableLinkList({
@@ -41,8 +49,10 @@ export function SortableLinkList({
   onDragEnd,
   onEdit,
   onFormPendingChange,
+  onPanelToggle,
   onToggle,
   onUpdate,
+  openPanel,
 }: SortableLinkListProps) {
   const dndContextId = useId();
   const sensors = useSensors(
@@ -79,6 +89,7 @@ export function SortableLinkList({
         <div className="space-y-3 overflow-x-clip">
           {links.map((link) => (
             <LinkCard
+              activePanel={openPanel?.linkId === link.id ? openPanel.panel : null}
               disabled={disabled}
               isEditing={editingLinkId === link.id}
               key={link.id}
@@ -86,6 +97,7 @@ export function SortableLinkList({
               onDelete={onDelete}
               onEdit={onEdit}
               onFormPendingChange={onFormPendingChange}
+              onPanelToggle={onPanelToggle}
               onToggle={onToggle}
               onUpdate={onUpdate}
             />

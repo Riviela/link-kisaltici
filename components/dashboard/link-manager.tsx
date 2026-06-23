@@ -12,6 +12,7 @@ import {
 } from "@/app/actions/links";
 import { AddLinkModal } from "@/components/dashboard/add-link-modal";
 import { DashboardProfileHeader } from "@/components/dashboard/dashboard-profile-header";
+import type { LinkPanelType } from "@/components/dashboard/link-card-panel";
 import { ProfilePreview } from "@/components/dashboard/profile-preview";
 import { SortableLinkList } from "@/components/dashboard/sortable-link-list";
 import { copy } from "@/lib/copy";
@@ -46,6 +47,11 @@ interface LinkState {
   safe: LinkItem[];
 }
 
+interface OpenPanelState {
+  linkId: number;
+  panel: LinkPanelType;
+}
+
 function sortLinks(links: LinkItem[]) {
   return [...links].sort(
     (left, right) => left.position - right.position || left.id - right.id,
@@ -67,6 +73,7 @@ export function LinkManager({ initialLinks, profile }: LinkManagerProps) {
     profile.socialHandles,
   );
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [openPanel, setOpenPanel] = useState<OpenPanelState | null>(null);
   const isBusy = isMutating || isReordering;
   const [reconciliationState, setReconciliationState] =
     useState<ReconciliationState>({
@@ -79,6 +86,11 @@ export function LinkManager({ initialLinks, profile }: LinkManagerProps) {
   const applyAuthoritativeLinks = useCallback((nextLinks: LinkItem[]) => {
     const sortedLinks = sortLinks(nextLinks);
     setLinkState({ current: sortedLinks, safe: sortedLinks });
+    setOpenPanel((current) =>
+      current && !sortedLinks.some((link) => link.id === current.linkId)
+        ? null
+        : current,
+    );
   }, []);
 
   if (
@@ -107,6 +119,11 @@ export function LinkManager({ initialLinks, profile }: LinkManagerProps) {
     if (snapshotToApply) {
       const sortedLinks = sortLinks(snapshotToApply);
       setLinkState({ current: sortedLinks, safe: sortedLinks });
+      setOpenPanel((current) =>
+        current && !sortedLinks.some((link) => link.id === current.linkId)
+          ? null
+          : current,
+      );
     }
   }
 
@@ -178,6 +195,9 @@ export function LinkManager({ initialLinks, profile }: LinkManagerProps) {
           return { current: nextLinks, safe: nextLinks };
         });
         setEditingLinkId(null);
+        setOpenPanel((current) =>
+          current?.linkId === result.deletedId ? null : current,
+        );
         setFeedback({ tone: "success", text: result.message });
         router.refresh();
         return true;
@@ -339,8 +359,23 @@ export function LinkManager({ initialLinks, profile }: LinkManagerProps) {
             links={links}
             onDelete={handleDelete}
             onDragEnd={handleDragEnd}
-            onEdit={setEditingLinkId}
+            onEdit={(linkId) => {
+              setEditingLinkId(linkId);
+              if (linkId !== null) {
+                setOpenPanel((current) =>
+                  current?.linkId === linkId ? null : current,
+                );
+              }
+            }}
             onFormPendingChange={setIsMutating}
+            onPanelToggle={(linkId, panel) => {
+              setOpenPanel((current) =>
+                current?.linkId === linkId && current.panel === panel
+                  ? null
+                  : { linkId, panel },
+              );
+            }}
+            openPanel={openPanel}
             onToggle={handleToggle}
             onUpdate={handleFormSuccess}
           />
