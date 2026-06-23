@@ -10,14 +10,21 @@
 }
 
 .profileSurface {
-  background: #eef0f3;
+  background: var(--profile-background, #eef0f3);
   border-radius: 1.55rem 1.55rem 0 0;
+  color: var(--profile-page-text, #0d0f12);
   display: flex;
   flex-direction: column;
   min-height: calc(100dvh - clamp(2rem, 4.3vh, 3.1rem));
   overflow: hidden;
   padding: 1.9rem 1.75rem 2.4rem;
+  position: relative;
   width: min(36.25rem, 100%);
+}
+
+.profileSurface > * {
+  position: relative;
+  z-index: 1;
 }
 
 .profileSurfacePreview {
@@ -28,6 +35,57 @@
   padding: 0.75rem 0.75rem 1.35rem;
   scrollbar-gutter: stable;
   width: 100%;
+}
+
+.profileWallpaperFill {
+  background: var(--profile-background, #eef0f3);
+}
+
+.profileWallpaperGradient {
+  background:
+    radial-gradient(circle at 18% 10%, rgba(255, 255, 255, 0.48), transparent 34%),
+    radial-gradient(circle at 82% 28%, color-mix(in srgb, var(--profile-button-background, #ffffff) 48%, transparent), transparent 32%),
+    linear-gradient(145deg, var(--profile-background, #eef0f3), color-mix(in srgb, var(--profile-background, #eef0f3) 72%, #ffffff));
+}
+
+.profileWallpaperSoftBlur {
+  background: var(--profile-background, #eef0f3);
+}
+
+.profileWallpaperSoftBlur::before {
+  background:
+    radial-gradient(circle at 25% 18%, color-mix(in srgb, var(--profile-button-background, #ffffff) 42%, transparent), transparent 30%),
+    radial-gradient(circle at 78% 8%, rgba(255, 255, 255, 0.46), transparent 26%),
+    radial-gradient(circle at 58% 72%, color-mix(in srgb, var(--profile-title, #000000) 10%, transparent), transparent 36%);
+  content: "";
+  filter: blur(18px);
+  inset: -1.5rem;
+  opacity: 0.72;
+  position: absolute;
+}
+
+.profileWallpaperPatternGrid {
+  background:
+    linear-gradient(color-mix(in srgb, var(--profile-page-text, #000000) 8%, transparent) 1px, transparent 1px),
+    linear-gradient(90deg, color-mix(in srgb, var(--profile-page-text, #000000) 8%, transparent) 1px, transparent 1px),
+    var(--profile-background, #eef0f3);
+  background-size: 3.4rem 3.4rem;
+}
+
+.profileFontSchibstedGrotesk {
+  font-family: var(--font-app), sans-serif;
+}
+
+.profileFontSystemSans {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+.profileFontSerifSoft {
+  font-family: Georgia, "Times New Roman", serif;
+}
+
+.profileFontMonoQuiet {
+  font-family: ui-monospace, "SFMono-Regular", Consolas, "Liberation Mono", monospace;
 }
 
 .profileChrome {
@@ -109,6 +167,130 @@
   white-space: nowrap;
 }
 
+.profileHeader {
+  color: var(--profile-page-text, #0d0f12);
+  position: relative;
+  text-align: center;
+}
+
+.profileHeader::before {
+  content: "";
+  pointer-events: none;
+  position: absolute;
+  z-index: -1;
+}
+
+.profileHeaderAvatarSlot {
+  display: grid;
+  justify-content: center;
+  position: relative;
+}
+
+.profileHeaderhero,
+.profileHeaderbanner,
+.profileHeadercutout,
+.profileHeadershape {
+  border-radius: 1.35rem;
+  margin-inline: auto;
+  max-width: 30rem;
+  padding: 1rem 1rem 0;
+}
+
+.profileHeaderhero::before {
+  background:
+    radial-gradient(circle at 50% 22%, rgba(255, 255, 255, 0.68), transparent 26%),
+    linear-gradient(180deg, color-mix(in srgb, var(--profile-button-background, #ffffff) 64%, transparent), transparent);
+  border-radius: 1.35rem;
+  height: 8.8rem;
+  inset: 0 0 auto;
+}
+
+.profileHeaderbanner::before {
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--profile-button-background, #ffffff) 72%, transparent), color-mix(in srgb, var(--profile-title, #000000) 16%, transparent));
+  border-radius: 1.2rem;
+  height: 5rem;
+  inset: 0 0 auto;
+}
+
+.profileHeadercutout::before {
+  background:
+    radial-gradient(circle at 50% 25%, color-mix(in srgb, var(--profile-button-background, #ffffff) 70%, transparent) 0 24%, transparent 25%),
+    linear-gradient(180deg, color-mix(in srgb, var(--profile-button-background, #ffffff) 46%, transparent), transparent);
+  border-radius: 1.35rem;
+  height: 7.7rem;
+  inset: 0 0 auto;
+}
+
+.profileHeadershape::before {
+  background:
+    radial-gradient(ellipse at 50% 44%, color-mix(in srgb, var(--profile-title, #000000) 20%, transparent) 0 32%, transparent 33%),
+    radial-gradient(ellipse at 44% 42%, color-mix(in srgb, var(--profile-button-background, #ffffff) 78%, transparent) 0 34%, transparent 35%);
+  height: 7.2rem;
+  inset: 0 0 auto;
+}
+
+.profileHeaderAlignleft {
+  text-align: left;
+}
+
+.profileHeaderAlignleft .profileHeaderAvatarSlot {
+  justify-content: start;
+}
+
+.profileHeaderAligncenter {
+  text-align: center;
+}
+
+.profileHeaderAligncenter .profileHeaderAvatarSlot {
+  justify-content: center;
+}
+
+.profileTitle {
+  color: var(--profile-title, #0d0f12);
+  font-size: 1.65rem;
+  font-weight: 800;
+  letter-spacing: -0.045em;
+  line-height: 1.05;
+  margin: 1rem 0 0;
+}
+
+.profileTitleAlt {
+  font-family: Georgia, "Times New Roman", serif;
+  font-style: italic;
+  letter-spacing: -0.035em;
+}
+
+.profileTitlePreview {
+  font-size: 1.32rem;
+  margin-top: 1rem;
+}
+
+.profileBio {
+  color: var(--profile-page-text, #0d0f12);
+  font-size: 0.875rem;
+  font-weight: 650;
+  line-height: 1.42;
+  margin: 0.38rem auto 0;
+  max-width: 28rem;
+  text-wrap: pretty;
+  white-space: pre-wrap;
+}
+
+.profileBioPreview {
+  font-size: 0.75rem;
+  line-height: 1.34;
+  max-width: 15rem;
+}
+
+.profileSocial {
+  margin-top: 1rem;
+}
+
+.profileSocialPreview {
+  margin-top: 0.75rem;
+}
+
 .profileContent {
   margin: 2.1rem auto 0;
   max-width: 32.8rem;
@@ -133,10 +315,10 @@
 
 .publicLinkButton {
   align-items: center;
-  background: #ffffff;
-  border: 0;
+  background: var(--profile-button-background, #ffffff);
+  border: 1px solid transparent;
   border-radius: 0.42rem;
-  color: #0d0f12;
+  color: var(--profile-button-text, #0d0f12);
   display: grid;
   font-size: 1rem;
   font-weight: 750;
@@ -151,8 +333,58 @@
 
 .publicLinkButton:hover,
 .publicLinkButton:active {
-  background: #f8f8f8;
-  color: #0d0f12;
+  background: color-mix(in srgb, var(--profile-button-background, #ffffff) 92%, var(--profile-page-text, #0d0f12));
+  color: var(--profile-button-text, #0d0f12);
+}
+
+.profileButtonsoutline .publicLinkButton {
+  background: transparent;
+  border-color: color-mix(in srgb, var(--profile-button-text, #0d0f12) 28%, transparent);
+}
+
+.profileButtonssoft .publicLinkButton {
+  background: color-mix(in srgb, var(--profile-button-background, #ffffff) 70%, transparent);
+  backdrop-filter: blur(6px);
+}
+
+.profileButtonRadiussquare .publicLinkButton {
+  border-radius: 0.08rem;
+}
+
+.profileButtonRadiusround .publicLinkButton {
+  border-radius: 0.58rem;
+}
+
+.profileButtonRadiusrounder .publicLinkButton {
+  border-radius: 0.92rem;
+}
+
+.profileButtonRadiusfull .publicLinkButton {
+  border-radius: 999px;
+}
+
+.profileButtonShadownone .publicLinkButton {
+  box-shadow: none;
+}
+
+.profileButtonShadowsoft .publicLinkButton {
+  box-shadow: 0 8px 18px color-mix(in srgb, var(--profile-title, #11131a) 10%, transparent);
+}
+
+.profileButtonShadowstrong .publicLinkButton {
+  box-shadow: 0 14px 28px color-mix(in srgb, var(--profile-title, #11131a) 16%, transparent);
+}
+
+.profileButtonShadowhard .publicLinkButton {
+  box-shadow: 6px 6px 0 color-mix(in srgb, var(--profile-title, #11131a) 32%, transparent);
+}
+
+.profileButtonAlignleft .publicLinkTitle {
+  text-align: left;
+}
+
+.profileButtonAligncenter .publicLinkTitle {
+  text-align: center;
 }
 
 .profileSurfacePreview .publicLinkButton {
@@ -161,6 +393,22 @@
   grid-template-columns: 2.35rem minmax(0, 1fr) 2.35rem;
   min-height: 3.2rem;
   padding: 0.42rem 0.46rem;
+}
+
+.profileSurfacePreview.profileButtonRadiussquare .publicLinkButton {
+  border-radius: 0.08rem;
+}
+
+.profileSurfacePreview.profileButtonRadiusround .publicLinkButton {
+  border-radius: 0.48rem;
+}
+
+.profileSurfacePreview.profileButtonRadiusrounder .publicLinkButton {
+  border-radius: 0.72rem;
+}
+
+.profileSurfacePreview.profileButtonRadiusfull .publicLinkButton {
+  border-radius: 999px;
 }
 
 .publicLinkThumb {
@@ -219,7 +467,7 @@
 }
 
 .publicLinkMenu span {
-  background: #74777a;
+  background: color-mix(in srgb, var(--profile-button-text, #74777a) 62%, transparent);
   border-radius: 50%;
   height: 0.13rem;
   width: 0.13rem;
@@ -269,10 +517,10 @@
 
 .joinCta {
   align-items: center;
-  background: #ffffff;
+  background: var(--profile-surface, #ffffff);
   border: 0;
   border-radius: 999px;
-  color: #0d0f12;
+  color: var(--profile-page-text, #0d0f12);
   display: inline-flex;
   font-size: 0.95rem;
   font-weight: 750;
@@ -283,8 +531,8 @@
 
 .joinCta:hover,
 .joinCta:active {
-  background: #f8f8f8;
-  color: #0d0f12;
+  background: color-mix(in srgb, var(--profile-surface, #ffffff) 92%, var(--profile-page-text, #0d0f12));
+  color: var(--profile-page-text, #0d0f12);
 }
 
 .profileSurfacePreview .joinCta {
@@ -294,7 +542,7 @@
 }
 
 .footerLinks {
-  color: #1f2328;
+  color: var(--profile-page-text, #1f2328);
   display: flex;
   flex-wrap: wrap;
   font-size: 0.68rem;

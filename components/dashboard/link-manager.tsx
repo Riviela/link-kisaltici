@@ -10,13 +10,19 @@ import {
   reorderLinksAction,
   toggleLinkAction,
 } from "@/app/actions/links";
+import { updateProfileAppearanceAction } from "@/app/actions/profile";
 import { AddLinkModal } from "@/components/dashboard/add-link-modal";
 import { DashboardProfileHeader } from "@/components/dashboard/dashboard-profile-header";
+import { DesignEditor } from "@/components/dashboard/design-editor";
 import type { LinkPanelType } from "@/components/dashboard/link-card-panel";
 import { ProfilePreview } from "@/components/dashboard/profile-preview";
 import { SortableLinkList } from "@/components/dashboard/sortable-link-list";
 import { copy } from "@/lib/copy";
 import type { LinkItem } from "@/lib/links/types";
+import {
+  normalizeAppearance,
+  type ProfileAppearance,
+} from "@/lib/profile/appearance";
 import type { SocialHandles } from "@/lib/profile/social";
 
 import styles from "./dashboard-interactions.module.css";
@@ -24,6 +30,7 @@ import styles from "./dashboard-interactions.module.css";
 interface LinkManagerProps {
   initialLinks: LinkItem[];
   profile: {
+    appearance: ProfileAppearance;
     avatarUrl: string | null;
     username: string;
     bio: string | null;
@@ -32,7 +39,7 @@ interface LinkManagerProps {
 }
 
 interface FeedbackMessage {
-  tone: "success" | "error";
+  tone: "success" | "error" | "neutral";
   text: string;
 }
 
@@ -52,22 +59,138 @@ interface OpenPanelState {
   panel: LinkPanelType;
 }
 
+type DashboardMode = "content" | "design";
+
 function sortLinks(links: LinkItem[]) {
   return [...links].sort(
     (left, right) => left.position - right.position || left.id - right.id,
   );
 }
 
+function areAppearancesEqual(
+  left: ProfileAppearance,
+  right: ProfileAppearance,
+) {
+  return JSON.stringify(left) === JSON.stringify(right);
+}
+
+function RailIcon({ type }: { type: "menu" | "content" | "design" | "enhance" | "settings" }) {
+  if (type === "menu") {
+    return (
+      <svg fill="none" height="18" viewBox="0 0 18 18" width="18">
+        <path d="M4 5h10M4 9h10M4 13h10" stroke="currentColor" strokeLinecap="round" strokeWidth="1.5" />
+      </svg>
+    );
+  }
+
+  if (type === "design") {
+    return (
+      <svg aria-hidden="true" fill="none" height="20" viewBox="0 0 20 20" width="20">
+        <path d="M4 5.5h12v4H4zM6 12h8v3H6z" stroke="currentColor" strokeLinejoin="round" strokeWidth="1.6" />
+      </svg>
+    );
+  }
+
+  if (type === "enhance") {
+    return (
+      <svg aria-hidden="true" fill="none" height="20" viewBox="0 0 20 20" width="20">
+        <path d="M10 2.8 11.6 7l4.3 1.5-4.3 1.6L10 14.2 8.4 10 4.1 8.5 8.4 7 10 2.8Z" stroke="currentColor" strokeLinejoin="round" strokeWidth="1.45" />
+      </svg>
+    );
+  }
+
+  if (type === "settings") {
+    return (
+      <svg aria-hidden="true" fill="none" height="20" viewBox="0 0 20 20" width="20">
+        <path d="M10 12.8a2.8 2.8 0 1 0 0-5.6 2.8 2.8 0 0 0 0 5.6Zm6-2.8 1.2-1-1.2-2-1.5.5a6 6 0 0 0-1.1-.6L13.1 5H6.9l-.3 1.9c-.4.2-.8.4-1.1.6L4 7 2.8 9 4 10l-.2 1.2-1 1.2L4 14.4l1.5-.5c.3.2.7.4 1.1.6l.3 1.9h6.2l.3-1.9c.4-.2.8-.4 1.1-.6l1.5.5 1.2-2-1-1.2L16 10Z" stroke="currentColor" strokeLinejoin="round" strokeWidth="1.25" />
+      </svg>
+    );
+  }
+
+  return (
+    <svg aria-hidden="true" fill="none" height="20" viewBox="0 0 20 20" width="20">
+      <path d="M4 5.5h12M4 10h12M4 14.5h8" stroke="currentColor" strokeLinecap="round" strokeWidth="1.7" />
+    </svg>
+  );
+}
+
+function DashboardRail({
+  mode,
+  onModeChange,
+}: {
+  mode: DashboardMode;
+  onModeChange: (mode: DashboardMode) => void;
+}) {
+  return (
+    <nav className={styles.dashboardRail}>
+      <div aria-hidden="true" className={styles.dashboardRailMenu}>
+        <RailIcon type="menu" />
+      </div>
+
+      <div className={styles.dashboardRailItems}>
+        <button
+          aria-current={mode === "content" ? "page" : undefined}
+          className={styles.dashboardRailItem}
+          data-active={mode === "content"}
+          onClick={() => onModeChange("content")}
+          type="button"
+        >
+          <RailIcon type="content" />
+          <span>{copy.dashboard.content}</span>
+        </button>
+        <button
+          aria-current={mode === "design" ? "page" : undefined}
+          className={styles.dashboardRailItem}
+          data-active={mode === "design"}
+          onClick={() => onModeChange("design")}
+          type="button"
+        >
+          <RailIcon type="design" />
+          <span>Design</span>
+        </button>
+        <button
+          aria-disabled="true"
+          className={styles.dashboardRailItem}
+          disabled
+          type="button"
+        >
+          <RailIcon type="enhance" />
+          <span>Enhance</span>
+        </button>
+        <button
+          aria-disabled="true"
+          className={styles.dashboardRailItem}
+          disabled
+          type="button"
+        >
+          <RailIcon type="settings" />
+          <span>Settings</span>
+        </button>
+      </div>
+    </nav>
+  );
+}
+
 export function LinkManager({ initialLinks, profile }: LinkManagerProps) {
   const router = useRouter();
+  const initialAppearance = normalizeAppearance(profile.appearance);
   const [linkState, setLinkState] = useState<LinkState>(() => {
     const sortedLinks = sortLinks(initialLinks);
     return { current: sortedLinks, safe: sortedLinks };
   });
+  const [dashboardMode, setDashboardMode] =
+    useState<DashboardMode>("content");
   const [editingLinkId, setEditingLinkId] = useState<number | null>(null);
   const [isMutating, setIsMutating] = useState(false);
   const [isReordering, setIsReordering] = useState(false);
+  const [isSavingAppearance, setIsSavingAppearance] = useState(false);
   const [feedback, setFeedback] = useState<FeedbackMessage | null>(null);
+  const [appearanceFeedback, setAppearanceFeedback] =
+    useState<FeedbackMessage | null>(null);
+  const [appearanceDraft, setAppearanceDraft] =
+    useState<ProfileAppearance>(initialAppearance);
+  const [appearanceSaved, setAppearanceSaved] =
+    useState<ProfileAppearance>(initialAppearance);
   const [profileBio, setProfileBio] = useState(profile.bio);
   const [profileSocialHandles, setProfileSocialHandles] = useState(
     profile.socialHandles,
@@ -75,6 +198,10 @@ export function LinkManager({ initialLinks, profile }: LinkManagerProps) {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [openPanel, setOpenPanel] = useState<OpenPanelState | null>(null);
   const isBusy = isMutating || isReordering;
+  const isAppearanceDirty = !areAppearancesEqual(
+    appearanceDraft,
+    appearanceSaved,
+  );
   const [reconciliationState, setReconciliationState] =
     useState<ReconciliationState>({
       initialLinks,
@@ -276,14 +403,58 @@ export function LinkManager({ initialLinks, profile }: LinkManagerProps) {
     return feedback;
   }, [feedback, isReordering]);
 
+  const handleAppearanceChange = useCallback((appearance: ProfileAppearance) => {
+    setAppearanceDraft(appearance);
+    setAppearanceFeedback(null);
+  }, []);
+
+  const handleAppearanceSave = useCallback(async () => {
+    if (!isAppearanceDirty || isSavingAppearance) return;
+
+    setIsSavingAppearance(true);
+    setAppearanceFeedback({ tone: "neutral", text: copy.appearance.saving });
+
+    try {
+      const result = await updateProfileAppearanceAction(appearanceDraft);
+
+      if (result.status === "success" && result.appearance) {
+        const normalizedAppearance = normalizeAppearance(result.appearance);
+        setAppearanceDraft(normalizedAppearance);
+        setAppearanceSaved(normalizedAppearance);
+        setAppearanceFeedback({ tone: "success", text: result.message });
+        router.refresh();
+      } else {
+        setAppearanceFeedback({ tone: "error", text: result.message });
+      }
+    } catch {
+      setAppearanceFeedback({
+        tone: "error",
+        text: copy.appearance.failure.update,
+      });
+    } finally {
+      setIsSavingAppearance(false);
+    }
+  }, [
+    appearanceDraft,
+    isAppearanceDirty,
+    isSavingAppearance,
+    router,
+  ]);
+
   return (
-    <section className={styles.dashboardColumns}>
+    <>
+      <DashboardRail mode={dashboardMode} onModeChange={setDashboardMode} />
+
+      <div className={styles.dashboardWorkspace} id="content">
+        <section className={styles.dashboardColumns}>
       <div className={styles.editorPane}>
         <div className={styles.editorContent}>
-          <div className="mb-9 flex items-center justify-between border-b border-[var(--color-border)] pb-4">
-            <p className="text-base font-bold text-[var(--color-text)]">Links</p>
-            <span className="text-xs font-semibold text-[var(--color-muted)]">Content</span>
-          </div>
+          {dashboardMode === "content" ? (
+            <>
+              <div className="mb-9 flex items-center justify-between border-b border-[var(--color-border)] pb-4">
+                <p className="text-base font-bold text-[var(--color-text)]">Links</p>
+                <span className="text-xs font-semibold text-[var(--color-muted)]">Content</span>
+              </div>
 
           <DashboardProfileHeader
             avatarUrl={profile.avatarUrl}
@@ -379,6 +550,18 @@ export function LinkManager({ initialLinks, profile }: LinkManagerProps) {
             onToggle={handleToggle}
             onUpdate={handleFormSuccess}
           />
+            </>
+          ) : (
+            <DesignEditor
+              appearance={appearanceDraft}
+              isDirty={isAppearanceDirty}
+              isSaving={isSavingAppearance}
+              onChange={handleAppearanceChange}
+              onSave={handleAppearanceSave}
+              status={appearanceFeedback}
+              username={profile.username}
+            />
+          )}
         </div>
 
         {isAddModalOpen ? (
@@ -391,12 +574,15 @@ export function LinkManager({ initialLinks, profile }: LinkManagerProps) {
         </div>
 
       <ProfilePreview
+        appearance={appearanceDraft}
         avatarUrl={profile.avatarUrl}
         bio={profileBio}
         links={links}
         socialHandles={profileSocialHandles}
         username={profile.username}
       />
-    </section>
+        </section>
+      </div>
+    </>
   );
 }

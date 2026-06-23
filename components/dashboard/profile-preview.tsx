@@ -6,11 +6,13 @@ import { PublicProfileSurface } from "@/components/profile/public-profile-surfac
 import { PUBLIC_PROFILE_HOST } from "@/lib/config/site";
 import { copy } from "@/lib/copy";
 import type { LinkItem } from "@/lib/links/types";
+import type { ProfileAppearance } from "@/lib/profile/appearance";
 import type { SocialHandles } from "@/lib/profile/social";
 
 import styles from "./dashboard-interactions.module.css";
 
 interface ProfilePreviewProps {
+  appearance: ProfileAppearance;
   avatarUrl: string | null;
   username: string;
   bio: string | null;
@@ -93,6 +95,7 @@ function ShareOptionIcon({ index }: { index: number }) {
 }
 
 export function ProfilePreview({
+  appearance,
   avatarUrl,
   username,
   bio,
@@ -330,6 +333,7 @@ export function ProfilePreview({
 
         <div className={styles.previewDevice}>
           <PublicProfileSurface
+            appearance={appearance}
             avatarUrl={avatarUrl}
             bio={bio}
             links={activeLinks}

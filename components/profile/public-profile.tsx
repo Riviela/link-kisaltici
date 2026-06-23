@@ -27,6 +27,7 @@ export function PublicProfile({ data }: PublicProfileProps) {
   return (
     <main className={styles.publicCanvas}>
       <PublicProfileSurface
+        appearance={data.profile.appearance}
         avatarUrl={data.profile.avatarUrl}
         bio={data.profile.bio}
         links={data.links}

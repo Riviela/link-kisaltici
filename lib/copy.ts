@@ -139,6 +139,17 @@ export const copy = {
       update: "We could not update your profile. Please try again.",
     },
   },
+  appearance: {
+    save: "Save changes",
+    saving: "Saving...",
+    saved: "Appearance saved.",
+    unsaved: "Unsaved changes",
+    failure: {
+      authentication: "Your session has expired. Please log in again.",
+      invalid: "These appearance settings are not valid.",
+      update: "We could not save your appearance. Please try again.",
+    },
+  },
   socialProfiles: {
     add: (platform: string) => `Add ${platform}`,
     edit: (platform: string) => `Edit ${platform}`,

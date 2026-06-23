@@ -68,51 +68,16 @@ export default async function DashboardPage() {
       </header>
 
       <div className={styles.dashboardShell}>
-        <nav className={styles.dashboardRail}>
-          <div
-            aria-hidden="true"
-            className="mt-5 grid size-10 place-items-center rounded-full border border-[var(--color-border)] text-[var(--color-text)]"
-          >
-            <svg fill="none" height="18" viewBox="0 0 18 18" width="18">
-              <path d="M4 5h10M4 9h10M4 13h10" stroke="currentColor" strokeLinecap="round" strokeWidth="1.5" />
-            </svg>
-          </div>
-          <a
-            aria-current="page"
-            className="mt-auto mb-[42vh] flex w-full flex-col items-center gap-2 border-r-2 border-[var(--color-text)] py-3 text-[var(--color-text)]"
-            href="#content"
-          >
-            <svg
-              aria-hidden="true"
-              fill="none"
-              height="20"
-              viewBox="0 0 20 20"
-              width="20"
-            >
-              <path
-                d="M4 5.5h12M4 10h12M4 14.5h8"
-                stroke="currentColor"
-                strokeLinecap="round"
-                strokeWidth="1.7"
-              />
-            </svg>
-            <span className="text-[0.68rem] font-bold">
-              {copy.dashboard.content}
-            </span>
-          </a>
-        </nav>
-
-        <div className={styles.dashboardWorkspace} id="content">
-          <LinkManager
-            initialLinks={initialLinks}
-            profile={{
-              avatarUrl: current.profile.avatarUrl,
-              bio: current.profile.bio,
-              socialHandles: current.profile.socialHandles,
-              username: current.profile.username,
-            }}
-          />
-        </div>
+        <LinkManager
+          initialLinks={initialLinks}
+          profile={{
+            appearance: current.profile.appearance,
+            avatarUrl: current.profile.avatarUrl,
+            bio: current.profile.bio,
+            socialHandles: current.profile.socialHandles,
+            username: current.profile.username,
+          }}
+        />
       </div>
     </main>
   );

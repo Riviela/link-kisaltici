@@ -4,6 +4,11 @@ import {
   isValidPublicUsername,
   normalizePublicUsername,
 } from "@/lib/profile/public-username";
+import {
+  DEFAULT_APPEARANCE,
+  normalizeAppearance,
+  type ProfileAppearance,
+} from "@/lib/profile/appearance";
 import { getPublicAvatarUrl } from "@/lib/profile/avatar-url";
 import type { SocialHandles } from "@/lib/profile/social";
 import { createClient } from "@/lib/supabase/server";
@@ -20,6 +25,7 @@ export interface PublicProfileData {
     username: string;
     bio: string | null;
     avatarUrl: string | null;
+    appearance: ProfileAppearance;
     socialHandles: SocialHandles;
   };
   links: PublicProfileLink[];
@@ -45,7 +51,7 @@ export async function getPublicProfile(
   const { data: profile, error: profileError } = await supabase
     .from("profiles")
     .select(
-      "id, username, bio, avatar_path, instagram_handle, tiktok_handle, youtube_handle",
+      "id, username, bio, avatar_path, appearance, instagram_handle, tiktok_handle, youtube_handle",
     )
     .eq("username", normalizedUsername)
     .eq("is_published", true)
@@ -75,6 +81,7 @@ export async function getPublicProfile(
     profile: {
       username: profile.username,
       bio: profile.bio,
+      appearance: normalizeAppearance(profile.appearance ?? DEFAULT_APPEARANCE),
       avatarUrl: getPublicAvatarUrl(
         supabase,
         profile.id,

@@ -6,6 +6,10 @@ import { redirect } from "next/navigation";
 
 import { copy } from "@/lib/copy";
 import {
+  type ProfileAppearance,
+  validateAppearanceUpdate,
+} from "@/lib/profile/appearance";
+import {
   getCurrentProfile,
   ProfileAuthenticationError,
   ProfileLookupError,
@@ -32,6 +36,12 @@ import {
   validateSocialHandle,
 } from "@/lib/profile/social";
 import { createClient } from "@/lib/supabase/server";
+
+export interface AppearanceActionState {
+  status: "success" | "error";
+  message: string;
+  appearance?: ProfileAppearance;
+}
 
 const USERNAME_CONSTRAINTS = [
   "profiles_username_unique",
@@ -405,5 +415,53 @@ export async function updateSocialHandleAction(
     status: "success",
     message: copy.socialProfiles.success,
     socialHandles,
+  };
+}
+
+export async function updateProfileAppearanceAction(
+  appearanceInput: unknown,
+): Promise<AppearanceActionState> {
+  const validatedAppearance = validateAppearanceUpdate(appearanceInput);
+
+  if (!validatedAppearance.success || !validatedAppearance.appearance) {
+    return {
+      status: "error",
+      message: copy.appearance.failure.invalid,
+    };
+  }
+
+  const supabase = await createClient();
+  const { data: claimsData, error: claimsError } =
+    await supabase.auth.getClaims();
+  const userId = claimsData?.claims?.sub;
+
+  if (claimsError || typeof userId !== "string" || userId.length === 0) {
+    return {
+      status: "error",
+      message: copy.appearance.failure.authentication,
+    };
+  }
+
+  const { data: profile, error } = await supabase
+    .from("profiles")
+    .update({ appearance: validatedAppearance.appearance })
+    .eq("id", userId)
+    .select("username, appearance")
+    .maybeSingle();
+
+  if (error || !profile) {
+    return {
+      status: "error",
+      message: copy.appearance.failure.update,
+    };
+  }
+
+  revalidatePath("/dashboard");
+  revalidatePath(`/${profile.username}`);
+
+  return {
+    status: "success",
+    message: copy.appearance.saved,
+    appearance: validatedAppearance.appearance,
   };
 }

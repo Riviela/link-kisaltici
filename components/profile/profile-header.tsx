@@ -1,8 +1,16 @@
 import { ProfileAvatar } from "@/components/profile/profile-avatar";
 import { SocialLinks } from "@/components/profile/social-links";
+import {
+  DEFAULT_APPEARANCE,
+  normalizeAppearance,
+  type ProfileAppearance,
+} from "@/lib/profile/appearance";
 import type { SocialHandles } from "@/lib/profile/social";
 
+import styles from "./public-profile.module.css";
+
 interface ProfileHeaderProps {
+  appearance?: ProfileAppearance;
   avatarUrl: string | null;
   username: string;
   bio: string | null;
@@ -11,6 +19,7 @@ interface ProfileHeaderProps {
 }
 
 export function ProfileHeader({
+  appearance: appearanceInput = DEFAULT_APPEARANCE,
   avatarUrl,
   username,
   bio,
@@ -18,37 +27,48 @@ export function ProfileHeader({
   socialHandles,
 }: ProfileHeaderProps) {
   const isPreview = variant === "preview";
+  const appearance = normalizeAppearance(appearanceInput);
 
   return (
-    <header className="text-center">
-      <ProfileAvatar
-        avatarUrl={avatarUrl}
-        className={isPreview ? "mx-auto size-[4.6rem]" : "mx-auto size-24"}
-      />
+    <header
+      className={[
+        styles.profileHeader,
+        styles[`profileHeader${appearance.header.layout}`],
+        styles[`profileHeaderAlign${appearance.header.alignment}`],
+        isPreview ? styles.profileHeaderPreview : "",
+      ].join(" ")}
+    >
+      <div className={styles.profileHeaderAvatarSlot}>
+        <ProfileAvatar
+          avatarUrl={avatarUrl}
+          className={isPreview ? "size-[4.6rem]" : "size-24"}
+        />
+      </div>
 
       <h1
-        className={
-          isPreview
-            ? "mt-4 text-[1.32rem] font-extrabold leading-tight tracking-[-0.045em] text-[var(--color-text)]"
-            : "mt-4 text-[1.65rem] font-extrabold leading-tight tracking-[-0.045em] text-[var(--color-text)] sm:text-[1.8rem]"
-        }
+        className={[
+          styles.profileTitle,
+          appearance.header.alternativeTitleFont
+            ? styles.profileTitleAlt
+            : "",
+          isPreview ? styles.profileTitlePreview : "",
+        ].join(" ")}
       >
         @{username}
       </h1>
 
       {bio ? (
         <p
-          className={
-            isPreview
-              ? "mx-auto mt-1 max-w-[15rem] whitespace-pre-wrap text-pretty text-xs font-semibold leading-4 text-[var(--color-text)]"
-              : "mx-auto mt-1.5 max-w-md whitespace-pre-wrap text-pretty text-sm font-semibold leading-5 text-[var(--color-text)]"
-          }
+          className={[
+            styles.profileBio,
+            isPreview ? styles.profileBioPreview : "",
+          ].join(" ")}
         >
           {bio}
         </p>
       ) : null}
       <SocialLinks
-        className={isPreview ? "mt-3" : "mt-4"}
+        className={isPreview ? styles.profileSocialPreview : styles.profileSocial}
         handles={socialHandles}
         size={isPreview ? "preview" : "default"}
       />

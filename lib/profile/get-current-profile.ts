@@ -1,5 +1,10 @@
 import "server-only";
 
+import {
+  DEFAULT_APPEARANCE,
+  normalizeAppearance,
+  type ProfileAppearance,
+} from "@/lib/profile/appearance";
 import { getPublicAvatarUrl } from "@/lib/profile/avatar-url";
 import type { SocialHandles } from "@/lib/profile/social";
 import { createClient } from "@/lib/supabase/server";
@@ -9,6 +14,7 @@ export interface CurrentProfile {
   username: string;
   bio: string | null;
   avatarUrl: string | null;
+  appearance: ProfileAppearance;
   socialHandles: SocialHandles;
 }
 
@@ -44,7 +50,7 @@ export async function getCurrentProfile(): Promise<CurrentProfileResult> {
   const { data: profile, error: profileError } = await supabase
     .from("profiles")
     .select(
-      "id, username, bio, avatar_path, instagram_handle, tiktok_handle, youtube_handle",
+      "id, username, bio, avatar_path, appearance, instagram_handle, tiktok_handle, youtube_handle",
     )
     .eq("id", userId)
     .maybeSingle();
@@ -60,6 +66,9 @@ export async function getCurrentProfile(): Promise<CurrentProfileResult> {
           id: profile.id,
           username: profile.username,
           bio: profile.bio,
+          appearance: normalizeAppearance(
+            profile.appearance ?? DEFAULT_APPEARANCE,
+          ),
           avatarUrl: getPublicAvatarUrl(
             supabase,
             profile.id,
