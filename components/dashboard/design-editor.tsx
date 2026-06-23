@@ -261,6 +261,80 @@ function SegmentedControl<T extends string>({
   );
 }
 
+function ButtonStyleControl({
+  appearance,
+  onChange,
+}: {
+  appearance: ProfileAppearance;
+  onChange: (appearance: ProfileAppearance) => void;
+}) {
+  return (
+    <section className={styles.controlGroup}>
+      <h3 className={styles.groupTitle}>Button style</h3>
+      <div className={`${styles.visualChoiceGrid} ${styles.buttonStyleGrid}`}>
+        {BUTTON_STYLES.map((style) => (
+          <button
+            aria-pressed={appearance.buttons.style === style}
+            className={styles.visualChoiceButton}
+            data-selected={appearance.buttons.style === style}
+            key={style}
+            onClick={() =>
+              onChange(patchAppearance(appearance, { buttons: { style } }))
+            }
+            type="button"
+          >
+            <span className={styles.visualChoiceSurface}>
+              <span
+                className={`${styles.buttonStylePreview} ${
+                  styles[`buttonStylePreview${style}`]
+                }`}
+              />
+            </span>
+            <span className={styles.cardLabel}>{BUTTON_STYLE_LABELS[style]}</span>
+          </button>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function CornerRoundnessControl({
+  appearance,
+  onChange,
+}: {
+  appearance: ProfileAppearance;
+  onChange: (appearance: ProfileAppearance) => void;
+}) {
+  return (
+    <section className={styles.controlGroup}>
+      <h3 className={styles.groupTitle}>Corner roundness</h3>
+      <div className={`${styles.visualChoiceGrid} ${styles.radiusGrid}`}>
+        {BUTTON_RADII.map((radius) => (
+          <button
+            aria-pressed={appearance.buttons.radius === radius}
+            className={styles.visualChoiceButton}
+            data-selected={appearance.buttons.radius === radius}
+            key={radius}
+            onClick={() =>
+              onChange(patchAppearance(appearance, { buttons: { radius } }))
+            }
+            type="button"
+          >
+            <span className={`${styles.visualChoiceSurface} ${styles.radiusSurface}`}>
+              <span
+                className={`${styles.radiusPreview} ${
+                  styles[`radiusPreview${radius}`]
+                }`}
+              />
+            </span>
+            <span className={styles.cardLabel}>{RADIUS_LABELS[radius]}</span>
+          </button>
+        ))}
+      </div>
+    </section>
+  );
+}
+
 function ThemePanel({
   appearance,
   onChange,
@@ -497,24 +571,8 @@ function ButtonsPanel({
 }) {
   return (
     <>
-      <SegmentedControl
-        getLabel={(style) => BUTTON_STYLE_LABELS[style]}
-        label="Button style"
-        onChange={(style) =>
-          onChange(patchAppearance(appearance, { buttons: { style } }))
-        }
-        value={appearance.buttons.style}
-        values={BUTTON_STYLES}
-      />
-      <SegmentedControl
-        getLabel={(radius) => RADIUS_LABELS[radius]}
-        label="Corner roundness"
-        onChange={(radius) =>
-          onChange(patchAppearance(appearance, { buttons: { radius } }))
-        }
-        value={appearance.buttons.radius}
-        values={BUTTON_RADII}
-      />
+      <ButtonStyleControl appearance={appearance} onChange={onChange} />
+      <CornerRoundnessControl appearance={appearance} onChange={onChange} />
       <SegmentedControl
         getLabel={(shadow) => SHADOW_LABELS[shadow]}
         label="Button shadow"

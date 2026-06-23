@@ -428,6 +428,100 @@
   border: 2px solid var(--color-text);
 }
 
+.visualChoiceGrid {
+  display: grid;
+  gap: 0.65rem;
+}
+
+.buttonStyleGrid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.radiusGrid {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.visualChoiceButton {
+  background: transparent;
+  border: 0;
+  color: #555a55;
+  display: grid;
+  gap: 0.45rem;
+  min-width: 0;
+  padding: 0;
+  text-align: center;
+}
+
+.visualChoiceSurface {
+  align-items: center;
+  background: #f0efed;
+  border: 1px solid transparent;
+  border-radius: 0.86rem;
+  box-sizing: border-box;
+  display: grid;
+  min-height: 4.8rem;
+  padding: 0.9rem;
+  place-items: center;
+}
+
+.visualChoiceButton[data-selected="true"] .visualChoiceSurface {
+  border: 2px solid var(--color-text);
+}
+
+.buttonStylePreview {
+  display: block;
+  height: 2.1rem;
+  max-width: 100%;
+  width: 6.6rem;
+}
+
+.buttonStylePreviewsolid {
+  background: #d7d5d1;
+  border-radius: 0.55rem;
+}
+
+.buttonStylePreviewoutline {
+  background: transparent;
+  border: 1px solid #dcddd8;
+  border-radius: 0.55rem;
+}
+
+.buttonStylePreviewsoft {
+  background: rgba(255, 255, 255, 0.52);
+  border: 1px solid rgba(255, 255, 255, 0.86);
+  border-radius: 0.55rem;
+}
+
+.radiusSurface {
+  min-height: 3.45rem;
+  padding: 0.65rem;
+}
+
+.radiusPreview {
+  border-color: #11140f;
+  border-style: solid;
+  border-width: 2px 0 0 2px;
+  display: block;
+  height: 1.15rem;
+  width: 1.15rem;
+}
+
+.radiusPreviewsquare {
+  border-radius: 0;
+}
+
+.radiusPreviewround {
+  border-radius: 0.18rem 0 0 0;
+}
+
+.radiusPreviewrounder {
+  border-radius: 0.42rem 0 0 0;
+}
+
+.radiusPreviewfull {
+  border-radius: 999px 0 0 0;
+}
+
 .colorField {
   margin-bottom: 1.65rem;
 }
@@ -513,7 +607,9 @@
 
   .themeGrid,
   .presetGrid,
-  .segmentedGrid {
+  .segmentedGrid,
+  .buttonStyleGrid,
+  .radiusGrid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
