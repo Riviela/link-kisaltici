@@ -57,6 +57,33 @@
   padding: 2rem 1rem 4rem;
 }
 
+.editorPane {
+  scrollbar-color: rgba(113, 117, 109, 0.22) transparent;
+  scrollbar-gutter: stable;
+  scrollbar-width: thin;
+}
+
+.editorPane:hover {
+  scrollbar-color: rgba(113, 117, 109, 0.34) transparent;
+}
+
+.editorPane::-webkit-scrollbar {
+  width: 6px;
+}
+
+.editorPane::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.editorPane::-webkit-scrollbar-thumb {
+  background: rgba(113, 117, 109, 0.22);
+  border-radius: 999px;
+}
+
+.editorPane::-webkit-scrollbar-thumb:hover {
+  background: rgba(113, 117, 109, 0.34);
+}
+
 .editorContent {
   margin-inline: auto;
   max-width: 45rem;
@@ -883,16 +910,18 @@
 
 .previewSticky {
   margin-inline: auto;
-  max-width: 26.5rem;
+  max-width: 23rem;
+  width: min(100%, 23rem);
 }
 
 .previewDevice {
   border-radius: 2rem;
   box-shadow: 0 18px 45px rgba(24, 27, 31, 0.12);
   margin-inline: auto;
-  max-width: 23rem;
-  min-height: min(39rem, calc(100dvh - 10.75rem));
+  max-width: 20.75rem;
+  min-height: 32rem;
   overflow: hidden;
+  width: min(100%, 20.75rem);
 }
 
 @media (min-width: 640px) {
@@ -961,13 +990,13 @@
     flex-direction: column;
     height: 100%;
     justify-content: flex-start;
-    max-width: 25rem;
+    max-width: 23rem;
   }
 
   .previewDevice {
-    flex: 1 1 auto;
+    flex: 0 1 auto;
+    height: clamp(30rem, calc(100dvh - 10.75rem), 37rem);
     min-height: 0;
-    width: 100%;
   }
 }
 
