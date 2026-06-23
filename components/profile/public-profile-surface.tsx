@@ -72,6 +72,7 @@ export function PublicProfileSurface({
         <ProfileHeader
           avatarUrl={avatarUrl}
           bio={bio}
+          variant={isPreview ? "preview" : "default"}
           socialHandles={socialHandles}
           username={username}
         />

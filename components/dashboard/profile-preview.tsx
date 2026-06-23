@@ -195,7 +195,7 @@ export function ProfilePreview({
           </h2>
         </div>
 
-        <div className="relative mx-auto mb-5 w-full max-w-[23rem]" ref={shareContainerRef}>
+        <div className={styles.previewUrlWrap} ref={shareContainerRef}>
           <button
             aria-expanded={
               shareState === "entering" || shareState === "open"

@@ -9,9 +9,14 @@ import {
 interface SocialLinksProps {
   handles: SocialHandles;
   className?: string;
+  size?: "default" | "preview";
 }
 
-export function SocialLinks({ handles, className = "" }: SocialLinksProps) {
+export function SocialLinks({
+  handles,
+  className = "",
+  size = "default",
+}: SocialLinksProps) {
   const connectedPlatforms = SOCIAL_PLATFORMS.filter(
     (platform) => handles[platform],
   );
@@ -29,7 +34,7 @@ export function SocialLinks({ handles, className = "" }: SocialLinksProps) {
         return (
           <a
             aria-label={`${label}: @${handle}`}
-            className="grid size-9 place-items-center rounded-full border border-[var(--color-border)] bg-[var(--color-surface-raised)] text-[var(--color-text)] transition-colors duration-200 hover:bg-[var(--color-surface-hover)]"
+            className={`${size === "preview" ? "size-7" : "size-9"} grid place-items-center rounded-full border border-[var(--color-border)] bg-[var(--color-surface-raised)] text-[var(--color-text)] transition-colors duration-200 hover:bg-[var(--color-surface-hover)]`}
             href={getSocialProfileUrl(platform, handle)}
             key={platform}
             rel="noopener noreferrer"
