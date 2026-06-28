@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 
 import { logoutAction } from "@/app/actions/auth";
+import { AccountDropdown } from "@/components/dashboard/account-dropdown";
 import { LinkManager } from "@/components/dashboard/link-manager";
 import { copy } from "@/lib/copy";
 import {
@@ -15,7 +16,7 @@ import {
   type CurrentProfileResult,
 } from "@/lib/profile/get-current-profile";
 
-import styles from "@/components/dashboard/dashboard-interactions.module.css";
+import dashboardStyles from "@/components/dashboard/dashboard-interactions.module.css";
 
 export default async function DashboardPage() {
   let current: CurrentProfileResult;
@@ -54,12 +55,19 @@ export default async function DashboardPage() {
     throw error;
   }
 
+  const profileUrl = `${process.env.NEXT_PUBLIC_PROFILE_HOST ?? "localhost:3000"}/${current.profile.username}`;
+
   return (
-    <main className={styles.dashboardPage}>
-      <header className={styles.dashboardTopBar}>
+    <main className={dashboardStyles.dashboardPage}>
+      <header className={dashboardStyles.dashboardTopBar}>
+        <AccountDropdown
+          avatarUrl={current.profile.avatarUrl}
+          profileUrl={profileUrl}
+          username={current.profile.username}
+        />
         <form action={logoutAction}>
           <button
-            className={styles.dashboardLogout}
+            className={dashboardStyles.dashboardLogout}
             type="submit"
           >
             {copy.dashboard.logout}
@@ -67,7 +75,7 @@ export default async function DashboardPage() {
         </form>
       </header>
 
-      <div className={styles.dashboardShell}>
+      <div className={dashboardStyles.dashboardShell}>
         <LinkManager
           initialLinks={initialLinks}
           profile={{

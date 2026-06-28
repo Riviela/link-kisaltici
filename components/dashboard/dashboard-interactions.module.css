@@ -10,7 +10,7 @@
   color: white;
   display: flex;
   height: 3.5rem;
-  justify-content: flex-end;
+  justify-content: space-between;
   padding-inline: 1.25rem;
 }
 

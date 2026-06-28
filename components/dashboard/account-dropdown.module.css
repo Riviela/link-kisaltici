@@ -1,0 +1,229 @@
+.wrapper {
+  position: relative;
+}
+
+.trigger {
+  align-items: center;
+  background: transparent;
+  border: 0;
+  border-radius: 30px;
+  color: white;
+  cursor: pointer;
+  display: flex;
+  gap: 0.5rem;
+  min-height: 2rem;
+  padding: 0.15rem 0.5rem 0.15rem 0.15rem;
+  transition: background-color 180ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.trigger:hover,
+.trigger[aria-expanded="true"] {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.trigger:focus-visible {
+  outline: 2px solid white;
+  outline-offset: 2px;
+}
+
+.triggerAvatar {
+  border-radius: 50%;
+  flex-shrink: 0;
+  height: 1.65rem;
+  overflow: hidden;
+  width: 1.65rem;
+}
+
+.triggerAvatarFallback {
+  align-items: center;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  color: white;
+  display: grid;
+  flex-shrink: 0;
+  height: 1.65rem;
+  place-items: center;
+  width: 1.65rem;
+}
+
+.triggerUsername {
+  font-size: 0.8rem;
+  font-weight: 600;
+  max-width: 7rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.triggerChevron {
+  color: rgba(255, 255, 255, 0.5);
+  flex-shrink: 0;
+  transition: transform 180ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.triggerChevronOpen {
+  transform: rotate(180deg);
+}
+
+.panel {
+  animation: panel-enter 180ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 1.25rem;
+  box-shadow: 0 16px 48px rgba(19, 21, 25, 0.12);
+  left: 0;
+  min-width: 18rem;
+  padding: 0.5rem;
+  position: absolute;
+  top: calc(100% + 0.5rem);
+  z-index: 50;
+}
+
+.accountSummary {
+  align-items: center;
+  display: flex;
+  gap: 0.75rem;
+  padding: 0.5rem 0.6rem;
+}
+
+.summaryAvatar {
+  border-radius: 50%;
+  flex-shrink: 0;
+  height: 2.5rem;
+  overflow: hidden;
+  width: 2.5rem;
+}
+
+.summaryAvatarFallback {
+  align-items: center;
+  background: var(--color-surface-raised);
+  border-radius: 50%;
+  color: var(--color-muted);
+  display: grid;
+  flex-shrink: 0;
+  height: 2.5rem;
+  place-items: center;
+  width: 2.5rem;
+}
+
+.summaryInfo {
+  display: grid;
+  gap: 0.05rem;
+  min-width: 0;
+}
+
+.summaryUsername {
+  font-size: 0.9rem;
+  font-weight: 700;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.summaryUrl {
+  color: var(--color-muted);
+  font-size: 0.72rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.planBadge {
+  background: var(--color-surface-raised);
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  color: var(--color-muted);
+  flex-shrink: 0;
+  font-size: 0.68rem;
+  font-weight: 700;
+  margin-left: auto;
+  padding: 0.25rem 0.65rem;
+}
+
+.divider {
+  background: var(--color-border);
+  height: 1px;
+  margin: 0.25rem 0.6rem;
+}
+
+.menuList {
+  display: grid;
+  gap: 0.1rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.menuItem {
+  align-items: center;
+  background: transparent;
+  border: 0;
+  border-radius: 0.75rem;
+  color: var(--color-text);
+  cursor: pointer;
+  display: flex;
+  font-size: 0.85rem;
+  font-weight: 500;
+  gap: 0.65rem;
+  min-height: 2.4rem;
+  padding: 0.45rem 0.65rem;
+  text-align: left;
+  transition: background-color 150ms cubic-bezier(0.22, 1, 0.36, 1);
+  width: 100%;
+}
+
+.menuItem:hover {
+  background: var(--color-surface-hover);
+}
+
+.menuItem:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: -2px;
+}
+
+.menuItemIcon {
+  align-items: center;
+  color: var(--color-muted);
+  display: inline-flex;
+  flex-shrink: 0;
+  height: 1.25rem;
+  justify-content: center;
+  width: 1.25rem;
+}
+
+.menuItemLabel {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.menuItemDanger {
+  color: var(--color-danger);
+}
+
+.menuItemDanger .menuItemIcon {
+  color: var(--color-danger);
+}
+
+.menuItemDanger:hover {
+  background: var(--color-danger-soft);
+}
+
+@keyframes panel-enter {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .panel {
+    animation-duration: 80ms;
+  }
+}
