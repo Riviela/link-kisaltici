@@ -1,0 +1,278 @@
+.page {
+  min-height: 100dvh;
+  background: var(--color-page);
+  padding: 1.5rem 1.25rem 3rem;
+}
+
+@media (min-width: 640px) {
+  .page {
+    padding: 2rem 2rem 4rem;
+  }
+}
+
+.brand {
+  display: inline-flex;
+  font-weight: 800;
+  letter-spacing: -0.025em;
+  font-size: 1.25rem;
+  color: var(--color-text);
+}
+
+.headerRow {
+  position: relative;
+  margin-top: 2.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 0.75rem;
+}
+
+.backButton {
+  position: absolute;
+  left: 0;
+  top: 0.25rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  min-height: 2.5rem;
+  border-radius: 9999px;
+  color: var(--color-text);
+}
+
+.title {
+  font-size: 2.25rem;
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  color: var(--color-text);
+  max-width: 32rem;
+}
+
+@media (min-width: 768px) {
+  .title {
+    font-size: 3rem;
+  }
+}
+
+.subtitle {
+  color: var(--color-muted);
+  font-size: 1.0625rem;
+}
+
+.cards {
+  margin: 2.75rem auto 0;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1.25rem;
+  align-items: stretch;
+  max-width: 64rem;
+}
+
+@media (max-width: 920px) {
+  .cards {
+    grid-template-columns: minmax(0, 1fr);
+    max-width: 26rem;
+    gap: 1.5rem;
+  }
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+  background: var(--color-surface);
+}
+
+.cardFeatured {
+  border: 2px solid var(--color-accent);
+  background: #f4f1ff;
+  margin-block: -0.75rem;
+}
+
+@media (max-width: 920px) {
+  .cardFeatured {
+    margin-block: 0;
+  }
+}
+
+.cardHeader {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 1.75rem 1.5rem 1.5rem;
+  background: var(--color-surface-raised);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.cardFeatured .cardHeader {
+  background: #ece7ff;
+  border-bottom-color: #d9d0ff;
+}
+
+.cardHeaderTop {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  min-height: 1.75rem;
+}
+
+.cardName {
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--color-text);
+}
+
+.cardFeatured .cardName {
+  color: var(--color-accent);
+}
+
+.recommendedBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.3rem 0.7rem;
+  border-radius: 9999px;
+  background: var(--color-surface);
+  color: var(--color-accent);
+  font-size: 0.8125rem;
+  font-weight: 700;
+}
+
+.recommendedStar {
+  flex-shrink: 0;
+}
+
+.cardPrice {
+  display: flex;
+  align-items: baseline;
+  gap: 0.15rem;
+  margin-top: 0.25rem;
+}
+
+.cardPriceAmount {
+  font-size: 2rem;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  color: var(--color-text);
+}
+
+.cardPricePeriod {
+  font-size: 1.05rem;
+  font-weight: 500;
+  color: var(--color-muted);
+}
+
+.cardBilling {
+  color: var(--color-muted);
+  font-size: 0.9375rem;
+}
+
+.cardCta {
+  margin-top: 0.5rem;
+  width: 100%;
+  padding: 0.7rem 1rem;
+  font-size: 0.9375rem;
+}
+
+.cardBody {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  padding: 1.5rem 1.5rem 1.75rem;
+}
+
+.cardIntro {
+  color: var(--color-muted);
+  font-size: 0.9375rem;
+}
+
+.featureList {
+  margin-top: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.featureItem {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.65rem;
+}
+
+.checkMark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 1.15rem;
+  height: 1.15rem;
+  margin-top: 0.1rem;
+  border-radius: 9999px;
+  background: var(--color-surface-active);
+  color: var(--color-text);
+}
+
+.checkMarkFeatured {
+  background: var(--color-accent);
+  color: white;
+}
+
+.checkIcon {
+  width: 0.7rem;
+  height: 0.7rem;
+}
+
+.featureText {
+  font-size: 0.9375rem;
+  line-height: 1.4;
+  color: var(--color-text);
+}
+
+.viewAllLink {
+  margin-top: auto;
+  padding-top: 1.75rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  align-self: flex-start;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--color-text);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  background: transparent;
+  border: none;
+  transition-duration: 220ms;
+  transition-property: color;
+  transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.viewAllLink:hover {
+  color: var(--color-accent-strong);
+}
+
+.footer {
+  position: fixed;
+  left: 1rem;
+  bottom: 0.75rem;
+}
+
+.cookieLink {
+  font-size: 0.75rem;
+  color: var(--color-muted);
+  background: transparent;
+  border: none;
+  transition-duration: 220ms;
+  transition-property: color;
+  transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.cookieLink:hover {
+  color: var(--color-text);
+}
