@@ -12,6 +12,7 @@ interface AccountDropdownProps {
   avatarUrl: string | null;
   profileUrl: string;
   username: string;
+  variant?: "dark" | "sidebar";
 }
 
 function UserIcon() {
@@ -188,6 +189,7 @@ export function AccountDropdown({
   avatarUrl,
   profileUrl,
   username,
+  variant = "dark",
 }: AccountDropdownProps) {
   const [isOpen, setIsOpen] = useState(false);
   const panelRef = useRef<HTMLDivElement>(null);
@@ -306,11 +308,13 @@ export function AccountDropdown({
   }, []);
 
   return (
-    <div className={styles.wrapper}>
+    <div
+      className={`${styles.wrapper} ${variant === "sidebar" ? styles.wrapperSidebar : ""}`}
+    >
       <button
         aria-expanded={isOpen}
         aria-haspopup="menu"
-        className={styles.trigger}
+        className={`${styles.trigger} ${variant === "sidebar" ? styles.triggerSidebar : ""}`}
         onClick={toggle}
         ref={triggerRef}
         type="button"
@@ -329,7 +333,9 @@ export function AccountDropdown({
             <UserIcon />
           </div>
         )}
-        <span className={styles.triggerUsername}>@{username}</span>
+        <span className={styles.triggerUsername}>
+          {variant === "sidebar" ? username : `@${username}`}
+        </span>
         <span
           className={`${styles.triggerChevron} ${isOpen ? styles.triggerChevronOpen : ""}`}
         >

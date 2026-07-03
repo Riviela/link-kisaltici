@@ -1,434 +1,732 @@
 .page {
-  background: var(--color-surface);
+  --account-sidebar-width: 11.75rem;
+  background: #f7f7f6;
+  color: #171914;
   min-height: 100dvh;
   overflow-x: hidden;
 }
 
-.topBar {
+.announcementBar {
   align-items: center;
-  background: var(--color-text);
+  background: #121312;
   color: white;
+  display: grid;
+  grid-template-columns: var(--account-sidebar-width) minmax(0, 1fr) var(--account-sidebar-width);
+  height: 2.75rem;
+  position: sticky;
+  top: 0;
+  z-index: 60;
+}
+
+.brandMark {
+  align-items: center;
+  color: #45e768;
+  display: inline-flex;
+  justify-self: start;
+  margin-left: 1rem;
+}
+
+.brandMark:focus-visible,
+.announcementUpgrade:focus-visible {
+  outline-color: #45e768;
+}
+
+.announcementContent {
+  align-items: center;
   display: flex;
-  height: 3.5rem;
-  justify-content: space-between;
-  padding-inline: 1.25rem;
-}
-
-.shell {
-  margin-inline: auto;
-  max-width: 48rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  gap: 0.65rem;
+  grid-column: 2;
+  justify-content: center;
   min-width: 0;
-  padding: 2.5rem 1.25rem 5rem;
 }
 
-.title {
-  font-size: 1.65rem;
+.announcementUpgrade {
+  align-items: center;
+  border: 1px solid #45e768;
+  border-radius: 999px;
+  color: #68eb83;
+  display: inline-flex;
+  font-size: 0.72rem;
+  gap: 0.25rem;
+  min-height: 1.65rem;
+  padding: 0 0.65rem;
+  transition: background-color 160ms ease, color 160ms ease;
+}
+
+.announcementUpgrade:hover {
+  background: rgba(69, 231, 104, 0.1);
+  color: #8ef3a2;
+}
+
+.appFrame {
+  border-radius: 1rem 1rem 0 0;
+  display: grid;
+  grid-template-columns: var(--account-sidebar-width) minmax(0, 1fr);
+  min-height: calc(100dvh - 2.75rem);
+}
+
+.sidebar {
+  background: #eeeeec;
+  border-right: 1px solid #e3e3e0;
+  border-top-left-radius: 1rem;
+  display: flex;
+  flex-direction: column;
+  height: calc(100dvh - 2.75rem);
+  min-width: 0;
+  padding: 0.7rem 0.6rem 0.8rem;
+  position: sticky;
+  top: 2.75rem;
+}
+
+.sidebarProfileRow {
+  align-items: center;
+  display: grid;
+  gap: 0.25rem;
+  grid-template-columns: minmax(0, 1fr) 2rem;
+}
+
+.sidebarIconButton,
+.sidebarUtilityButton {
+  align-items: center;
+  background: transparent;
+  border: 0;
+  color: #666a64;
+  display: inline-flex;
+  height: 2rem;
+  justify-content: center;
+  padding: 0;
+  position: relative;
+  width: 2rem;
+}
+
+.sidebarIconButton:disabled,
+.sidebarUtilityButton:disabled {
+  opacity: 1;
+}
+
+.sidebarUtilityButton:not(:disabled):hover,
+.sidebarUtilityButton:not(:disabled):focus-visible {
+  background: rgba(17, 19, 26, 0.06);
+  border-radius: 0.5rem;
+}
+
+.sidebarNavigation {
+  display: grid;
+  gap: 1.35rem;
+  margin-top: 0.65rem;
+}
+
+.sidebarGroup,
+.sidebarTools {
+  display: grid;
+  gap: 0.05rem;
+}
+
+.sidebarGroupLabel {
+  color: #8a8d87;
+  font-size: 0.62rem;
+  margin: 0 0 0.35rem 0.35rem;
+}
+
+.sidebarItem {
+  align-items: center;
+  background: transparent;
+  border: 0;
+  border-radius: 0.5rem;
+  color: #555852;
+  display: grid;
+  font-size: 0.72rem;
+  font-weight: 560;
+  gap: 0.5rem;
+  grid-template-columns: 1.15rem minmax(0, 1fr) auto;
+  min-height: 1.72rem;
+  padding: 0.22rem 0.35rem;
+  text-align: left;
+  transition: background-color 150ms ease, color 150ms ease;
+  width: 100%;
+}
+
+.sidebarItem:hover:not(:disabled),
+.sidebarItem:focus-visible {
+  background: rgba(17, 19, 26, 0.055);
+  color: #171914;
+}
+
+.sidebarItem:disabled {
+  cursor: not-allowed;
+  opacity: 1;
+}
+
+.sidebarItem svg {
+  height: 1rem;
+  width: 1rem;
+}
+
+.sidebarChevron {
+  align-items: center;
+  color: #9a9d96;
+  display: inline-flex;
+}
+
+.sidebarBadge {
+  border: 1px solid #8d4dff;
+  border-radius: 999px;
+  color: #7c31f3;
+  font-size: 0.5rem;
   font-weight: 800;
-  letter-spacing: -0.02em;
-  line-height: 1.2;
-  margin: 0 0 2rem;
+  line-height: 1;
+  padding: 0.18rem 0.28rem;
+}
+
+.sidebarBottom {
+  display: grid;
+  gap: 0.65rem;
+  margin-top: auto;
+}
+
+.setupCard {
+  background: white;
+  border-radius: 1.1rem;
+  display: grid;
+  gap: 0.38rem;
+  padding: 0.85rem 0.75rem 0.75rem;
+}
+
+.setupProgress {
+  align-items: center;
+  background: conic-gradient(#b47cff 0 50%, #ece8f3 50% 100%);
+  border-radius: 50%;
+  color: #8f58ee;
+  display: grid;
+  font-size: 0.62rem;
+  font-weight: 800;
+  height: 2.75rem;
+  margin-bottom: 0.2rem;
+  place-items: center;
+  position: relative;
+  width: 2.75rem;
+}
+
+.setupProgress::before {
+  background: white;
+  border-radius: 50%;
+  content: "";
+  inset: 0.24rem;
+  position: absolute;
+}
+
+.setupProgress {
+  isolation: isolate;
+}
+
+.setupProgress::after {
+  content: "50%";
+  position: relative;
+  z-index: 1;
+}
+
+.setupProgress {
+  font-size: 0;
+}
+
+.setupCard strong {
+  font-size: 0.68rem;
+}
+
+.setupCard > span {
+  color: #555852;
+  font-size: 0.68rem;
+}
+
+.setupCard button {
+  background: #7e22ff;
+  border: 0;
+  border-radius: 999px;
+  color: white;
+  font-size: 0.64rem;
+  font-weight: 750;
+  min-height: 2.15rem;
+  margin-top: 0.15rem;
+}
+
+.setupCard button:disabled {
+  opacity: 1;
+}
+
+.sidebarUtilities {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  padding-inline: 0.1rem;
+}
+
+.logoutDot {
+  background: #eb4141;
+  border: 2px solid #eeeeec;
+  border-radius: 50%;
+  height: 0.48rem;
+  position: absolute;
+  right: 0.2rem;
+  top: 0.25rem;
+  width: 0.48rem;
+}
+
+.mainColumn {
+  min-width: 0;
+}
+
+.pageHeader {
+  align-items: center;
+  background: #fafaf9;
+  border-bottom: 1px solid #e8e8e5;
+  border-top-right-radius: 1rem;
+  display: flex;
+  height: 3.1rem;
+  padding: 0 0.9rem;
+}
+
+.pageHeader h1 {
+  font-size: 1rem;
+  font-weight: 720;
+  letter-spacing: -0.015em;
+  margin: 0;
+}
+
+.pageBody {
+  padding: 1.75rem 1.5rem 4.5rem;
+}
+
+.settingsColumn {
+  margin-inline: auto;
+  max-width: 31rem;
+  min-width: 0;
 }
 
 .section {
-  margin-bottom: 2.5rem;
+  margin-bottom: 2.3rem;
 }
 
 .sectionTitle {
-  font-size: 0.8rem;
+  font-size: 1rem;
+  font-weight: 760;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+  margin: 0 0 0.78rem;
+}
+
+.sectionSubtitle {
+  font-size: 0.78rem;
   font-weight: 700;
-  letter-spacing: 0.02em;
-  margin: 0 0 1rem;
-  text-transform: uppercase;
+  margin: -0.15rem 0 0.75rem;
 }
 
 .card {
-  background: var(--color-surface-raised);
-  border: 1px solid var(--color-border);
-  border-radius: 1.25rem;
+  background: white;
+  border-radius: 1.15rem;
   overflow: hidden;
 }
 
-.cardBody {
-  padding: 1.25rem;
+.informationCard {
+  display: grid;
+  gap: 0.45rem;
+  padding: 0.95rem;
 }
 
-.fieldRow {
-  align-items: center;
-  display: flex;
-  gap: 1rem;
-  min-height: 3.25rem;
+.informationField {
+  background: #f1f2ef;
+  border-radius: 0.5rem;
+  display: grid;
+  gap: 0.06rem;
+  min-height: 2.35rem;
+  padding: 0.32rem 0.75rem 0.28rem;
 }
 
-.fieldRow + .fieldRow {
-  border-top: 1px solid var(--color-border);
+.informationField > span {
+  color: #8a8e86;
+  font-size: 0.59rem;
+  font-weight: 550;
+  line-height: 1;
 }
 
-.fieldLabel {
-  color: var(--color-muted);
-  flex-shrink: 0;
-  font-size: 0.85rem;
-  font-weight: 600;
-  min-width: 5rem;
-  width: 5rem;
+.informationField input {
+  background: transparent;
+  border: 0;
+  color: #373a35;
+  font-size: 0.72rem;
+  min-height: 1rem;
+  outline: 0;
+  padding: 0;
+  width: 100%;
 }
 
-.fieldInput {
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: 0.75rem;
-  color: var(--color-text);
-  flex: 1;
-  font-size: 0.85rem;
-  min-height: 2.65rem;
-  outline: none;
-  padding: 0 0.85rem;
-  transition:
-    border-color 180ms cubic-bezier(0.22, 1, 0.36, 1),
-    background-color 180ms cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-.fieldInput:focus {
-  background: var(--color-surface);
-  border-color: var(--color-accent);
-  box-shadow: 0 0 0 3px var(--color-accent-soft);
-}
-
-.fieldInput:disabled {
+.informationField input:disabled {
   cursor: not-allowed;
-  opacity: 0.58;
+  opacity: 1;
 }
 
 .saveButton {
-  margin-top: 1rem;
+  background: #dedfdb;
+  border: 0;
+  border-radius: 999px;
+  color: #b6b8b3;
+  font-size: 0.7rem;
+  min-height: 2.15rem;
+  margin-top: 0.15rem;
+  width: 100%;
 }
 
-.securityRow {
-  align-items: center;
-  display: flex;
-  gap: 1rem;
-  justify-content: space-between;
-  min-height: 3.25rem;
-  padding: 1rem 1.25rem;
+.saveButton:disabled {
+  opacity: 1;
 }
 
-.securityRow + .securityRow {
-  border-top: 1px solid var(--color-border);
+.securityCard,
+.privacyCard,
+.passwordCard {
+  padding: 1rem;
 }
 
-.securityRowInfo {
+.securityIntro h3,
+.trustedDevices h3,
+.privacyCard h3,
+.passwordCard h3,
+.deletionCard h3 {
+  font-size: 0.76rem;
+  font-weight: 720;
+  margin: 0;
+}
+
+.securityIntro p,
+.trustedDevices p,
+.privacyCard > p,
+.passwordCard p,
+.deletionCard p {
+  color: #686c65;
+  font-size: 0.68rem;
+  line-height: 1.4;
+  margin: 0.38rem 0 0;
+}
+
+.securityMethods {
   display: grid;
-  gap: 0.15rem;
+  gap: 0.72rem;
+  margin-top: 1rem;
+  padding-inline: 0.75rem;
+}
+
+.securityMethod {
+  align-items: center;
+  display: grid;
+  gap: 0.75rem;
+  grid-template-columns: 2.35rem minmax(0, 1fr) auto;
   min-width: 0;
 }
 
-.securityRowLabel {
-  font-size: 0.9rem;
-  font-weight: 600;
-}
-
-.securityRowDescription {
-  color: var(--color-muted);
-  font-size: 0.8rem;
-}
-
-.enableButton {
+.methodIcon,
+.privacyIcon {
   align-items: center;
-  background: transparent;
-  border: 1px solid var(--color-border);
-  border-radius: 999px;
-  color: var(--color-text);
+  border-radius: 0.38rem;
+  color: #494c46;
   display: inline-flex;
-  flex-shrink: 0;
-  font-size: 0.78rem;
+  height: 2.35rem;
+  justify-content: center;
+  width: 2.35rem;
+}
+
+.methodIconSms {
+  background: #d7ee0e;
+}
+
+.methodIconAuthenticator {
+  background: #e5b7e6;
+}
+
+.securityMethod > div,
+.privacyRow > div {
+  display: grid;
+  gap: 0.12rem;
+  min-width: 0;
+}
+
+.securityMethod strong,
+.privacyRow strong {
+  font-size: 0.74rem;
   font-weight: 700;
-  min-height: 2.1rem;
-  padding: 0 1rem;
-  transition:
-    background-color 180ms cubic-bezier(0.22, 1, 0.36, 1),
-    border-color 180ms cubic-bezier(0.22, 1, 0.36, 1),
-    color 180ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-.enableButton:hover:not(:disabled) {
-  background: var(--color-surface-hover);
-  border-color: var(--color-border-strong);
-  color: var(--color-accent-strong);
+.securityMethod span,
+.privacyRow span {
+  color: #6c7069;
+  font-size: 0.65rem;
+  line-height: 1.3;
 }
 
-.enableButton:disabled {
-  cursor: not-allowed;
-  opacity: 0.5;
+.securityMethod > button,
+.privacyRow > button {
+  background: white;
+  border: 1px solid #e0e2dd;
+  border-radius: 999px;
+  color: #31342f;
+  font-size: 0.66rem;
+  font-weight: 620;
+  min-height: 2.15rem;
+  padding: 0 0.85rem;
 }
 
-.emptyState {
-  color: var(--color-muted);
-  font-size: 0.85rem;
-  padding: 1.5rem 1.25rem;
-  text-align: center;
+.securityMethod > button:disabled,
+.privacyRow > button:disabled {
+  opacity: 1;
+}
+
+.trustedDevices {
+  border-top: 1px solid #ecece9;
+  margin-top: 1.15rem;
+  padding-top: 1rem;
+}
+
+.trustedDevicesEmpty {
+  border: 1px solid #e3e5df;
+  color: #777a74;
+  font-size: 0.65rem;
+  line-height: 1.35;
+  margin-top: 0.75rem;
+  padding: 0.75rem;
+}
+
+.privacyCard,
+.passwordCard {
+  margin-top: 0.85rem;
 }
 
 .privacyRow {
   align-items: center;
-  display: flex;
-  gap: 1rem;
-  justify-content: space-between;
-  min-height: 3.25rem;
-  padding: 1rem 1.25rem;
+  display: grid;
+  gap: 0.75rem;
+  grid-template-columns: 2.35rem minmax(0, 1fr) auto;
+  margin-top: 1rem;
+  padding-inline: 0.75rem;
 }
 
-.privacyStatus {
-  align-items: center;
-  display: flex;
-  font-size: 0.8rem;
-  font-weight: 600;
-  gap: 0.5rem;
+.privacyIcon {
+  background: #bea5b9;
 }
 
-.privacyDot {
-  background: var(--color-success);
-  border-radius: 50%;
-  display: inline-block;
-  height: 0.5rem;
-  width: 0.5rem;
+.privacyRow > div span {
+  color: #188452;
+  font-weight: 580;
 }
 
-.disableButton {
-  align-items: center;
+.passwordCard > button {
   background: transparent;
-  border: 1px solid var(--color-border);
-  border-radius: 999px;
-  color: var(--color-text);
-  display: inline-flex;
-  flex-shrink: 0;
-  font-size: 0.78rem;
-  font-weight: 700;
-  min-height: 2.1rem;
-  padding: 0 1rem;
-  transition:
-    background-color 180ms cubic-bezier(0.22, 1, 0.36, 1),
-    border-color 180ms cubic-bezier(0.22, 1, 0.36, 1),
-    color 180ms cubic-bezier(0.22, 1, 0.36, 1);
+  border: 0;
+  color: #232520;
+  font-size: 0.72rem;
+  font-weight: 720;
+  margin-top: 0.45rem;
+  padding: 0;
 }
 
-.disableButton:hover:not(:disabled) {
-  background: var(--color-surface-hover);
-  border-color: var(--color-border-strong);
-  color: var(--color-accent-strong);
+.passwordCard > button:disabled {
+  opacity: 1;
 }
 
-.disableButton:disabled {
-  cursor: not-allowed;
-  opacity: 0.5;
+.accountManagementSection {
+  margin-bottom: 0;
+  padding-top: 0.9rem;
 }
 
-.passwordSection {
-  padding: 1rem 1.25rem;
+.ownedProfileCard {
+  display: grid;
+  grid-template-columns: 4rem minmax(0, 1fr);
 }
 
-.passwordText {
-  color: var(--color-muted);
-  font-size: 0.85rem;
-  line-height: 1.45;
-  margin: 0 0 1rem;
-}
-
-.passwordButton {
-  align-items: center;
-  background: transparent;
-  border: 1px solid var(--color-border);
-  border-radius: 999px;
-  color: var(--color-text);
-  display: inline-flex;
-  font-size: 0.85rem;
-  font-weight: 700;
-  min-height: 2.4rem;
-  padding: 0 1.15rem;
-  transition:
-    background-color 180ms cubic-bezier(0.22, 1, 0.36, 1),
-    border-color 180ms cubic-bezier(0.22, 1, 0.36, 1),
-    color 180ms cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-.passwordButton:hover:not(:disabled) {
-  background: var(--color-surface-hover);
-  border-color: var(--color-border-strong);
-  color: var(--color-accent-strong);
-}
-
-.passwordButton:disabled {
-  cursor: not-allowed;
-  opacity: 0.5;
-}
-
-.profileCard {
-  align-items: center;
+.ownerAvatarColumn {
+  align-items: start;
+  border-right: 1px solid #ecece9;
   display: flex;
-  gap: 1rem;
-  padding: 1.25rem;
+  grid-row: 1 / 5;
+  justify-content: center;
+  padding-top: 1rem;
 }
 
-.profileAvatar {
+.profileAvatar,
+.profileAvatarFallback {
   border-radius: 50%;
   flex-shrink: 0;
-  height: 3rem;
+  height: 2.35rem;
   overflow: hidden;
-  width: 3rem;
+  width: 2.35rem;
+}
+
+.profileAvatarImage {
+  height: 100%;
+  object-fit: cover;
+  width: 100%;
 }
 
 .profileAvatarFallback {
   align-items: center;
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: 50%;
-  color: var(--color-muted);
+  background: #b9bdb4;
+  color: white;
   display: grid;
-  flex-shrink: 0;
-  height: 3rem;
   place-items: center;
-  width: 3rem;
 }
 
-.profileInfo {
-  display: grid;
-  gap: 0.1rem;
+.ownerHeader {
+  align-items: center;
+  border-bottom: 1px solid #ecece9;
+  display: flex;
+  justify-content: space-between;
   min-width: 0;
+  padding: 0.95rem 1rem;
 }
 
-.profileUsername {
-  font-size: 0.95rem;
-  font-weight: 700;
+.ownerHeader strong {
+  font-size: 0.73rem;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
-.profileMeta {
+.ownerHeader > span {
+  color: #777b73;
+  display: inline-flex;
+}
+
+.ownerDetailsRow {
+  border-bottom: 1px solid #ecece9;
+  display: grid;
+  font-size: 0.7rem;
+  gap: 0.35rem;
+  padding: 0.8rem 1rem;
+}
+
+.ownerDetailsRow > strong {
+  font-weight: 560;
+}
+
+.ownerLabel {
   align-items: center;
-  color: var(--color-muted);
+  display: inline-flex;
+  gap: 0.25rem;
+}
+
+.ownerLabel::after {
+  border: 1px solid #bdc0b9;
+  border-radius: 50%;
+  color: #8b8f87;
+  content: "i";
+  display: inline-grid;
+  font-size: 0.48rem;
+  height: 0.7rem;
+  place-items: center;
+  width: 0.7rem;
+}
+
+.ownerAdminRow {
+  align-items: center;
+  background: #f5f6f3;
+  border-radius: 0.3rem;
   display: flex;
-  font-size: 0.78rem;
-  gap: 0.65rem;
+  gap: 0.75rem;
+  justify-content: space-between;
+  min-width: 0;
+  padding: 0.28rem 0.4rem;
 }
 
-.profilePlan {
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: 999px;
-  font-size: 0.68rem;
-  font-weight: 700;
-  padding: 0.15rem 0.55rem;
+.ownerAdminRow > span {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
-.ownerBadge {
-  background: var(--color-text);
-  border-radius: 0.25rem;
-  color: white;
-  font-size: 0.68rem;
-  font-weight: 700;
-  padding: 0.15rem 0.45rem;
+.ownerAdminRow > strong {
+  color: #397c48;
+  flex-shrink: 0;
+  font-size: 0.58rem;
+  font-weight: 650;
 }
 
 .upgradePanel {
-  border-top: 1px solid var(--color-border);
-  padding: 1.25rem;
+  padding: 0.9rem 1rem 1rem;
 }
 
-.upgradeText {
-  color: var(--color-muted);
-  font-size: 0.85rem;
-  line-height: 1.45;
-  margin: 0 0 1rem;
+.upgradePanel p {
+  font-size: 0.7rem;
+  font-weight: 670;
+  line-height: 1.35;
+  margin: 0 0 0.65rem;
 }
 
 .upgradeLink {
   align-items: center;
-  background: var(--color-accent);
-  border: 1px solid var(--color-accent);
+  background: #8122ff;
   border-radius: 999px;
   color: white;
-  display: inline-flex;
-  font-size: 0.85rem;
-  font-weight: 700;
-  min-height: 2.4rem;
-  padding: 0 1.15rem;
-  transition:
-    background-color 180ms cubic-bezier(0.22, 1, 0.36, 1),
-    border-color 180ms cubic-bezier(0.22, 1, 0.36, 1),
-    color 180ms cubic-bezier(0.22, 1, 0.36, 1);
+  display: flex;
+  font-size: 0.68rem;
+  font-weight: 720;
+  gap: 0.3rem;
+  justify-content: center;
+  min-height: 2.2rem;
+  transition: background-color 160ms ease;
+  width: 100%;
 }
 
 .upgradeLink:hover {
-  background: var(--color-accent-strong);
-  border-color: var(--color-accent-strong);
+  background: #7213eb;
 }
 
-.deletionSection {
-  border-top: 1px solid var(--color-border);
-  padding: 1.25rem;
-}
-
-.deletionTitle {
-  font-size: 0.9rem;
-  font-weight: 600;
-  margin: 0 0 0.5rem;
-}
-
-.deletionText {
-  color: var(--color-muted);
-  font-size: 0.85rem;
-  line-height: 1.45;
-  margin: 0 0 1rem;
+.deletionCard {
+  margin-top: 2.35rem;
+  padding: 1rem;
 }
 
 .deleteButton {
-  align-items: center;
-  background: transparent;
-  border: 1px solid var(--color-danger-border);
+  background: #f20d0d;
+  border: 1px solid #f20d0d;
   border-radius: 999px;
-  color: var(--color-danger);
-  display: inline-flex;
-  font-size: 0.85rem;
-  font-weight: 700;
-  min-height: 2.4rem;
-  padding: 0 1.15rem;
-  transition:
-    background-color 180ms cubic-bezier(0.22, 1, 0.36, 1),
-    border-color 180ms cubic-bezier(0.22, 1, 0.36, 1),
-    color 180ms cubic-bezier(0.22, 1, 0.36, 1);
+  color: white;
+  font-size: 0.68rem;
+  font-weight: 720;
+  margin-top: 1rem;
+  min-height: 2.25rem;
+  padding: 0 1rem;
+  transition: background-color 160ms ease, border-color 160ms ease;
 }
 
-.deleteButton:hover:not(:disabled) {
-  background: var(--color-danger-soft);
-  border-color: var(--color-danger-border-strong);
-  color: var(--color-danger);
+.deleteButton:hover {
+  background: #d80707;
+  border-color: #d80707;
 }
 
-.deleteButton:disabled {
-  cursor: not-allowed;
-  opacity: 0.5;
+.deleteButton:focus-visible,
+.upgradeLink:focus-visible,
+.sidebarItem:focus-visible,
+.sidebarUtilityButton:focus-visible {
+  outline: 3px solid var(--color-accent);
+  outline-offset: 2px;
 }
 
-/* Delete modal */
 .deleteOverlay {
   align-items: center;
   animation: overlay-enter 220ms cubic-bezier(0.22, 1, 0.36, 1) both;
   background: rgba(0, 0, 0, 0.45);
-  bottom: 0;
   display: flex;
+  inset: 0;
   justify-content: center;
-  left: 0;
   padding: 1rem;
   position: fixed;
-  right: 0;
-  top: 0;
   z-index: 100;
 }
 
 .deleteModal {
   animation: modal-enter 220ms cubic-bezier(0.22, 1, 0.36, 1) both;
-  background: var(--color-surface);
+  background: white;
   border: 1px solid var(--color-border);
-  border-radius: 1.25rem;
+  border-radius: 1rem;
   box-shadow: 0 28px 80px rgba(62, 54, 120, 0.12);
   max-width: 28rem;
   padding: 1.5rem;
@@ -458,7 +756,6 @@
   height: 2rem;
   justify-content: center;
   padding: 0;
-  transition: background-color 180ms cubic-bezier(0.22, 1, 0.36, 1);
   width: 2rem;
 }
 
@@ -476,35 +773,114 @@
 
 .deleteModalActions {
   display: flex;
-  gap: 0.75rem;
   justify-content: flex-end;
 }
 
 @keyframes overlay-enter {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
 @keyframes modal-enter {
-  from {
-    opacity: 0;
-    transform: translateY(4px);
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 47.99rem) {
+  .announcementBar {
+    grid-template-columns: auto minmax(0, 1fr);
+    height: 3rem;
+    padding-right: 0.75rem;
   }
-  to {
-    opacity: 1;
-    transform: translateY(0);
+
+  .announcementContent {
+    grid-column: 2;
+    justify-content: flex-end;
+  }
+
+  .announcementContent > span {
+    display: none;
+  }
+
+  .appFrame {
+    display: block;
+    min-height: calc(100dvh - 3rem);
+  }
+
+  .sidebar {
+    border-bottom: 1px solid #e3e3e0;
+    border-right: 0;
+    border-top-left-radius: 1rem;
+    border-top-right-radius: 1rem;
+    height: auto;
+    padding: 0.45rem 0.8rem;
+    position: relative;
+    top: auto;
+  }
+
+  .sidebarNavigation,
+  .sidebarBottom {
+    display: none;
+  }
+
+  .sidebarProfileRow {
+    margin-right: auto;
+    max-width: 14rem;
+  }
+
+  .pageHeader {
+    border-top-right-radius: 0;
+    height: 3rem;
+    padding-inline: 1rem;
+  }
+
+  .pageBody {
+    padding: 1.5rem 1rem 3.5rem;
+  }
+}
+
+@media (max-width: 34rem) {
+  .pageBody {
+    padding-inline: 0.75rem;
+  }
+
+  .securityMethods,
+  .privacyRow {
+    padding-inline: 0;
+  }
+
+  .securityMethod {
+    gap: 0.6rem;
+    grid-template-columns: 2.35rem minmax(0, 1fr);
+  }
+
+  .securityMethod > button {
+    grid-column: 2;
+    justify-self: start;
+  }
+
+  .privacyRow {
+    grid-template-columns: 2.35rem minmax(0, 1fr);
+  }
+
+  .privacyRow > button {
+    grid-column: 2;
+    justify-self: start;
+  }
+
+  .ownedProfileCard {
+    grid-template-columns: 3.5rem minmax(0, 1fr);
+  }
+
+  .ownerAdminRow {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 0.3rem;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .deleteOverlay {
-    animation-duration: 80ms;
-  }
-
+  .deleteOverlay,
   .deleteModal {
     animation-duration: 80ms;
   }
