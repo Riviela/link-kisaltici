@@ -12,7 +12,7 @@ interface AccountDropdownProps {
   avatarUrl: string | null;
   profileUrl: string;
   username: string;
-  variant?: "dark" | "sidebar";
+  variant?: "dark" | "rail" | "sidebar";
 }
 
 function UserIcon() {
@@ -185,6 +185,23 @@ function ChevronDownIcon() {
   );
 }
 
+function MenuIcon() {
+  return (
+    <svg
+      aria-hidden="true"
+      fill="none"
+      height="18"
+      stroke="currentColor"
+      strokeLinecap="round"
+      strokeWidth="1.5"
+      viewBox="0 0 18 18"
+      width="18"
+    >
+      <path d="M4 5h10M4 9h10M4 13h10" />
+    </svg>
+  );
+}
+
 export function AccountDropdown({
   avatarUrl,
   profileUrl,
@@ -243,8 +260,8 @@ export function AccountDropdown({
     if (!isOpen) return;
 
     const timer = requestAnimationFrame(() => {
-      const firstItem = menuRef.current?.querySelector<HTMLButtonElement>(
-        "button:not([aria-disabled])",
+      const firstItem = panelRef.current?.querySelector<HTMLElement>(
+        '[role="menuitem"]',
       );
       firstItem?.focus();
     });
@@ -256,7 +273,7 @@ export function AccountDropdown({
   const handleMenuKeyDown = useCallback(
     (event: React.KeyboardEvent) => {
       const items = Array.from(
-        menuRef.current?.querySelectorAll<HTMLButtonElement>(
+        panelRef.current?.querySelectorAll<HTMLElement>(
           '[role="menuitem"]',
         ) ?? [],
       );
@@ -264,7 +281,7 @@ export function AccountDropdown({
       if (items.length === 0) return;
 
       const currentIndex = items.indexOf(
-        document.activeElement as HTMLButtonElement,
+        document.activeElement as HTMLElement,
       );
 
       switch (event.key) {
@@ -309,17 +326,32 @@ export function AccountDropdown({
 
   return (
     <div
-      className={`${styles.wrapper} ${variant === "sidebar" ? styles.wrapperSidebar : ""}`}
+      className={`${styles.wrapper} ${
+        variant === "sidebar"
+          ? styles.wrapperSidebar
+          : variant === "rail"
+            ? styles.wrapperRail
+            : ""
+      }`}
     >
       <button
+        aria-label={variant === "rail" ? copy.accountDropdown.openMenu : undefined}
         aria-expanded={isOpen}
         aria-haspopup="menu"
-        className={`${styles.trigger} ${variant === "sidebar" ? styles.triggerSidebar : ""}`}
+        className={`${styles.trigger} ${
+          variant === "sidebar"
+            ? styles.triggerSidebar
+            : variant === "rail"
+              ? styles.triggerRail
+              : ""
+        }`}
         onClick={toggle}
         ref={triggerRef}
         type="button"
       >
-        {avatarUrl ? (
+        {variant === "rail" ? (
+          <MenuIcon />
+        ) : avatarUrl ? (
           <div className={styles.triggerAvatar}>
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
@@ -333,19 +365,24 @@ export function AccountDropdown({
             <UserIcon />
           </div>
         )}
-        <span className={styles.triggerUsername}>
-          {variant === "sidebar" ? username : `@${username}`}
-        </span>
-        <span
-          className={`${styles.triggerChevron} ${isOpen ? styles.triggerChevronOpen : ""}`}
-        >
-          <ChevronDownIcon />
-        </span>
+        {variant !== "rail" ? (
+          <>
+            <span className={styles.triggerUsername}>
+              {variant === "sidebar" ? username : `@${username}`}
+            </span>
+            <span
+              className={`${styles.triggerChevron} ${isOpen ? styles.triggerChevronOpen : ""}`}
+            >
+              <ChevronDownIcon />
+            </span>
+          </>
+        ) : null}
       </button>
 
       {isOpen ? (
         <div
-          className={styles.panel}
+          className={`${styles.panel} ${variant === "rail" ? styles.panelRail : ""}`}
+          onKeyDown={handleMenuKeyDown}
           ref={panelRef}
           role="menu"
         >
@@ -375,7 +412,7 @@ export function AccountDropdown({
 
           <div className={styles.divider} />
 
-          <div className={styles.menuList} onKeyDown={handleMenuKeyDown} ref={menuRef}>
+          <div className={styles.menuList} ref={menuRef}>
             <button
               aria-label={copy.accountDropdown.inertHint}
               className={styles.menuItem}

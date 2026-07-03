@@ -177,9 +177,11 @@ export const copy = {
     },
   },
   dashboard: {
+    announcement: "Unlock more tools to grow your audience faster.",
     content: "Content",
     preview: "Live preview",
     logout: "Log out",
+    upgrade: "Upgrade",
   },
   account: {
     title: "Account",
@@ -254,6 +256,7 @@ export const copy = {
     cancel: "Cancel",
   },
   accountDropdown: {
+    openMenu: "Open account menu",
     createNewProfile: "Create new profile",
     account: "Account",
     upgrade: "Upgrade",

@@ -15,6 +15,7 @@ import {
 } from "@/app/actions/links";
 import { updateProfileAppearanceAction } from "@/app/actions/profile";
 import { AddLinkModal } from "@/components/dashboard/add-link-modal";
+import { AccountDropdown } from "@/components/dashboard/account-dropdown";
 import { DashboardProfileHeader } from "@/components/dashboard/dashboard-profile-header";
 import { DesignEditor } from "@/components/dashboard/design-editor";
 import type { LinkPanelType } from "@/components/dashboard/link-card-panel";
@@ -36,6 +37,7 @@ interface LinkManagerProps {
   profile: {
     appearance: ProfileAppearance;
     avatarUrl: string | null;
+    profileUrl: string;
     username: string;
     bio: string | null;
     socialHandles: SocialHandles;
@@ -129,17 +131,26 @@ function RailIcon({ type }: { type: "menu" | "content" | "design" | "enhance" | 
 }
 
 function DashboardRail({
+  avatarUrl,
   mode,
   onModeChange,
+  profileUrl,
+  username,
 }: {
+  avatarUrl: string | null;
   mode: DashboardMode;
   onModeChange: (mode: DashboardMode) => void;
+  profileUrl: string;
+  username: string;
 }) {
   return (
-    <nav className={styles.dashboardRail}>
-      <div aria-hidden="true" className={styles.dashboardRailMenu}>
-        <RailIcon type="menu" />
-      </div>
+    <nav aria-label="Dashboard" className={styles.dashboardRail}>
+      <AccountDropdown
+        avatarUrl={avatarUrl}
+        profileUrl={profileUrl}
+        username={username}
+        variant="rail"
+      />
 
       <div className={styles.dashboardRailItems}>
         <button
@@ -671,7 +682,13 @@ export function LinkManager({ initialLinks, profile }: LinkManagerProps) {
 
   return (
     <>
-      <DashboardRail mode={dashboardMode} onModeChange={setDashboardMode} />
+      <DashboardRail
+        avatarUrl={profile.avatarUrl}
+        mode={dashboardMode}
+        onModeChange={setDashboardMode}
+        profileUrl={profile.profileUrl}
+        username={profile.username}
+      />
 
       <div className={styles.dashboardWorkspace} id="content">
         <section className={styles.dashboardColumns}>

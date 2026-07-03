@@ -116,7 +116,7 @@ export interface AppearanceValidationResult {
 
 export const DEFAULT_APPEARANCE: ProfileAppearance = {
   version: 1,
-  themePreset: "custom",
+  themePreset: "air",
   tokens: {
     background: "#ECEEF1",
     surface: "#FFFFFF",
@@ -154,9 +154,16 @@ export const DEFAULT_APPEARANCE: ProfileAppearance = {
   },
 };
 
-const THEME_TOKEN_PRESETS: Record<ThemePreset, Partial<ProfileAppearance>> = {
+export const THEME_PRESET_MAP: Record<
+  ThemePreset,
+  Partial<ProfileAppearance>
+> = {
   custom: {},
-  air: {},
+  air: {
+    tokens: { ...DEFAULT_APPEARANCE.tokens },
+    text: { ...DEFAULT_APPEARANCE.text },
+    buttons: { ...DEFAULT_APPEARANCE.buttons },
+  },
   agate: {
     tokens: {
       ...DEFAULT_APPEARANCE.tokens,
@@ -428,7 +435,7 @@ export function applyThemePreset(
   appearance: ProfileAppearance,
   themePreset: ThemePreset,
 ): ProfileAppearance {
-  const preset = THEME_TOKEN_PRESETS[themePreset];
+  const preset = THEME_PRESET_MAP[themePreset];
 
   return {
     ...appearance,

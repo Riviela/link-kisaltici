@@ -1,8 +1,8 @@
+import Link from "next/link";
 import { redirect } from "next/navigation";
 
-import { logoutAction } from "@/app/actions/auth";
-import { AccountDropdown } from "@/components/dashboard/account-dropdown";
 import { LinkManager } from "@/components/dashboard/link-manager";
+import { APP_NAME } from "@/lib/config/site";
 import { copy } from "@/lib/copy";
 import {
   getCurrentLinks,
@@ -17,6 +17,33 @@ import {
 } from "@/lib/profile/get-current-profile";
 
 import dashboardStyles from "@/components/dashboard/dashboard-interactions.module.css";
+
+function CanvasMark() {
+  return (
+    <svg aria-hidden="true" fill="none" viewBox="0 0 24 24">
+      <path
+        d="M12 4v16M4 12h16M6.4 6.4l11.2 11.2M17.6 6.4 6.4 17.6"
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeWidth="2.4"
+      />
+    </svg>
+  );
+}
+
+function UpgradeIcon() {
+  return (
+    <svg aria-hidden="true" fill="none" viewBox="0 0 24 24">
+      <path
+        d="m13 2-9 12h8l-1 8 9-12h-8l1-8Z"
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="1.8"
+      />
+    </svg>
+  );
+}
 
 export default async function DashboardPage() {
   let current: CurrentProfileResult;
@@ -60,19 +87,23 @@ export default async function DashboardPage() {
   return (
     <main className={dashboardStyles.dashboardPage}>
       <header className={dashboardStyles.dashboardTopBar}>
-        <AccountDropdown
-          avatarUrl={current.profile.avatarUrl}
-          profileUrl={profileUrl}
-          username={current.profile.username}
-        />
-        <form action={logoutAction}>
-          <button
-            className={dashboardStyles.dashboardLogout}
-            type="submit"
+        <div
+          aria-label={APP_NAME}
+          className={dashboardStyles.dashboardAnnouncementMark}
+          role="img"
+        >
+          <CanvasMark />
+        </div>
+        <div className={dashboardStyles.dashboardAnnouncementContent}>
+          <span>{copy.dashboard.announcement}</span>
+          <Link
+            className={dashboardStyles.dashboardAnnouncementUpgrade}
+            href="/pricing"
           >
-            {copy.dashboard.logout}
-          </button>
-        </form>
+            <UpgradeIcon />
+            {copy.dashboard.upgrade}
+          </Link>
+        </div>
       </header>
 
       <div className={dashboardStyles.dashboardShell}>
@@ -82,6 +113,7 @@ export default async function DashboardPage() {
             appearance: current.profile.appearance,
             avatarUrl: current.profile.avatarUrl,
             bio: current.profile.bio,
+            profileUrl,
             socialHandles: current.profile.socialHandles,
             username: current.profile.username,
           }}

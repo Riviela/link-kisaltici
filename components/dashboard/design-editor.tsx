@@ -159,6 +159,7 @@ function patchAppearance(
   return {
     ...appearance,
     ...patch,
+    themePreset: "custom",
     tokens: { ...appearance.tokens, ...(patch.tokens ?? {}) },
     header: { ...appearance.header, ...(patch.header ?? {}) },
     wallpaper: { ...appearance.wallpaper, ...(patch.wallpaper ?? {}) },
@@ -383,6 +384,7 @@ function ThemePanel({
       <div className={styles.themeGrid}>
         {THEME_PRESETS.map((theme) => (
           <button
+            aria-pressed={appearance.themePreset === theme}
             className={styles.themeCardButton}
             data-selected={appearance.themePreset === theme}
             key={theme}
