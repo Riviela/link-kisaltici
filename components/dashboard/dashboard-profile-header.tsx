@@ -7,9 +7,10 @@ import { SocialHandleModal } from "@/components/dashboard/social-handle-modal";
 import { ProfileAvatar } from "@/components/profile/profile-avatar";
 import { SocialIcon } from "@/components/profile/social-icon";
 import {
+  getSocialLink,
   SOCIAL_PLATFORM_CONFIG,
-  SOCIAL_PLATFORMS,
-  type SocialHandles,
+  type SocialLink,
+  type SocialLinksPosition,
   type SocialPlatform,
 } from "@/lib/profile/social";
 
@@ -19,8 +20,13 @@ interface DashboardProfileHeaderProps {
   avatarUrl: string | null;
   bio: string | null;
   onBioSaved: (bio: string | null) => void;
-  onSocialSaved: (handles: SocialHandles) => void;
-  socialHandles: SocialHandles;
+  onSocialPositionSaved: (position: SocialLinksPosition) => void;
+  onSocialSaved: (state: {
+    socialLinks: SocialLink[];
+    socialLinksPosition: SocialLinksPosition;
+  }) => void;
+  socialLinks: SocialLink[];
+  socialLinksPosition: SocialLinksPosition;
   username: string;
 }
 
@@ -28,13 +34,16 @@ export function DashboardProfileHeader({
   avatarUrl,
   bio,
   onBioSaved,
+  onSocialPositionSaved,
   onSocialSaved,
-  socialHandles,
+  socialLinks,
+  socialLinksPosition,
   username,
 }: DashboardProfileHeaderProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [socialPlatform, setSocialPlatform] = useState<SocialPlatform | null>(null);
   const closeModal = useCallback(() => setIsModalOpen(false), []);
+  const shortcutPlatforms: SocialPlatform[] = ["instagram", "tiktok", "youtube"];
 
   return (
     <>
@@ -57,9 +66,9 @@ export function DashboardProfileHeader({
               </p>
             ) : null}
             <div className="mt-2 flex items-center gap-1.5">
-              {SOCIAL_PLATFORMS.map((platform) => {
+              {shortcutPlatforms.map((platform) => {
                 const label = SOCIAL_PLATFORM_CONFIG[platform].label;
-                const connected = Boolean(socialHandles[platform]);
+                const connected = Boolean(getSocialLink(socialLinks, platform));
                 return (
                   <button
                     aria-label={`${connected ? "Edit" : "Add"} ${label}`}
@@ -73,6 +82,20 @@ export function DashboardProfileHeader({
                   </button>
                 );
               })}
+              <button
+                aria-label="Open social icons"
+                className={styles.socialProfileButton}
+                onClick={() => {
+                  setSocialPlatform(null);
+                  setIsModalOpen(false);
+                  setTimeout(() => setSocialPlatform("threads"), 0);
+                }}
+                type="button"
+              >
+                <svg aria-hidden="true" className="size-5" fill="none" viewBox="0 0 24 24">
+                  <path d="M12 5v14M5 12h14" stroke="currentColor" strokeLinecap="round" strokeWidth="2" />
+                </svg>
+              </button>
             </div>
           </div>
       </section>
@@ -88,10 +111,12 @@ export function DashboardProfileHeader({
 
       {socialPlatform ? (
         <SocialHandleModal
-          handles={socialHandles}
+          initialPlatform={socialPlatform === "threads" ? undefined : socialPlatform}
           onClose={() => setSocialPlatform(null)}
+          onPositionSaved={onSocialPositionSaved}
           onSaved={onSocialSaved}
-          platform={socialPlatform}
+          socialLinks={socialLinks}
+          socialLinksPosition={socialLinksPosition}
         />
       ) : null}
     </>

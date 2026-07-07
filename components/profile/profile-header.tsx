@@ -5,7 +5,7 @@ import {
   normalizeAppearance,
   type ProfileAppearance,
 } from "@/lib/profile/appearance";
-import type { SocialHandles } from "@/lib/profile/social";
+import type { SocialLink } from "@/lib/profile/social";
 
 import styles from "./public-profile.module.css";
 
@@ -15,7 +15,7 @@ interface ProfileHeaderProps {
   username: string;
   bio: string | null;
   variant?: "default" | "preview";
-  socialHandles: SocialHandles;
+  socialLinks: SocialLink[];
 }
 
 export function ProfileHeader({
@@ -24,7 +24,7 @@ export function ProfileHeader({
   username,
   bio,
   variant = "default",
-  socialHandles,
+  socialLinks,
 }: ProfileHeaderProps) {
   const isPreview = variant === "preview";
   const appearance = normalizeAppearance(appearanceInput);
@@ -59,7 +59,7 @@ export function ProfileHeader({
   const socialElement = (
     <SocialLinks
       className={isPreview ? styles.profileSocialPreview : styles.profileSocial}
-      handles={socialHandles}
+      links={socialLinks}
       size={isPreview ? "preview" : "default"}
     />
   );

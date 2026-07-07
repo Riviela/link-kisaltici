@@ -519,6 +519,282 @@
   cursor: not-allowed;
 }
 
+.socialModalOverlay {
+  align-items: center;
+  animation: overlay-enter 180ms ease-out both;
+  background: rgba(0, 0, 0, 0.48);
+  display: flex;
+  inset: 0;
+  justify-content: center;
+  padding: 1rem;
+  position: fixed;
+  z-index: 80;
+}
+
+.socialModalSurface {
+  animation: modal-enter 220ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  background: #ffffff;
+  border-radius: 1.45rem;
+  box-shadow: 0 26px 80px rgba(0, 0, 0, 0.18);
+  color: #050505;
+  max-height: min(34.5rem, calc(100dvh - 2rem));
+  overflow: hidden;
+  width: min(32rem, 100%);
+}
+
+.socialModalHeader {
+  align-items: center;
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: 2rem minmax(0, 1fr) 2rem;
+  min-height: 4rem;
+  padding: 0.9rem 1.45rem 0.55rem;
+}
+
+.socialModalHeader h2 {
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+  margin: 0;
+  text-align: center;
+}
+
+.socialModalIconButton {
+  align-items: center;
+  background: transparent;
+  border: 0;
+  border-radius: 50%;
+  color: #0b0b0c;
+  display: inline-flex;
+  height: 2rem;
+  justify-content: center;
+  padding: 0;
+  width: 2rem;
+}
+
+.socialModalIconButton:hover {
+  background: #f2f2f0;
+}
+
+.socialModalBody {
+  padding: 1.2rem 1.55rem 1.45rem;
+}
+
+.socialModalIntro {
+  margin-bottom: 1.25rem;
+}
+
+.socialModalIntro h3 {
+  font-size: 1.05rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+  margin: 0 0 0.65rem;
+}
+
+.socialModalIntro p {
+  color: #373b43;
+  font-size: 1rem;
+  line-height: 1.35;
+  margin: 0;
+  max-width: 28rem;
+}
+
+.socialPositionFieldset {
+  border: 0;
+  margin: 0;
+  padding: 0;
+}
+
+.socialPositionFieldset legend {
+  font-size: 0.9rem;
+  font-weight: 700;
+  margin: 0 0 0.35rem;
+  padding: 0;
+}
+
+.socialPositionFieldset p {
+  color: #373b43;
+  font-size: 0.95rem;
+  line-height: 1.3;
+  margin: 0 0 1.35rem;
+}
+
+.socialRadioRow {
+  align-items: center;
+  cursor: pointer;
+  display: flex;
+  font-size: 0.96rem;
+  font-weight: 500;
+  gap: 1rem;
+  margin-top: 1.15rem;
+}
+
+.socialRadioRow input {
+  appearance: none;
+  border: 1px solid #d8d9d6;
+  border-radius: 50%;
+  height: 1.55rem;
+  margin: 0;
+  position: relative;
+  width: 1.55rem;
+}
+
+.socialRadioRow input:checked {
+  background: #050505;
+  border-color: #050505;
+}
+
+.socialRadioRow input:checked::after {
+  background: #ffffff;
+  border-radius: 50%;
+  content: "";
+  height: 0.38rem;
+  left: 50%;
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 0.38rem;
+}
+
+.socialModalActions {
+  align-items: center;
+  display: flex;
+  gap: 1rem;
+  justify-content: flex-end;
+  margin-top: 2rem;
+}
+
+.socialInsightsButton,
+.socialPrimaryButton,
+.socialInputSubmit {
+  align-items: center;
+  border-radius: 999px;
+  display: inline-flex;
+  font-size: 0.92rem;
+  font-weight: 700;
+  gap: 0.45rem;
+  justify-content: center;
+  min-height: 2.65rem;
+  padding: 0 1rem;
+}
+
+.socialInsightsButton {
+  background: #ffffff;
+  border: 1px solid #dededb;
+  color: #111214;
+}
+
+.socialPrimaryButton,
+.socialInputSubmit {
+  background: #8124ff;
+  border: 1px solid #8124ff;
+  color: #ffffff;
+}
+
+.socialPickerBody {
+  display: grid;
+  gap: 1.1rem;
+  padding: 1.05rem 1.55rem 1.45rem;
+}
+
+.socialSearchField {
+  align-items: center;
+  background: #f4f4f2;
+  border-radius: 0.55rem;
+  color: #0b0b0c;
+  display: flex;
+  gap: 0.9rem;
+  min-height: 3.15rem;
+  padding: 0 1rem;
+}
+
+.socialSearchField input {
+  background: transparent;
+  border: 0;
+  color: #111214;
+  flex: 1 1 auto;
+  font-size: 0.95rem;
+  outline: 0;
+}
+
+.socialProviderList {
+  max-height: 23rem;
+  overflow-y: auto;
+  padding-right: 0.15rem;
+}
+
+.socialProviderRow {
+  align-items: center;
+  background: transparent;
+  border: 0;
+  border-radius: 0.8rem;
+  color: #050505;
+  display: grid;
+  font-size: 1rem;
+  font-weight: 700;
+  gap: 1rem;
+  grid-template-columns: 1.8rem minmax(0, 1fr) 1.5rem;
+  min-height: 3.55rem;
+  padding: 0 0.9rem;
+  text-align: left;
+  width: 100%;
+}
+
+.socialProviderRow:hover {
+  background: #f6f6f4;
+}
+
+.socialProviderIcon {
+  height: 1.45rem;
+  width: 1.45rem;
+}
+
+.socialInputBody {
+  padding: 1.05rem 1.55rem 1.45rem;
+}
+
+.socialProviderInput {
+  background: #f4f4f2;
+  border: 1px solid transparent;
+  border-radius: 0.55rem;
+  color: #111214;
+  font-size: 0.95rem;
+  min-height: 3.2rem;
+  outline: 0;
+  padding: 0 1rem;
+  width: 100%;
+}
+
+.socialProviderInput:focus {
+  background: #ffffff;
+  border-color: #8124ff;
+}
+
+.socialInputBody p {
+  color: #474b52;
+  font-size: 0.82rem;
+  margin: 0.8rem 0 0;
+}
+
+.socialError {
+  color: var(--color-danger) !important;
+}
+
+.socialInputSubmit {
+  margin-top: 1.55rem;
+  min-height: 2.75rem;
+  width: 100%;
+}
+
+.socialInputSubmit:disabled {
+  background: #dfdfdc;
+  border-color: #dfdfdc;
+  color: #b8bab5;
+  cursor: not-allowed;
+}
+
 .linkPickerField {
   min-height: 3.25rem;
 }

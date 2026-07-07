@@ -32,7 +32,8 @@ export function PublicProfile({ data }: PublicProfileProps) {
         bio={data.profile.bio}
         links={data.links}
         profileUrl={publicUrl}
-        socialHandles={data.profile.socialHandles}
+        socialLinks={data.profile.socialLinks}
+        socialLinksPosition={data.profile.socialLinksPosition}
         username={data.profile.username}
       />
 

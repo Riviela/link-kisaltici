@@ -118,7 +118,8 @@ export default async function DashboardPage() {
             bio: current.profile.bio,
             planLabel,
             profileUrl,
-            socialHandles: current.profile.socialHandles,
+            socialLinks: current.profile.socialLinks,
+            socialLinksPosition: current.profile.socialLinksPosition,
             username: current.profile.username,
           }}
         />

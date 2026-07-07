@@ -2,6 +2,7 @@ import Link from "next/link";
 import type { CSSProperties } from "react";
 
 import { ProfileHeader } from "@/components/profile/profile-header";
+import { SocialLinks } from "@/components/profile/social-links";
 import { PublicLinkButton } from "@/components/profile/public-link-button";
 import { PublicShareButton } from "@/components/profile/public-share-button";
 import { APP_NAME } from "@/lib/config/site";
@@ -12,7 +13,7 @@ import {
   normalizeAppearance,
   type ProfileAppearance,
 } from "@/lib/profile/appearance";
-import type { SocialHandles } from "@/lib/profile/social";
+import type { SocialLink, SocialLinksPosition } from "@/lib/profile/social";
 
 import styles from "./public-profile.module.css";
 
@@ -31,7 +32,8 @@ interface PublicProfileSurfaceProps {
   links: PublicProfileSurfaceLink[];
   mode?: "public" | "preview";
   profileUrl: string;
-  socialHandles: SocialHandles;
+  socialLinks: SocialLink[];
+  socialLinksPosition: SocialLinksPosition;
   username: string;
 }
 
@@ -97,7 +99,8 @@ export function PublicProfileSurface({
   links,
   mode = "public",
   profileUrl,
-  socialHandles,
+  socialLinks,
+  socialLinksPosition,
   username,
 }: PublicProfileSurfaceProps) {
   const isPreview = mode === "preview";
@@ -110,6 +113,16 @@ export function PublicProfileSurface({
     "--profile-button-background": appearance.tokens.buttonBackground,
     "--profile-button-text": appearance.tokens.buttonText,
   };
+
+  const bottomSocialLinks = socialLinksPosition === "bottom" ? (
+    <div className={styles.profileBottomSocial}>
+      <SocialLinks
+        className={isPreview ? styles.profileSocialPreview : styles.profileSocial}
+        links={socialLinks}
+        size={isPreview ? "preview" : "default"}
+      />
+    </div>
+  ) : null;
 
   return (
     <article
@@ -140,7 +153,7 @@ export function PublicProfileSurface({
           avatarUrl={avatarUrl}
           bio={bio}
           variant={isPreview ? "preview" : "default"}
-          socialHandles={socialHandles}
+          socialLinks={socialLinksPosition === "top" ? socialLinks : []}
           username={username}
         />
 
@@ -160,6 +173,7 @@ export function PublicProfileSurface({
             </div>
           )}
         </section>
+        {bottomSocialLinks}
       </div>
 
       <div className={styles.profileFooter}>

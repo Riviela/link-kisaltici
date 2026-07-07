@@ -28,7 +28,7 @@ import {
   normalizeAppearance,
   type ProfileAppearance,
 } from "@/lib/profile/appearance";
-import type { SocialHandles } from "@/lib/profile/social";
+import type { SocialLink, SocialLinksPosition } from "@/lib/profile/social";
 
 import styles from "./dashboard-interactions.module.css";
 
@@ -41,7 +41,8 @@ interface LinkManagerProps {
     planLabel: string;
     username: string;
     bio: string | null;
-    socialHandles: SocialHandles;
+    socialLinks: SocialLink[];
+    socialLinksPosition: SocialLinksPosition;
   };
 }
 
@@ -402,8 +403,11 @@ export function LinkManager({ initialLinks, profile }: LinkManagerProps) {
   const [appearanceSaved, setAppearanceSaved] =
     useState<ProfileAppearance>(initialAppearance);
   const [profileBio, setProfileBio] = useState(profile.bio);
-  const [profileSocialHandles, setProfileSocialHandles] = useState(
-    profile.socialHandles,
+  const [profileSocialLinks, setProfileSocialLinks] = useState(
+    profile.socialLinks,
+  );
+  const [profileSocialLinksPosition, setProfileSocialLinksPosition] = useState(
+    profile.socialLinksPosition,
   );
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [openPanel, setOpenPanel] = useState<OpenPanelState | null>(null);
@@ -885,11 +889,17 @@ export function LinkManager({ initialLinks, profile }: LinkManagerProps) {
             avatarUrl={profile.avatarUrl}
             bio={profileBio}
             onBioSaved={setProfileBio}
-            onSocialSaved={(handles) => {
-              setProfileSocialHandles(handles);
+            onSocialSaved={(state) => {
+              setProfileSocialLinks(state.socialLinks);
+              setProfileSocialLinksPosition(state.socialLinksPosition);
               router.refresh();
             }}
-            socialHandles={profileSocialHandles}
+            onSocialPositionSaved={(position) => {
+              setProfileSocialLinksPosition(position);
+              router.refresh();
+            }}
+            socialLinks={profileSocialLinks}
+            socialLinksPosition={profileSocialLinksPosition}
             username={profile.username}
           />
 
@@ -1011,7 +1021,8 @@ export function LinkManager({ initialLinks, profile }: LinkManagerProps) {
         avatarUrl={profile.avatarUrl}
         bio={profileBio}
         links={links}
-        socialHandles={profileSocialHandles}
+        socialLinks={profileSocialLinks}
+        socialLinksPosition={profileSocialLinksPosition}
         username={profile.username}
       />
         </section>

@@ -12,7 +12,12 @@ import {
   type ProfileAppearance,
 } from "@/lib/profile/appearance";
 import { getPublicAvatarUrl } from "@/lib/profile/avatar-url";
-import type { SocialHandles } from "@/lib/profile/social";
+import {
+  normalizeSocialLinks,
+  normalizeSocialLinksPosition,
+  type SocialLink,
+  type SocialLinksPosition,
+} from "@/lib/profile/social";
 import { createClient } from "@/lib/supabase/server";
 
 export interface PublicProfileLink {
@@ -30,7 +35,8 @@ export interface PublicProfileData {
     bio: string | null;
     avatarUrl: string | null;
     appearance: ProfileAppearance;
-    socialHandles: SocialHandles;
+    socialLinks: SocialLink[];
+    socialLinksPosition: SocialLinksPosition;
   };
   links: PublicProfileLink[];
 }
@@ -55,7 +61,7 @@ export async function getPublicProfile(
   const { data: profile, error: profileError } = await supabase
     .from("profiles")
     .select(
-      "id, username, bio, avatar_path, appearance, instagram_handle, tiktok_handle, youtube_handle",
+      "id, username, bio, avatar_path, appearance, social_links, social_links_position, instagram_handle, tiktok_handle, youtube_handle",
     )
     .eq("username", normalizedUsername)
     .eq("is_published", true)
@@ -93,11 +99,14 @@ export async function getPublicProfile(
         profile.id,
         profile.avatar_path,
       ),
-      socialHandles: {
+      socialLinks: normalizeSocialLinks(profile.social_links, {
         instagram: profile.instagram_handle,
         tiktok: profile.tiktok_handle,
         youtube: profile.youtube_handle,
-      },
+      }),
+      socialLinksPosition: normalizeSocialLinksPosition(
+        profile.social_links_position,
+      ),
     },
     links: (links ?? []).map((link) => ({
       id: link.id,

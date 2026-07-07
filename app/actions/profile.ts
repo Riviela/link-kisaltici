@@ -31,8 +31,12 @@ import {
 } from "@/lib/profile/validation";
 import {
   isSocialPlatform,
-  SOCIAL_PLATFORM_CONFIG,
+  LEGACY_SOCIAL_PLATFORM_CONFIG,
+  normalizeSocialLinks,
+  normalizeSocialLinksPosition,
   type SocialHandleActionState,
+  type SocialLinksPosition,
+  upsertSocialLink,
   validateSocialHandle,
 } from "@/lib/profile/social";
 import { createClient } from "@/lib/supabase/server";
@@ -344,7 +348,7 @@ export async function updateProfileBioAction(
   };
 }
 
-export async function updateSocialHandleAction(
+export async function updateSocialIconsAction(
   previousState: SocialHandleActionState,
   formData: FormData,
 ): Promise<SocialHandleActionState> {
@@ -354,7 +358,8 @@ export async function updateSocialHandleAction(
     return {
       status: "error",
       message: copy.socialProfiles.failure.invalidPlatform,
-      socialHandles: previousState.socialHandles,
+      socialLinks: previousState.socialLinks,
+      socialLinksPosition: previousState.socialLinksPosition,
     };
   }
 
@@ -367,7 +372,8 @@ export async function updateSocialHandleAction(
     return {
       status: "error",
       message: copy.socialProfiles.failure.invalidHandle,
-      socialHandles: previousState.socialHandles,
+      socialLinks: previousState.socialLinks,
+      socialLinksPosition: previousState.socialLinksPosition,
     };
   }
 
@@ -380,17 +386,37 @@ export async function updateSocialHandleAction(
     return {
       status: "error",
       message: copy.socialProfiles.failure.authentication,
-      socialHandles: previousState.socialHandles,
+      socialLinks: previousState.socialLinks,
+      socialLinksPosition: previousState.socialLinksPosition,
     };
   }
 
-  const column = SOCIAL_PLATFORM_CONFIG[platformValue].column;
+  const nextSocialLinks = upsertSocialLink(
+    previousState.socialLinks,
+    platformValue,
+    validatedHandle.handle,
+  );
+  const legacyColumn =
+    platformValue in LEGACY_SOCIAL_PLATFORM_CONFIG
+      ? LEGACY_SOCIAL_PLATFORM_CONFIG[
+          platformValue as keyof typeof LEGACY_SOCIAL_PLATFORM_CONFIG
+        ].column
+      : null;
+  const updatePayload = legacyColumn
+    ? {
+        social_links: nextSocialLinks,
+        [legacyColumn]: validatedHandle.handle,
+      }
+    : {
+        social_links: nextSocialLinks,
+      };
+
   const { data: profile, error } = await supabase
     .from("profiles")
-    .update({ [column]: validatedHandle.handle })
+    .update(updatePayload)
     .eq("id", userId)
     .select(
-      "username, instagram_handle, tiktok_handle, youtube_handle",
+      "username, social_links, social_links_position, instagram_handle, tiktok_handle, youtube_handle",
     )
     .maybeSingle();
 
@@ -398,15 +424,16 @@ export async function updateSocialHandleAction(
     return {
       status: "error",
       message: copy.socialProfiles.failure.update,
-      socialHandles: previousState.socialHandles,
+      socialLinks: previousState.socialLinks,
+      socialLinksPosition: previousState.socialLinksPosition,
     };
   }
 
-  const socialHandles = {
+  const socialLinks = normalizeSocialLinks(profile.social_links, {
     instagram: profile.instagram_handle,
     tiktok: profile.tiktok_handle,
     youtube: profile.youtube_handle,
-  };
+  });
 
   revalidatePath("/dashboard");
   revalidatePath(`/${profile.username}`);
@@ -414,7 +441,54 @@ export async function updateSocialHandleAction(
   return {
     status: "success",
     message: copy.socialProfiles.success,
-    socialHandles,
+    socialLinks,
+    socialLinksPosition: normalizeSocialLinksPosition(
+      profile.social_links_position,
+    ),
+  };
+}
+
+export async function updateSocialIconsPositionAction(
+  position: SocialLinksPosition,
+) {
+  const normalizedPosition = normalizeSocialLinksPosition(position);
+  const supabase = await createClient();
+  const { data: claimsData, error: claimsError } =
+    await supabase.auth.getClaims();
+  const userId = claimsData?.claims?.sub;
+
+  if (claimsError || typeof userId !== "string" || userId.length === 0) {
+    return {
+      status: "error" as const,
+      message: copy.socialProfiles.failure.authentication,
+      socialLinksPosition: normalizedPosition,
+    };
+  }
+
+  const { data: profile, error } = await supabase
+    .from("profiles")
+    .update({ social_links_position: normalizedPosition })
+    .eq("id", userId)
+    .select("username, social_links_position")
+    .maybeSingle();
+
+  if (error || !profile) {
+    return {
+      status: "error" as const,
+      message: copy.socialProfiles.failure.update,
+      socialLinksPosition: normalizedPosition,
+    };
+  }
+
+  revalidatePath("/dashboard");
+  revalidatePath(`/${profile.username}`);
+
+  return {
+    status: "success" as const,
+    message: copy.socialProfiles.success,
+    socialLinksPosition: normalizeSocialLinksPosition(
+      profile.social_links_position,
+    ),
   };
 }
 

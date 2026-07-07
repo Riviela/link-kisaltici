@@ -444,6 +444,12 @@
   margin-top: 0.75rem;
 }
 
+.profileBottomSocial {
+  display: flex;
+  justify-content: center;
+  margin-top: 1.15rem;
+}
+
 .profileContent {
   margin: 2.1rem auto 0;
   max-width: 32.8rem;
