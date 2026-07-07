@@ -41,9 +41,20 @@ export function DashboardProfileHeader({
   username,
 }: DashboardProfileHeaderProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [socialPlatform, setSocialPlatform] = useState<SocialPlatform | null>(null);
+  const [isSocialModalOpen, setIsSocialModalOpen] = useState(false);
+  const [socialPlatform, setSocialPlatform] =
+    useState<SocialPlatform | null>(null);
   const closeModal = useCallback(() => setIsModalOpen(false), []);
   const shortcutPlatforms: SocialPlatform[] = ["instagram", "tiktok", "youtube"];
+  const hasSavedSocialIcons = socialLinks.length > 0;
+  const visibleSocialPlatforms = hasSavedSocialIcons
+    ? socialLinks.map((link) => link.platform)
+    : shortcutPlatforms;
+
+  function openSocialModal(platform: SocialPlatform | null) {
+    setSocialPlatform(platform);
+    setIsSocialModalOpen(true);
+  }
 
   return (
     <>
@@ -66,15 +77,16 @@ export function DashboardProfileHeader({
               </p>
             ) : null}
             <div className="mt-2 flex items-center gap-1.5">
-              {shortcutPlatforms.map((platform) => {
+              {visibleSocialPlatforms.map((platform) => {
                 const label = SOCIAL_PLATFORM_CONFIG[platform].label;
-                const connected = Boolean(getSocialLink(socialLinks, platform));
+                const connected =
+                  hasSavedSocialIcons || Boolean(getSocialLink(socialLinks, platform));
                 return (
                   <button
                     aria-label={`${connected ? "Edit" : "Add"} ${label}`}
                     className={`${styles.socialProfileButton} ${connected ? styles.socialProfileButtonConnected : ""}`}
                     key={platform}
-                    onClick={() => setSocialPlatform(platform)}
+                    onClick={() => openSocialModal(platform)}
                     type="button"
                   >
                     <SocialIcon platform={platform} />
@@ -85,11 +97,7 @@ export function DashboardProfileHeader({
               <button
                 aria-label="Open social icons"
                 className={styles.socialProfileButton}
-                onClick={() => {
-                  setSocialPlatform(null);
-                  setIsModalOpen(false);
-                  setTimeout(() => setSocialPlatform("threads"), 0);
-                }}
+                onClick={() => openSocialModal(null)}
                 type="button"
               >
                 <svg aria-hidden="true" className="size-5" fill="none" viewBox="0 0 24 24">
@@ -109,10 +117,13 @@ export function DashboardProfileHeader({
         />
       ) : null}
 
-      {socialPlatform ? (
+      {isSocialModalOpen ? (
         <SocialHandleModal
-          initialPlatform={socialPlatform === "threads" ? undefined : socialPlatform}
-          onClose={() => setSocialPlatform(null)}
+          initialPlatform={socialPlatform ?? undefined}
+          onClose={() => {
+            setIsSocialModalOpen(false);
+            setSocialPlatform(null);
+          }}
           onPositionSaved={onSocialPositionSaved}
           onSaved={onSocialSaved}
           socialLinks={socialLinks}
