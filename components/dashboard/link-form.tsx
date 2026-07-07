@@ -71,7 +71,7 @@ export function LinkForm({
 
       <div className="space-y-2">
         <label
-          className="text-sm font-semibold text-[var(--color-text)]"
+          className="text-sm font-medium text-[var(--color-text)]"
           htmlFor={`${mode}-title-${link?.id ?? "new"}`}
         >
           {copy.links.titleLabel}
@@ -91,7 +91,7 @@ export function LinkForm({
 
       <div className="space-y-2">
         <label
-          className="text-sm font-semibold text-[var(--color-text)]"
+          className="text-sm font-medium text-[var(--color-text)]"
           htmlFor={`${mode}-url-${link?.id ?? "new"}`}
         >
           {copy.links.urlLabel}
@@ -112,7 +112,7 @@ export function LinkForm({
         />
       </div>
 
-      <label className="toggle-control flex items-center gap-3 text-sm font-semibold text-[var(--color-text)]">
+      <label className="toggle-control flex items-center gap-3 text-sm font-medium text-[var(--color-text)]">
         <input
           className="size-4 accent-[var(--color-accent)]"
           defaultChecked={link?.is_active ?? true}

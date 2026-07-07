@@ -58,7 +58,7 @@
 
 .triggerUsername {
   font-size: 0.8rem;
-  font-weight: 600;
+  font-weight: 500;
   max-width: 7rem;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -100,7 +100,7 @@
 .triggerSidebar .triggerUsername {
   color: #454842;
   font-size: 0.78rem;
-  font-weight: 650;
+  font-weight: 600;
 }
 
 .triggerSidebar .triggerChevron {
@@ -184,7 +184,7 @@
 
 .summaryUsername {
   font-size: 0.9rem;
-  font-weight: 700;
+  font-weight: 600;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -205,7 +205,7 @@
   color: var(--color-muted);
   flex-shrink: 0;
   font-size: 0.68rem;
-  font-weight: 700;
+  font-weight: 600;
   margin-left: auto;
   padding: 0.25rem 0.65rem;
 }

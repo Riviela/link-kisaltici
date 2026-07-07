@@ -198,7 +198,7 @@
   border-radius: 999px;
   color: #11131a;
   font-size: 0.72rem;
-  font-weight: 700;
+  font-weight: 600;
   padding: 0.35rem 0.55rem;
   position: absolute;
   right: 0;
@@ -376,7 +376,7 @@
 .profileTitle {
   color: var(--profile-title, #0d0f12);
   font-size: 1.65rem;
-  font-weight: 800;
+  font-weight: 700;
   letter-spacing: -0.045em;
   line-height: 1.05;
   margin: 1rem 0 0;
@@ -389,7 +389,7 @@
 
 .profileTitleShape {
   font-size: clamp(3.1rem, 10vw, 4.6rem);
-  font-weight: 900;
+  font-weight: 800;
   letter-spacing: -0.075em;
   line-height: 0.86;
   margin: 0 auto;
@@ -422,7 +422,7 @@
 .profileBio {
   color: var(--profile-page-text, #0d0f12);
   font-size: 0.875rem;
-  font-weight: 650;
+  font-weight: 600;
   line-height: 1.42;
   margin: 0.38rem auto 0;
   max-width: 28rem;
@@ -499,7 +499,7 @@
   color: var(--profile-button-text, #0d0f12);
   display: grid;
   font-size: 1rem;
-  font-weight: 750;
+  font-weight: 650;
   grid-template-columns: 3.4rem minmax(0, 1fr) 3.4rem;
   min-height: 4rem;
   padding: 0.5rem 0.7rem;
@@ -764,7 +764,7 @@
   border-radius: 0.8rem;
   display: inline-flex;
   font-size: 1.2rem;
-  font-weight: 700;
+  font-weight: 600;
   height: 2.75rem;
   justify-content: center;
   margin-bottom: 0.9rem;
@@ -799,7 +799,7 @@
   color: var(--profile-page-text, #0d0f12);
   display: inline-flex;
   font-size: 0.95rem;
-  font-weight: 750;
+  font-weight: 650;
   justify-content: center;
   min-height: 3rem;
   padding: 0 1.15rem;
@@ -855,7 +855,7 @@
 
 .qrDock p {
   font-size: 0.88rem;
-  font-weight: 750;
+  font-weight: 650;
   margin: 0;
 }
 

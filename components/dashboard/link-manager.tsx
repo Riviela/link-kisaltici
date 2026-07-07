@@ -77,6 +77,21 @@ interface PanelMessageState {
 }
 
 type DashboardMode = "content" | "design";
+type SidebarIconName =
+  | "audience"
+  | "bell"
+  | "business"
+  | "earn"
+  | "flag"
+  | "help"
+  | "insights"
+  | "instagram"
+  | "link"
+  | "overview"
+  | "planner"
+  | "post"
+  | "shop"
+  | "tiles";
 
 function sortLinks(links: LinkItem[]) {
   return [...links].sort(
@@ -91,47 +106,77 @@ function areAppearancesEqual(
   return JSON.stringify(left) === JSON.stringify(right);
 }
 
-function RailIcon({ type }: { type: "menu" | "content" | "design" | "enhance" | "settings" }) {
-  if (type === "menu") {
-    return (
-      <svg fill="none" height="18" viewBox="0 0 18 18" width="18">
-        <path d="M4 5h10M4 9h10M4 13h10" stroke="currentColor" strokeLinecap="round" strokeWidth="1.5" />
-      </svg>
-    );
-  }
-
-  if (type === "design") {
-    return (
-      <svg aria-hidden="true" fill="none" height="20" viewBox="0 0 20 20" width="20">
-        <path d="M4 5.5h12v4H4zM6 12h8v3H6z" stroke="currentColor" strokeLinejoin="round" strokeWidth="1.6" />
-      </svg>
-    );
-  }
-
-  if (type === "enhance") {
-    return (
-      <svg aria-hidden="true" fill="none" height="20" viewBox="0 0 20 20" width="20">
-        <path d="M10 2.8 11.6 7l4.3 1.5-4.3 1.6L10 14.2 8.4 10 4.1 8.5 8.4 7 10 2.8Z" stroke="currentColor" strokeLinejoin="round" strokeWidth="1.45" />
-      </svg>
-    );
-  }
-
-  if (type === "settings") {
-    return (
-      <svg aria-hidden="true" fill="none" height="20" viewBox="0 0 20 20" width="20">
-        <path d="M10 12.8a2.8 2.8 0 1 0 0-5.6 2.8 2.8 0 0 0 0 5.6Zm6-2.8 1.2-1-1.2-2-1.5.5a6 6 0 0 0-1.1-.6L13.1 5H6.9l-.3 1.9c-.4.2-.8.4-1.1.6L4 7 2.8 9 4 10l-.2 1.2-1 1.2L4 14.4l1.5-.5c.3.2.7.4 1.1.6l.3 1.9h6.2l.3-1.9c.4-.2.8-.4 1.1-.6l1.5.5 1.2-2-1-1.2L16 10Z" stroke="currentColor" strokeLinejoin="round" strokeWidth="1.25" />
-      </svg>
-    );
-  }
+function SidebarIcon({ name }: { name: SidebarIconName }) {
+  const content = (() => {
+    switch (name) {
+      case "tiles":
+        return <><circle cx="7" cy="7" r="1.6" /><circle cx="17" cy="7" r="1.6" /><circle cx="7" cy="17" r="1.6" /><path d="M17 14v6M14 17h6" /></>;
+      case "shop":
+        return <><path d="M5 8h14l-1 12H6L5 8Z" /><path d="M8 8a4 4 0 0 1 8 0" /></>;
+      case "earn":
+        return <><ellipse cx="9" cy="8" rx="6" ry="3" /><path d="M3 8v4c0 1.7 2.7 3 6 3 1 0 2-.1 2.8-.4" /><ellipse cx="16" cy="15" rx="5" ry="3" /><path d="M11 15v3c0 1.7 2.2 3 5 3s5-1.3 5-3v-3" /></>;
+      case "overview":
+        return <><path d="M4 5h16M4 12h16M4 19h16" /><path d="M8 5v14" /></>;
+      case "audience":
+        return <><circle cx="9" cy="8" r="3" /><circle cx="17" cy="9" r="2.5" /><path d="M3 20c.5-4 2.7-6 6-6s5.5 2 6 6M14 15c3.5-.5 6.2 1.2 7 4.5" /></>;
+      case "insights":
+        return <><path d="M4 20V10M10 20V4M16 20v-7M22 20H2" /></>;
+      case "business":
+        return <><rect height="13" rx="1.4" width="18" x="3" y="6" /><path d="M7 10h4M7 14h7M17 10h.01" /></>;
+      case "planner":
+        return <><rect height="17" rx="2" width="18" x="3" y="4" /><path d="M7 2v4M17 2v4M3 9h18M8 14l2 2 5-5" /></>;
+      case "instagram":
+        return <><path d="M4 6h14a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H8l-4 3V8a2 2 0 0 1 2-2Z" /><path d="M8 11h8M8 15h5" /></>;
+      case "link":
+        return <><path d="M10 13a5 5 0 0 0 7.1.1l2-2a5 5 0 0 0-7.1-7.1l-1.1 1.1M14 11a5 5 0 0 0-7.1-.1l-2 2A5 5 0 0 0 12 20l1.1-1.1" /></>;
+      case "post":
+        return <><path d="m4 20 8-16 2 7 6 2-16 7Z" /><path d="m12 11 4-4M4 4l2 2M18 18l2 2M4 10h3M14 4v3" /></>;
+      case "bell":
+        return <><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9" /><path d="M10 21h4" /></>;
+      case "help":
+        return <><circle cx="12" cy="12" r="9" /><path d="M9.6 9a2.6 2.6 0 1 1 4.1 2.1c-1.1.8-1.7 1.2-1.7 2.7M12 17h.01" /></>;
+      case "flag":
+        return <><path d="M5 21V4M5 5h10l1 3h4v9h-9l-1-3H5" /><circle cx="18.4" cy="18.3" r="1.9" fill="#ff4358" stroke="none" /></>;
+    }
+  })();
 
   return (
-    <svg aria-hidden="true" fill="none" height="20" viewBox="0 0 20 20" width="20">
-      <path d="M4 5.5h12M4 10h12M4 14.5h8" stroke="currentColor" strokeLinecap="round" strokeWidth="1.7" />
+    <svg
+      aria-hidden="true"
+      fill="none"
+      height="18"
+      stroke="currentColor"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth="1.55"
+      viewBox="0 0 24 24"
+      width="18"
+    >
+      {content}
     </svg>
   );
 }
 
-function DashboardRail({
+function ChevronIcon({ open = false }: { open?: boolean }) {
+  return (
+    <svg
+      aria-hidden="true"
+      className={open ? styles.sidebarChevronOpen : undefined}
+      fill="none"
+      height="14"
+      stroke="currentColor"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth="1.7"
+      viewBox="0 0 24 24"
+      width="14"
+    >
+      <path d="m6 9 6 6 6-6" />
+    </svg>
+  );
+}
+
+function DashboardSidebar({
   avatarUrl,
   mode,
   onModeChange,
@@ -146,57 +191,187 @@ function DashboardRail({
   profileUrl: string;
   username: string;
 }) {
-  return (
-    <nav aria-label="Dashboard" className={styles.dashboardRail}>
-      <AccountDropdown
-        avatarUrl={avatarUrl}
-        planLabel={planLabel}
-        profileUrl={profileUrl}
-        username={username}
-        variant="rail"
-      />
+  const [isCanvasSectionOpen, setIsCanvasSectionOpen] = useState(false);
+  const [isEarnSectionOpen, setIsEarnSectionOpen] = useState(false);
+  const inertHandler = useCallback(() => undefined, []);
+  const sidebarTools: Array<{
+    icon: SidebarIconName;
+    isNew?: boolean;
+    label: string;
+  }> = [
+    { icon: "business", isNew: true, label: "Business cards" },
+    { icon: "planner", label: "Social planner" },
+    { icon: "instagram", label: "Instagram auto-reply" },
+    { icon: "link", label: "Link shortener" },
+    { icon: "post", label: "Post ideas" },
+  ];
 
-      <div className={styles.dashboardRailItems}>
+  return (
+    <aside className={styles.dashboardSidebar}>
+      <div className={styles.dashboardSidebarTop}>
+        <AccountDropdown
+          avatarUrl={avatarUrl}
+          planLabel={planLabel}
+          profileUrl={profileUrl}
+          username={username}
+          variant="sidebar"
+        />
         <button
-          aria-current={mode === "content" ? "page" : undefined}
-          className={styles.dashboardRailItem}
-          data-active={mode === "content"}
-          onClick={() => onModeChange("content")}
+          aria-label={copy.account.notificationsUnavailable}
+          className={styles.sidebarIconButton}
+          onClick={inertHandler}
           type="button"
         >
-          <RailIcon type="content" />
-          <span>{copy.dashboard.content}</span>
-        </button>
-        <button
-          aria-current={mode === "design" ? "page" : undefined}
-          className={styles.dashboardRailItem}
-          data-active={mode === "design"}
-          onClick={() => onModeChange("design")}
-          type="button"
-        >
-          <RailIcon type="design" />
-          <span>Design</span>
-        </button>
-        <button
-          aria-disabled="true"
-          className={styles.dashboardRailItem}
-          disabled
-          type="button"
-        >
-          <RailIcon type="enhance" />
-          <span>Enhance</span>
-        </button>
-        <button
-          aria-disabled="true"
-          className={styles.dashboardRailItem}
-          disabled
-          type="button"
-        >
-          <RailIcon type="settings" />
-          <span>Settings</span>
+          <SidebarIcon name="bell" />
         </button>
       </div>
-    </nav>
+
+      <nav aria-label="Dashboard navigation" className={styles.sidebarNav}>
+        <div className={styles.sidebarGroup}>
+          <button
+            aria-expanded={isCanvasSectionOpen}
+            className={styles.sidebarParentItem}
+            onClick={() => setIsCanvasSectionOpen((current) => !current)}
+            type="button"
+          >
+            <span className={styles.sidebarIcon}>
+              <SidebarIcon name="tiles" />
+            </span>
+            <span>My Canvas Links</span>
+            <span className={styles.sidebarChevron}>
+              <ChevronIcon open={isCanvasSectionOpen} />
+            </span>
+          </button>
+
+          {isCanvasSectionOpen ? (
+            <div className={styles.sidebarSubnav}>
+              <button
+                aria-current={mode === "content" ? "page" : undefined}
+                className={styles.sidebarSubitem}
+                data-active={mode === "content"}
+                onClick={() => onModeChange("content")}
+                type="button"
+              >
+                Links
+              </button>
+              <button
+                className={styles.sidebarSubitem}
+                onClick={inertHandler}
+                type="button"
+              >
+                Shop
+              </button>
+              <button
+                aria-current={mode === "design" ? "page" : undefined}
+                className={styles.sidebarSubitem}
+                data-active={mode === "design"}
+                onClick={() => onModeChange("design")}
+                type="button"
+              >
+                Design
+              </button>
+            </div>
+          ) : null}
+        </div>
+
+        <div className={styles.sidebarGroup}>
+          <button
+            aria-expanded={isEarnSectionOpen}
+            className={styles.sidebarParentItem}
+            onClick={() => setIsEarnSectionOpen((current) => !current)}
+            type="button"
+          >
+            <span className={styles.sidebarIcon}>
+              <SidebarIcon name="earn" />
+            </span>
+            <span>Earn</span>
+            <span className={styles.sidebarChevron}>
+              <ChevronIcon open={isEarnSectionOpen} />
+            </span>
+          </button>
+
+          {isEarnSectionOpen ? (
+            <div className={styles.sidebarSubnav}>
+              <button
+                className={styles.sidebarSubitem}
+                data-active="true"
+                onClick={inertHandler}
+                type="button"
+              >
+                Overview
+              </button>
+              <button
+                className={`${styles.sidebarSubitem} ${styles.sidebarSubitemSplit}`}
+                onClick={inertHandler}
+                type="button"
+              >
+                <span>Earnings</span>
+                <span className={styles.sidebarAmountBadge}>$0,00</span>
+              </button>
+            </div>
+          ) : null}
+        </div>
+
+        <button
+          className={styles.sidebarParentItem}
+          onClick={inertHandler}
+          type="button"
+        >
+          <span className={styles.sidebarIcon}>
+            <SidebarIcon name="audience" />
+          </span>
+          <span>Audience</span>
+        </button>
+
+        <button
+          className={styles.sidebarParentItem}
+          onClick={inertHandler}
+          type="button"
+        >
+          <span className={styles.sidebarIcon}>
+            <SidebarIcon name="insights" />
+          </span>
+          <span>Insights</span>
+        </button>
+
+        <div className={styles.sidebarTools}>
+          <p className={styles.sidebarToolsLabel}>Tools</p>
+          {sidebarTools.map(({ icon, isNew = false, label }) => (
+            <button
+              className={styles.sidebarToolItem}
+              key={label}
+              onClick={inertHandler}
+              type="button"
+            >
+              <span className={styles.sidebarIcon}>
+                <SidebarIcon name={icon} />
+              </span>
+              <span>{label}</span>
+              {isNew ? <span className={styles.sidebarNewBadge}>NEW</span> : null}
+            </button>
+          ))}
+        </div>
+      </nav>
+
+      <div className={styles.sidebarFooter}>
+        <button
+          aria-label={copy.account.helpUnavailable}
+          className={styles.sidebarFooterButton}
+          onClick={inertHandler}
+          type="button"
+        >
+          <SidebarIcon name="help" />
+        </button>
+        <button
+          aria-label={copy.account.unavailableNavigation}
+          className={styles.sidebarFooterButton}
+          onClick={inertHandler}
+          type="button"
+        >
+          <SidebarIcon name="flag" />
+        </button>
+      </div>
+    </aside>
   );
 }
 
@@ -686,7 +861,7 @@ export function LinkManager({ initialLinks, profile }: LinkManagerProps) {
 
   return (
     <>
-      <DashboardRail
+      <DashboardSidebar
         avatarUrl={profile.avatarUrl}
         mode={dashboardMode}
         onModeChange={setDashboardMode}
@@ -702,8 +877,8 @@ export function LinkManager({ initialLinks, profile }: LinkManagerProps) {
           {dashboardMode === "content" ? (
             <>
               <div className="mb-9 flex items-center justify-between border-b border-[var(--color-border)] pb-4">
-                <p className="text-base font-bold text-[var(--color-text)]">Links</p>
-                <span className="text-xs font-semibold text-[var(--color-muted)]">Content</span>
+                <p className="text-base font-semibold text-[var(--color-text)]">Links</p>
+                <span className="text-xs font-medium text-[var(--color-muted)]">Content</span>
               </div>
 
           <DashboardProfileHeader
@@ -762,10 +937,10 @@ export function LinkManager({ initialLinks, profile }: LinkManagerProps) {
                 aria-live="polite"
                 className={
                   managerStatus.tone === "error"
-                    ? "text-sm font-semibold text-[var(--color-danger)]"
+                    ? "text-sm font-medium text-[var(--color-danger)]"
                     : managerStatus.tone === "success"
-                      ? "text-sm font-semibold text-[var(--color-success)]"
-                      : "text-sm font-semibold text-[var(--color-muted)]"
+                      ? "text-sm font-medium text-[var(--color-success)]"
+                      : "text-sm font-medium text-[var(--color-muted)]"
                 }
                 role="status"
               >

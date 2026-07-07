@@ -252,7 +252,7 @@ export function ProfilePreview({
               }}
             >
               <div className="flex items-center justify-between gap-3 px-4 pb-3 pt-4">
-                <h3 className="text-lg font-bold text-[var(--color-text)]">
+                <h3 className="text-lg font-semibold text-[var(--color-text)]">
                   {copy.share.title}
                 </h3>
                 <button
@@ -282,7 +282,7 @@ export function ProfilePreview({
                 <span className="grid size-9 shrink-0 place-items-center rounded-full bg-[var(--color-surface-raised)] text-[var(--color-text)]">
                   <CanvasGlyph className="size-4" />
                 </span>
-                <span className="min-w-0 flex-1 truncate text-xs font-semibold text-[var(--color-text)]">
+                <span className="min-w-0 flex-1 truncate text-xs font-medium text-[var(--color-text)]">
                   {publicPath}
                 </span>
                 <button
@@ -296,7 +296,7 @@ export function ProfilePreview({
               {copyStatus !== "idle" ? (
                 <p
                   aria-live="polite"
-                  className={`mx-4 mt-2 text-xs font-semibold ${copyStatus === "copied" ? "text-[var(--color-success)]" : "text-[var(--color-danger)]"}`}
+                  className={`mx-4 mt-2 text-xs font-medium ${copyStatus === "copied" ? "text-[var(--color-success)]" : "text-[var(--color-danger)]"}`}
                   role="status"
                 >
                   {copyStatus === "copied"
@@ -320,7 +320,7 @@ export function ProfilePreview({
                       <span className="grid size-10 place-items-center rounded-full bg-[var(--color-surface-raised)] text-[var(--color-text)]">
                         <ShareOptionIcon index={index} />
                       </span>
-                      <span className="max-w-full truncate text-[0.6rem] font-semibold">
+                      <span className="max-w-full truncate text-[0.6rem] font-medium">
                         {label}
                       </span>
                     </button>

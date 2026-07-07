@@ -1,5 +1,5 @@
 .dashboardPage {
-  background: var(--color-surface);
+  background: var(--color-text);
   min-height: 100dvh;
   overflow-x: hidden;
 }
@@ -30,7 +30,7 @@
   align-items: center;
   display: flex;
   font-size: 0.75rem;
-  font-weight: 700;
+  font-weight: 600;
   gap: 0.65rem;
   grid-column: 2;
   justify-content: center;
@@ -61,7 +61,190 @@
 }
 
 .dashboardShell {
+  background: var(--color-surface);
+  border-radius: 15px 15px 0 0;
+  min-height: calc(100dvh - 3.5rem);
   min-width: 0;
+  overflow: hidden;
+}
+
+.dashboardSidebar {
+  background: #f7f7f5;
+  border-bottom: 1px solid #e3e3df;
+  color: #444740;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  min-width: 0;
+  padding: 0.8rem 1.25rem 1rem;
+}
+
+.dashboardSidebarTop {
+  align-items: center;
+  display: grid;
+  gap: 0.75rem;
+  grid-template-columns: minmax(0, 1fr) 2rem;
+  min-height: 2.4rem;
+}
+
+.sidebarIconButton,
+.sidebarFooterButton {
+  align-items: center;
+  background: transparent;
+  border: 0;
+  border-radius: 50%;
+  color: #17191d;
+  display: inline-flex;
+  flex-shrink: 0;
+  height: 2rem;
+  justify-content: center;
+  padding: 0;
+  width: 2rem;
+}
+
+.sidebarIconButton:hover,
+.sidebarFooterButton:hover,
+.sidebarParentItem:hover,
+.sidebarToolItem:hover,
+.sidebarSubitem:hover {
+  background: #ecece9;
+}
+
+.sidebarNav {
+  align-content: start;
+  display: grid;
+  gap: 0.2rem;
+  grid-auto-rows: max-content;
+  margin-top: 1.45rem;
+}
+
+.sidebarGroup {
+  display: grid;
+  gap: 0;
+}
+
+.sidebarParentItem,
+.sidebarToolItem {
+  align-items: center;
+  background: transparent;
+  border: 0;
+  border-radius: 0.45rem;
+  color: #3f423c;
+  display: grid;
+  font-size: 0.94rem;
+  font-weight: 600;
+  gap: 0.58rem;
+  grid-template-columns: 1.35rem minmax(0, 1fr) auto;
+  min-height: 2.05rem;
+  padding: 0 0.3rem 0 0;
+  text-align: left;
+  width: 100%;
+}
+
+.sidebarToolItem {
+  font-size: 0.93rem;
+  font-weight: 500;
+}
+
+.sidebarIcon {
+  align-items: center;
+  color: #50534d;
+  display: inline-flex;
+  height: 1.35rem;
+  justify-content: center;
+  width: 1.35rem;
+}
+
+.sidebarChevron {
+  align-items: center;
+  color: #9c9f98;
+  display: inline-flex;
+  justify-content: center;
+}
+
+.sidebarChevronOpen {
+  transform: rotate(180deg);
+}
+
+.sidebarSubnav {
+  border-left: 1px solid #e6e6e2;
+  display: grid;
+  gap: 0;
+  margin: 0 0 0.45rem 0.55rem;
+  padding: 0.15rem 0 0.15rem 0.85rem;
+}
+
+.sidebarSubitem {
+  align-items: center;
+  background: transparent;
+  border: 0;
+  border-radius: 0.45rem;
+  color: #444740;
+  display: flex;
+  font-size: 0.94rem;
+  font-weight: 520;
+  min-height: 1.78rem;
+  padding: 0 0.65rem;
+  text-align: left;
+  width: 100%;
+}
+
+.sidebarSubitem[data-active="true"] {
+  background: #e9e9e5;
+  color: #6c1cff;
+  font-weight: 650;
+}
+
+.sidebarSubitemSplit {
+  gap: 0.45rem;
+  justify-content: flex-start;
+}
+
+.sidebarAmountBadge {
+  align-items: center;
+  background: #ececea;
+  border-radius: 999px;
+  color: #8d918b;
+  display: inline-flex;
+  font-size: 0.77rem;
+  font-weight: 550;
+  line-height: 1;
+  min-height: 1.18rem;
+  padding: 0 0.45rem;
+}
+
+.sidebarTools {
+  display: grid;
+  gap: 0.28rem;
+  margin-top: 1.45rem;
+}
+
+.sidebarToolsLabel {
+  color: #8c908a;
+  font-size: 0.77rem;
+  font-weight: 500;
+  margin: 0 0 0.35rem;
+}
+
+.sidebarNewBadge {
+  align-items: center;
+  border: 1.5px solid #7d1cff;
+  border-radius: 999px;
+  color: #7d1cff;
+  display: inline-flex;
+  font-size: 0.66rem;
+  font-weight: 700;
+  justify-content: center;
+  line-height: 1;
+  min-height: 1.15rem;
+  padding: 0 0.32rem;
+}
+
+.sidebarFooter {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  margin-top: 1.5rem;
 }
 
 .dashboardRail {
@@ -97,7 +280,7 @@
   display: flex;
   flex-direction: column;
   font-size: 0.68rem;
-  font-weight: 750;
+  font-weight: 650;
   gap: 0.35rem;
   min-height: 3.65rem;
   padding: 0.45rem 0.2rem;
@@ -276,7 +459,7 @@
   bottom: -0.18rem;
   display: flex;
   font-size: 0.62rem;
-  font-weight: 700;
+  font-weight: 600;
   height: 0.85rem;
   justify-content: center;
   line-height: 1;
@@ -316,7 +499,7 @@
   border-radius: 30px;
   color: white;
   display: inline-flex;
-  font-weight: 700;
+  font-weight: 600;
   justify-content: center;
   transition:
     background-color 220ms cubic-bezier(0.22, 1, 0.36, 1),
@@ -505,7 +688,7 @@
   color: #71756d;
   display: inline-flex;
   font-size: 0.86rem;
-  font-weight: 650;
+  font-weight: 600;
   gap: 0.35rem;
   min-height: 2rem;
   padding: 0.35rem 0.45rem;
@@ -561,7 +744,7 @@
   color: var(--color-text);
   display: flex;
   font-size: 0.9rem;
-  font-weight: 800;
+  font-weight: 700;
   justify-content: center;
   min-height: 2rem;
   padding: 0.35rem 3rem;
@@ -646,7 +829,7 @@
 .panelOptionTitle {
   color: var(--color-text);
   font-size: 0.93rem;
-  font-weight: 800;
+  font-weight: 700;
   line-height: 1.25;
 }
 
@@ -694,7 +877,7 @@
   color: var(--color-text);
   display: flex;
   font-size: 0.9rem;
-  font-weight: 800;
+  font-weight: 700;
   gap: 0.45rem;
   justify-content: center;
   margin-top: 1rem;
@@ -710,7 +893,7 @@
   color: var(--color-text);
   display: flex;
   font-size: 0.9rem;
-  font-weight: 800;
+  font-weight: 700;
   gap: 0.45rem;
   justify-content: center;
   margin-top: 1rem;
@@ -725,7 +908,7 @@
   color: rgba(255, 255, 255, 0.82);
   display: flex;
   font-size: 0.62rem;
-  font-weight: 800;
+  font-weight: 700;
   height: 5.9rem;
   margin-top: 1rem;
   max-width: 10.75rem;
@@ -759,7 +942,7 @@
   color: white;
   display: inline-flex;
   font-size: 1rem;
-  font-weight: 800;
+  font-weight: 700;
   gap: 0.45rem;
   justify-content: center;
   min-height: 3rem;
@@ -775,7 +958,7 @@
   color: var(--color-text);
   display: inline-flex;
   font-size: 0.9rem;
-  font-weight: 800;
+  font-weight: 700;
   justify-content: center;
   margin-top: 0.75rem;
   min-height: 2.65rem;
@@ -794,7 +977,7 @@
 .panelStatus {
   color: #5d625d;
   font-size: 0.78rem;
-  font-weight: 700;
+  font-weight: 600;
   margin-top: 0.8rem;
   text-align: center;
 }
@@ -887,7 +1070,7 @@
   color: var(--color-text);
   display: flex;
   font-size: 1rem;
-  font-weight: 850;
+  font-weight: 700;
   gap: 0.55rem;
   margin-bottom: 0.35rem;
 }
@@ -904,7 +1087,7 @@
   color: var(--color-text);
   display: flex;
   font-size: 0.92rem;
-  font-weight: 750;
+  font-weight: 650;
   gap: 0.8rem;
   min-height: 3.55rem;
   padding: 0 0.75rem;
@@ -922,7 +1105,7 @@
   border-radius: 0.25rem;
   color: white;
   font-size: 0.75rem;
-  font-weight: 850;
+  font-weight: 700;
   margin-left: auto;
   padding: 0.35rem 0.5rem;
 }
@@ -947,7 +1130,7 @@
   color: #555a55;
   display: flex;
   font-size: 0.78rem;
-  font-weight: 700;
+  font-weight: 600;
   gap: 1.5rem;
   justify-content: center;
   margin-top: 0.9rem;
@@ -1012,7 +1195,7 @@
 
 .insightsCta p {
   font-size: 0.72rem;
-  font-weight: 650;
+  font-weight: 600;
   max-width: 16rem;
 }
 
@@ -1023,7 +1206,7 @@
   color: white;
   flex-shrink: 0;
   font-size: 0.78rem;
-  font-weight: 800;
+  font-weight: 700;
   min-height: 2rem;
   padding: 0 0.9rem;
 }
@@ -1091,18 +1274,16 @@
   .dashboardShell {
     display: grid;
     flex: 1 1 auto;
-    grid-template-columns: 84px minmax(0, 1fr);
+    grid-template-columns: 15rem minmax(0, 1fr);
     min-height: 0;
   }
 
-  .dashboardRail {
-    align-items: center;
-    background: var(--color-surface);
-    border-right: 1px solid var(--color-border);
-    display: flex;
-    flex-direction: column;
+  .dashboardSidebar {
+    border-bottom: 0;
+    border-right: 1px solid #e3e3df;
     min-height: 0;
     overflow: visible;
+    padding: 0.85rem 1.15rem 0.7rem;
     position: relative;
     z-index: 40;
   }
@@ -1144,6 +1325,39 @@
     flex: 0 1 auto;
     height: clamp(38rem, calc(100dvh - 9.5rem), 44.5rem);
     min-height: 0;
+  }
+}
+
+@media (min-width: 900px) and (max-width: 1279px) {
+  .dashboardShell {
+    display: grid;
+    grid-template-columns: 15rem minmax(0, 1fr);
+  }
+
+  .dashboardSidebar {
+    border-bottom: 0;
+    border-right: 1px solid #e3e3df;
+    min-height: calc(100dvh - 3.5rem);
+    padding: 0.85rem 1.15rem 0.7rem;
+    position: sticky;
+    top: 0;
+  }
+}
+
+@media (min-width: 900px) {
+  .sidebarNav {
+    flex: 0 0 auto;
+  }
+
+  .sidebarFooter {
+    margin-top: auto;
+  }
+}
+
+@media (max-width: 899px) {
+  .dashboardSidebar {
+    max-height: min(31rem, calc(100dvh - 3.5rem));
+    overflow-y: auto;
   }
 }
 
@@ -1236,7 +1450,7 @@
   color: var(--color-text);
   cursor: pointer;
   font-size: 18px;
-  font-weight: 700;
+  font-weight: 600;
   line-height: 1.35;
   padding: 0;
   text-align: left;
@@ -1345,7 +1559,7 @@
   border: 1px solid var(--color-text);
   border-radius: 0.75rem;
   color: var(--color-surface);
-  font-weight: 700;
+  font-weight: 600;
   transition:
     background-color 180ms ease-out,
     border-color 180ms ease-out,

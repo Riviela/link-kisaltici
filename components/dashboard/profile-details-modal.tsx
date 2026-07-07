@@ -102,7 +102,7 @@ export function ProfileDetailsModal({
         role="dialog"
       >
         <h2
-          className="text-2xl font-bold tracking-[-0.035em] text-[var(--color-text)]"
+          className="text-2xl font-semibold tracking-[-0.035em] text-[var(--color-text)]"
           id="profileDetailsTitle"
         >
           {copy.profileDetails.title}
@@ -113,17 +113,17 @@ export function ProfileDetailsModal({
 
         <form action={formAction} className="mt-7 space-y-5">
           <div className="space-y-2">
-            <p className="text-sm font-semibold text-[var(--color-text)]">
+            <p className="text-sm font-medium text-[var(--color-text)]">
               {copy.profileDetails.usernameLabel}
             </p>
-            <div className="rounded-[var(--radius-control)] border border-[var(--color-border)] bg-[var(--color-surface-raised)] px-4 py-3 font-bold text-[var(--color-text)]">
+            <div className="rounded-[var(--radius-control)] border border-[var(--color-border)] bg-[var(--color-surface-raised)] px-4 py-3 font-semibold text-[var(--color-text)]">
               @{username}
             </div>
           </div>
 
           <div className="space-y-2">
             <label
-              className="text-sm font-semibold text-[var(--color-text)]"
+              className="text-sm font-medium text-[var(--color-text)]"
               htmlFor="profileBio"
             >
               {copy.profileDetails.bioLabel}

@@ -111,7 +111,7 @@ export function LinkCard({
           <div className="flex min-w-0 items-start justify-between gap-4">
             <div className="min-w-0 flex-1">
               <div className="flex min-w-0 items-center gap-2">
-                <h3 className="truncate text-[0.95rem] font-bold text-[var(--color-text)]">
+                <h3 className="truncate text-[0.95rem] font-semibold text-[var(--color-text)]">
                   {link.title}
                 </h3>
                 <button
@@ -150,7 +150,7 @@ export function LinkCard({
               >
                 <svg aria-hidden="true" fill="none" height="16" viewBox="0 0 16 16" width="16"><path d="M8 2.75v7m0-7L5.75 5M8 2.75 10.25 5M4.5 7.25v5h7v-5" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.25" /></svg>
               </button>
-              <label className="toggle-control flex shrink-0 items-center gap-2 text-xs font-semibold text-[var(--color-muted)]">
+              <label className="toggle-control flex shrink-0 items-center gap-2 text-xs font-medium text-[var(--color-muted)]">
                 <span className="sr-only">
                   {link.is_active ? copy.links.active : copy.links.inactive}
                 </span>
@@ -194,7 +194,7 @@ export function LinkCard({
 
           {isConfirmingDelete ? (
             <div className="flex flex-wrap items-center justify-end gap-2">
-              <span className="text-xs font-semibold text-[var(--color-danger)]">
+              <span className="text-xs font-medium text-[var(--color-danger)]">
                 {copy.links.deleteConfirm}
               </span>
               <button

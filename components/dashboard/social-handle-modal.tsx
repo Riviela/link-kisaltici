@@ -92,7 +92,7 @@ export function SocialHandleModal({
         <div className="grid grid-cols-[2.25rem_1fr_2.25rem] items-center gap-3 border-b border-[var(--color-border)] px-6 py-5">
           <span aria-hidden="true" />
           <h2
-            className="text-center text-lg font-bold text-[var(--color-text)]"
+            className="text-center text-lg font-semibold text-[var(--color-text)]"
             id="socialHandleTitle"
           >
             {handles[platform]

@@ -98,7 +98,7 @@ export function AddLinkModal({
       >
         <div className="flex items-center justify-between gap-4 border-b border-[var(--color-border)] px-6 py-5 sm:px-8">
           <h2
-            className="text-2xl font-bold text-[var(--color-text)]"
+            className="text-2xl font-semibold text-[var(--color-text)]"
             id="addLinkTitle"
           >
             {copy.linkPicker.title}
@@ -153,7 +153,7 @@ export function AddLinkModal({
                     <LinkGlyph />
                   </span>
                   <span className="min-w-0 flex-1">
-                    <span className="block font-semibold text-[var(--color-text)]">
+                    <span className="block font-medium text-[var(--color-text)]">
                       {copy.linkPicker.resultTitle}
                     </span>
                     <span className="block truncate text-sm text-[var(--color-muted)]">
@@ -174,7 +174,7 @@ export function AddLinkModal({
                 <span className={styles.linkPickerResultIcon}>
                   <LinkGlyph />
                 </span>
-                <span className="font-semibold text-[var(--color-text)]">
+                <span className="font-medium text-[var(--color-text)]">
                   {copy.linkPicker.emptyOption}
                 </span>
               </button>
@@ -189,7 +189,7 @@ export function AddLinkModal({
             </p>
           ) : null}
           {isPending ? (
-            <p className="mt-4 text-sm font-semibold text-[var(--color-muted)]" role="status">
+            <p className="mt-4 text-sm font-medium text-[var(--color-muted)]" role="status">
               {copy.linkPicker.adding}
             </p>
           ) : null}

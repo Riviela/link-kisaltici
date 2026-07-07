@@ -303,7 +303,7 @@ function LockPanel() {
       <p className={styles.panelOptionDescription}>
         Visitors can only access this link by fulfilling certain criteria.
       </p>
-      <p className="mt-6 text-sm font-bold text-[var(--color-text)]">Link locked with:</p>
+      <p className="mt-6 text-sm font-semibold text-[var(--color-text)]">Link locked with:</p>
       <div className={styles.lockList}>
         {lockOptions.map((option) => (
           <div className={styles.lockRow} key={option}>
@@ -331,7 +331,7 @@ function InsightsPanel() {
         <span aria-disabled="true" role="tab">Traffic sources</span>
         <span aria-disabled="true" role="tab">Locations</span>
       </div>
-      <p className="mt-8 text-sm font-semibold text-[var(--color-text)]">Clicks</p>
+      <p className="mt-8 text-sm font-medium text-[var(--color-text)]">Clicks</p>
       <div className={styles.insightsTable}>
         <div className={styles.insightsHeader}><span>Click type</span><span>Lifetime</span><span>Last 7 days</span></div>
         <div><span>Total</span><strong>0</strong><strong>0</strong></div>

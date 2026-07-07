@@ -12,7 +12,7 @@
 
 .brand {
   display: inline-flex;
-  font-weight: 800;
+  font-weight: 700;
   letter-spacing: -0.025em;
   font-size: 1.25rem;
   color: var(--color-text);
@@ -44,7 +44,7 @@
 
 .title {
   font-size: 2.25rem;
-  font-weight: 700;
+  font-weight: 600;
   letter-spacing: -0.04em;
   color: var(--color-text);
   max-width: 32rem;
@@ -123,7 +123,7 @@
 
 .cardName {
   font-size: 1.5rem;
-  font-weight: 700;
+  font-weight: 600;
   letter-spacing: -0.02em;
   color: var(--color-text);
 }
@@ -141,7 +141,7 @@
   background: var(--color-surface);
   color: var(--color-accent);
   font-size: 0.8125rem;
-  font-weight: 700;
+  font-weight: 600;
 }
 
 .recommendedStar {
@@ -157,7 +157,7 @@
 
 .cardPriceAmount {
   font-size: 2rem;
-  font-weight: 700;
+  font-weight: 600;
   letter-spacing: -0.03em;
   color: var(--color-text);
 }
@@ -242,7 +242,7 @@
   gap: 0.4rem;
   align-self: flex-start;
   font-size: 0.9375rem;
-  font-weight: 600;
+  font-weight: 500;
   color: var(--color-text);
   text-decoration: underline;
   text-underline-offset: 3px;
