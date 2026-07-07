@@ -45,13 +45,15 @@ export function PricingCard({
   const cardClassName = featured
     ? `${styles.card} ${styles.cardFeatured}`
     : styles.card;
-  const ctaClassName = featured
-    ? `${styles.cardCta} button-primary`
-    : `${styles.cardCta} button-secondary`;
+  const ctaClassName = [
+    styles.cardCta,
+    featured ? styles.cardCtaFeatured : styles.cardCtaDefault,
+    isCurrent ? styles.cardCtaCurrent : "",
+  ].filter(Boolean).join(" ");
 
   return (
     <article className={cardClassName}>
-      <header className={styles.cardHeader}>
+      <header className={styles.cardTitleBar}>
         <div className={styles.cardHeaderTop}>
           <h2 className={styles.cardName}>{plan.name}</h2>
           {featured ? (
@@ -70,17 +72,25 @@ export function PricingCard({
             </span>
           ) : null}
         </div>
+      </header>
+
+      <div className={styles.cardContent}>
         <p className={styles.cardPrice}>
           <span className={styles.cardPriceAmount}>{plan.price}</span>
           <span className={styles.cardPricePeriod}>{plan.period}</span>
         </p>
         <p className={styles.cardBilling}>{plan.billing}</p>
-        <button className={ctaClassName} type="button">
-          {isCurrent ? copy.pricing.currentPlan : plan.cta}
-        </button>
-      </header>
+        {isCurrent ? (
+          <span className={ctaClassName} aria-current="true">
+            {copy.pricing.currentPlan}
+          </span>
+        ) : (
+          <button className={ctaClassName} type="button">
+            {plan.cta}
+          </button>
+        )}
 
-      <div className={styles.cardBody}>
+        <div className={styles.cardDivider} />
         <p className={styles.cardIntro}>{plan.intro}</p>
         <ul className={styles.featureList}>
           {plan.features.map((feature) => (
@@ -98,23 +108,6 @@ export function PricingCard({
             </li>
           ))}
         </ul>
-
-        <button className={styles.viewAllLink} type="button">
-          {copy.pricing.viewAllFeatures}
-          <svg
-            aria-hidden="true"
-            fill="none"
-            height="16"
-            stroke="currentColor"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth="2"
-            viewBox="0 0 24 24"
-            width="16"
-          >
-            <path d="M12 5v14M19 12l-7 7-7-7" />
-          </svg>
-        </button>
       </div>
     </article>
   );

@@ -1,278 +1,521 @@
 .page {
+  background: #fbfbfa;
+  color: #17181a;
   min-height: 100dvh;
-  background: var(--color-page);
-  padding: 1.5rem 1.25rem 3rem;
-}
-
-@media (min-width: 640px) {
-  .page {
-    padding: 2rem 2rem 4rem;
-  }
+  padding: 2.6rem clamp(1.25rem, 4vw, 3rem) 4.25rem;
+  position: relative;
 }
 
 .brand {
+  color: #111214;
   display: inline-flex;
+  font-size: clamp(1.25rem, 1.5vw, 1.45rem);
   font-weight: 700;
-  letter-spacing: -0.025em;
-  font-size: 1.25rem;
-  color: var(--color-text);
+  letter-spacing: -0.045em;
+  line-height: 1;
+}
+
+.brand::after {
+  color: #38df63;
+  content: "*";
+  font-size: 1.35em;
+  font-weight: 700;
+  line-height: 0.7;
+  margin-left: 0.04em;
 }
 
 .headerRow {
-  position: relative;
-  margin-top: 2.5rem;
+  align-items: center;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  gap: 1rem;
+  margin: 0 auto;
+  max-width: 50rem;
+  position: relative;
   text-align: center;
-  gap: 0.75rem;
 }
 
 .backButton {
-  position: absolute;
-  left: 0;
-  top: 0.25rem;
-  display: inline-flex;
   align-items: center;
+  background: transparent;
+  border: 0;
+  border-radius: 50%;
+  color: #111214;
+  display: inline-flex;
+  height: 2.15rem;
   justify-content: center;
-  width: 2.5rem;
-  height: 2.5rem;
-  min-height: 2.5rem;
-  border-radius: 9999px;
-  color: var(--color-text);
+  left: clamp(-14.5rem, -20vw, -9rem);
+  min-height: 2.15rem;
+  padding: 0;
+  position: absolute;
+  top: 0.68rem;
+  width: 2.15rem;
+}
+
+.backButton:hover {
+  background: #efefec;
 }
 
 .title {
-  font-size: 2.25rem;
-  font-weight: 600;
-  letter-spacing: -0.04em;
-  color: var(--color-text);
-  max-width: 32rem;
-}
-
-@media (min-width: 768px) {
-  .title {
-    font-size: 3rem;
-  }
+  color: #050506;
+  font-size: clamp(2.75rem, 4vw, 4.2rem);
+  font-weight: 800;
+  letter-spacing: -0.075em;
+  line-height: 0.95;
+  margin: 0;
 }
 
 .subtitle {
-  color: var(--color-muted);
-  font-size: 1.0625rem;
+  color: #696a6d;
+  font-size: clamp(1.02rem, 1.3vw, 1.25rem);
+  font-weight: 500;
+  line-height: 1.25;
+  margin: 0;
 }
 
 .cards {
-  margin: 2.75rem auto 0;
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 1.25rem;
   align-items: stretch;
-  max-width: 64rem;
-}
-
-@media (max-width: 920px) {
-  .cards {
-    grid-template-columns: minmax(0, 1fr);
-    max-width: 26rem;
-    gap: 1.5rem;
-  }
+  display: grid;
+  gap: clamp(1.25rem, 2vw, 1.75rem);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin: 3.45rem auto 0;
+  max-width: 77rem;
 }
 
 .card {
+  background: #ffffff;
+  border: 1px solid #dededb;
+  border-radius: 1.35rem;
+  box-shadow: 0 18px 34px rgba(28, 28, 28, 0.04);
   display: flex;
   flex-direction: column;
+  min-height: 31.5rem;
   overflow: hidden;
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-card);
-  background: var(--color-surface);
 }
 
 .cardFeatured {
-  border: 2px solid var(--color-accent);
-  background: #f4f1ff;
-  margin-block: -0.75rem;
+  background: #f2ecff;
+  border: 2px solid #8124ff;
+  box-shadow: 0 18px 34px rgba(129, 36, 255, 0.06);
 }
 
-@media (max-width: 920px) {
-  .cardFeatured {
-    margin-block: 0;
-  }
+.cardTitleBar {
+  background: #f1f1ef;
+  padding: 1.35rem 1.6rem 1.2rem;
 }
 
-.cardHeader {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-  padding: 1.75rem 1.5rem 1.5rem;
-  background: var(--color-surface-raised);
-  border-bottom: 1px solid var(--color-border);
-}
-
-.cardFeatured .cardHeader {
-  background: #ece7ff;
-  border-bottom-color: #d9d0ff;
+.cardFeatured .cardTitleBar {
+  background: #dbc8ff;
 }
 
 .cardHeaderTop {
-  display: flex;
   align-items: center;
+  display: flex;
+  gap: 1rem;
   justify-content: space-between;
-  gap: 0.5rem;
-  min-height: 1.75rem;
+  min-height: 2.2rem;
 }
 
 .cardName {
-  font-size: 1.5rem;
-  font-weight: 600;
-  letter-spacing: -0.02em;
-  color: var(--color-text);
+  color: #17181a;
+  font-size: clamp(1.75rem, 2vw, 2.1rem);
+  font-weight: 800;
+  letter-spacing: -0.075em;
+  line-height: 0.95;
+  margin: 0;
 }
 
 .cardFeatured .cardName {
-  color: var(--color-accent);
+  color: #7b20f6;
 }
 
 .recommendedBadge {
-  display: inline-flex;
   align-items: center;
-  gap: 0.35rem;
-  padding: 0.3rem 0.7rem;
-  border-radius: 9999px;
-  background: var(--color-surface);
-  color: var(--color-accent);
-  font-size: 0.8125rem;
-  font-weight: 600;
+  background: rgba(255, 255, 255, 0.58);
+  border-radius: 999px;
+  color: #7621ef;
+  display: inline-flex;
+  flex-shrink: 0;
+  font-size: 0.78rem;
+  font-weight: 700;
+  gap: 0.42rem;
+  line-height: 1;
+  min-height: 2.1rem;
+  padding: 0 0.92rem;
 }
 
 .recommendedStar {
   flex-shrink: 0;
 }
 
-.cardPrice {
-  display: flex;
-  align-items: baseline;
-  gap: 0.15rem;
-  margin-top: 0.25rem;
-}
-
-.cardPriceAmount {
-  font-size: 2rem;
-  font-weight: 600;
-  letter-spacing: -0.03em;
-  color: var(--color-text);
-}
-
-.cardPricePeriod {
-  font-size: 1.05rem;
-  font-weight: 500;
-  color: var(--color-muted);
-}
-
-.cardBilling {
-  color: var(--color-muted);
-  font-size: 0.9375rem;
-}
-
-.cardCta {
-  margin-top: 0.5rem;
-  width: 100%;
-  padding: 0.7rem 1rem;
-  font-size: 0.9375rem;
-}
-
-.cardBody {
+.cardContent {
   display: flex;
   flex: 1 1 auto;
   flex-direction: column;
-  padding: 1.5rem 1.5rem 1.75rem;
+  padding: 1.55rem 1.6rem 1.9rem;
+}
+
+.cardPrice {
+  align-items: baseline;
+  display: flex;
+  gap: 0.12rem;
+  margin: 0;
+}
+
+.cardPriceAmount {
+  color: #5e6065;
+  font-size: clamp(1.85rem, 2.2vw, 2.2rem);
+  font-weight: 800;
+  letter-spacing: -0.055em;
+  line-height: 1;
+}
+
+.cardPricePeriod {
+  color: #5e6065;
+  font-size: 1.05rem;
+  font-weight: 700;
+}
+
+.cardBilling {
+  color: #5f6268;
+  font-size: 0.95rem;
+  font-weight: 500;
+  line-height: 1.45;
+  margin: 1.05rem 0 0;
+}
+
+.cardCta {
+  align-items: center;
+  border-radius: 999px;
+  display: inline-flex;
+  font-size: 0.94rem;
+  font-weight: 700;
+  justify-content: center;
+  line-height: 1;
+  margin-top: 1.95rem;
+  min-height: 2.75rem;
+  padding: 0 1.1rem;
+  text-align: center;
+  width: 100%;
+}
+
+.cardCtaDefault {
+  background: #ffffff;
+  border: 1px solid #ddddda;
+  color: #17181a;
+}
+
+.cardCtaFeatured {
+  background: #8423f7;
+  border: 1px solid #8423f7;
+  color: #ffffff;
+}
+
+.cardCtaCurrent {
+  cursor: default;
+  user-select: none;
+}
+
+.cardDivider {
+  background: #dcdcd8;
+  height: 1px;
+  margin: 2rem 0 1.75rem;
+  width: 100%;
+}
+
+.cardFeatured .cardDivider {
+  background: #d8c8f5;
 }
 
 .cardIntro {
-  color: var(--color-muted);
-  font-size: 0.9375rem;
+  color: #565961;
+  font-size: 0.86rem;
+  font-weight: 600;
+  line-height: 1.35;
+  margin: 0;
 }
 
 .featureList {
-  margin-top: 1rem;
   display: flex;
   flex-direction: column;
-  gap: 0.85rem;
+  gap: 0.78rem;
+  list-style: none;
+  margin: 1.15rem 0 0;
+  padding: 0;
 }
 
 .featureItem {
-  display: flex;
   align-items: flex-start;
-  gap: 0.65rem;
+  display: flex;
+  gap: 0.72rem;
 }
 
 .checkMark {
-  display: inline-flex;
   align-items: center;
-  justify-content: center;
+  background: #e8e9e7;
+  border-radius: 50%;
+  color: #777b73;
+  display: inline-flex;
   flex-shrink: 0;
-  width: 1.15rem;
-  height: 1.15rem;
-  margin-top: 0.1rem;
-  border-radius: 9999px;
-  background: var(--color-surface-active);
-  color: var(--color-text);
+  height: 1rem;
+  justify-content: center;
+  margin-top: 0.13rem;
+  width: 1rem;
 }
 
 .checkMarkFeatured {
-  background: var(--color-accent);
-  color: white;
+  background: #decfff;
+  color: #8124ff;
 }
 
 .checkIcon {
-  width: 0.7rem;
-  height: 0.7rem;
+  height: 0.62rem;
+  width: 0.62rem;
 }
 
 .featureText {
-  font-size: 0.9375rem;
-  line-height: 1.4;
-  color: var(--color-text);
+  color: #17181a;
+  font-size: 0.94rem;
+  font-weight: 700;
+  letter-spacing: -0.012em;
+  line-height: 1.28;
 }
 
-.viewAllLink {
-  margin-top: auto;
-  padding-top: 1.75rem;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-  align-self: flex-start;
-  font-size: 0.9375rem;
+.testimonial {
+  border-bottom: 1px solid #dcddd9;
+  border-top: 1px solid #dcddd9;
+  margin: 3.6rem auto 0;
+  max-width: 77rem;
+  min-height: 14.7rem;
+  padding: 3.25rem 8rem 2.6rem;
+  position: relative;
+  text-align: center;
+}
+
+.quote {
+  color: #17181a;
+  font-size: clamp(1.25rem, 1.7vw, 1.55rem);
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  line-height: 1.08;
+  margin: 0 auto;
+  max-width: 35rem;
+}
+
+.quoteAuthor {
+  color: #55575e;
+  font-size: 0.85rem;
+  font-weight: 800;
+  line-height: 1;
+  margin: 1.25rem 0 0;
+}
+
+.quoteRole {
+  color: #74767b;
+  font-size: 0.85rem;
   font-weight: 500;
-  color: var(--color-text);
-  text-decoration: underline;
-  text-underline-offset: 3px;
-  background: transparent;
-  border: none;
-  transition-duration: 220ms;
-  transition-property: color;
-  transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+  line-height: 1;
+  margin: 0.35rem 0 0;
 }
 
-.viewAllLink:hover {
-  color: var(--color-accent-strong);
+.quoteControls {
+  align-items: center;
+  bottom: 2.95rem;
+  color: #4f5258;
+  display: flex;
+  font-size: 0.95rem;
+  font-weight: 800;
+  gap: 0.8rem;
+  position: absolute;
+  right: 1.35rem;
+}
+
+.quoteArrow {
+  align-items: center;
+  border: 1px solid #dededb;
+  border-radius: 50%;
+  color: #17181a;
+  display: inline-flex;
+  height: 2.25rem;
+  justify-content: center;
+  width: 2.25rem;
+}
+
+.enterprise {
+  align-items: center;
+  background: #ffffff;
+  border: 1px solid #dededb;
+  border-radius: 1.35rem;
+  display: flex;
+  justify-content: space-between;
+  margin: 3rem auto 0;
+  max-width: 77rem;
+  min-height: 6.2rem;
+  padding: 1.45rem 1.55rem;
+}
+
+.enterprise h2 {
+  color: #17181a;
+  font-size: clamp(1.55rem, 2vw, 2rem);
+  font-weight: 800;
+  letter-spacing: -0.06em;
+  line-height: 1;
+  margin: 0 0 0.5rem;
+}
+
+.enterprise p {
+  color: #36383d;
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.25;
+  margin: 0;
+}
+
+.enterpriseButton {
+  align-items: center;
+  background: #ffffff;
+  border: 1px solid #dededb;
+  border-radius: 999px;
+  color: #17181a;
+  display: inline-flex;
+  flex-shrink: 0;
+  font-size: 0.92rem;
+  font-weight: 700;
+  gap: 0.45rem;
+  justify-content: center;
+  min-height: 2.85rem;
+  padding: 0 1.1rem;
+}
+
+.disclaimer {
+  color: #7a7d76;
+  font-size: 0.85rem;
+  font-weight: 500;
+  line-height: 1.4;
+  margin: 2.4rem auto 0;
+  max-width: 48rem;
+  text-align: center;
+}
+
+.disclaimer button {
+  background: transparent;
+  border: 0;
+  color: inherit;
+  font: inherit;
+  padding: 0;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.backToTop {
+  align-items: center;
+  background: #ffffff;
+  border: 1px solid #dededb;
+  border-radius: 999px;
+  color: #17181a;
+  display: flex;
+  font-size: 0.92rem;
+  font-weight: 700;
+  gap: 0.45rem;
+  justify-content: center;
+  margin: 1.55rem auto 0;
+  min-height: 2.65rem;
+  padding: 0 1rem;
+  width: fit-content;
 }
 
 .footer {
-  position: fixed;
-  left: 1rem;
   bottom: 0.75rem;
+  left: 1rem;
+  position: fixed;
 }
 
 .cookieLink {
-  font-size: 0.75rem;
-  color: var(--color-muted);
   background: transparent;
-  border: none;
-  transition-duration: 220ms;
-  transition-property: color;
-  transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+  border: 0;
+  color: #565961;
+  font-size: 0.63rem;
+  padding: 0;
 }
 
-.cookieLink:hover {
-  color: var(--color-text);
+@media (max-width: 1100px) {
+  .backButton {
+    left: -4rem;
+  }
+
+  .cards,
+  .testimonial,
+  .enterprise {
+    max-width: 66rem;
+  }
+
+  .testimonial {
+    padding-inline: 4rem;
+  }
+}
+
+@media (max-width: 900px) {
+  .page {
+    padding-top: 1.5rem;
+  }
+
+  .headerRow {
+    margin-top: 2.4rem;
+  }
+
+  .backButton {
+    left: 0;
+    top: -2.75rem;
+  }
+
+  .cards {
+    grid-template-columns: minmax(0, 1fr);
+    max-width: 27rem;
+  }
+
+  .card {
+    min-height: auto;
+  }
+
+  .testimonial {
+    max-width: 27rem;
+    padding: 2.25rem 1.25rem 6.5rem;
+  }
+
+  .quoteControls {
+    bottom: 2rem;
+    left: 50%;
+    right: auto;
+    transform: translateX(-50%);
+  }
+
+  .enterprise {
+    align-items: stretch;
+    flex-direction: column;
+    gap: 1.25rem;
+    max-width: 27rem;
+  }
+
+  .enterpriseButton {
+    width: 100%;
+  }
+}
+
+@media (max-width: 520px) {
+  .brand {
+    font-size: 1.15rem;
+  }
+
+  .title {
+    font-size: 2.45rem;
+  }
+
+  .cards {
+    margin-top: 2.6rem;
+  }
+
+  .cardContent,
+  .cardTitleBar {
+    padding-inline: 1.3rem;
+  }
 }
