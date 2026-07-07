@@ -34,8 +34,12 @@ import {
   LEGACY_SOCIAL_PLATFORM_CONFIG,
   normalizeSocialLinks,
   normalizeSocialLinksPosition,
+  removeSocialLink,
+  setSocialLinkEnabled,
   type SocialHandleActionState,
+  type SocialLink,
   type SocialLinksPosition,
+  type SocialPlatform,
   upsertSocialLink,
   validateSocialHandle,
 } from "@/lib/profile/social";
@@ -45,6 +49,13 @@ export interface AppearanceActionState {
   status: "success" | "error";
   message: string;
   appearance?: ProfileAppearance;
+}
+
+interface SocialIconsMutationResult {
+  status: "success" | "error";
+  message: string;
+  socialLinks: SocialLink[];
+  socialLinksPosition: SocialLinksPosition;
 }
 
 const USERNAME_CONSTRAINTS = [
@@ -377,22 +388,19 @@ export async function updateSocialIconsAction(
     };
   }
 
-  const supabase = await createClient();
-  const { data: claimsData, error: claimsError } =
-    await supabase.auth.getClaims();
-  const userId = claimsData?.claims?.sub;
-
-  if (claimsError || typeof userId !== "string" || userId.length === 0) {
-    return {
-      status: "error",
-      message: copy.socialProfiles.failure.authentication,
-      socialLinks: previousState.socialLinks,
-      socialLinksPosition: previousState.socialLinksPosition,
-    };
-  }
+  const current = await readCurrentSocialIcons(
+    previousState.socialLinks,
+    previousState.socialLinksPosition,
+  );
+  if (current.status === "error") return current;
+  const currentSocialLinks = normalizeSocialLinks(current.profile.social_links, {
+    instagram: current.profile.instagram_handle,
+    tiktok: current.profile.tiktok_handle,
+    youtube: current.profile.youtube_handle,
+  });
 
   const nextSocialLinks = upsertSocialLink(
-    previousState.socialLinks,
+    currentSocialLinks,
     platformValue,
     validatedHandle.handle,
   );
@@ -411,10 +419,10 @@ export async function updateSocialIconsAction(
         social_links: nextSocialLinks,
       };
 
-  const { data: profile, error } = await supabase
+  const { data: profile, error } = await current.supabase
     .from("profiles")
     .update(updatePayload)
-    .eq("id", userId)
+    .eq("id", current.userId)
     .select(
       "username, social_links, social_links_position, instagram_handle, tiktok_handle, youtube_handle",
     )
@@ -429,7 +437,7 @@ export async function updateSocialIconsAction(
     };
   }
 
-  const socialLinks = normalizeSocialLinks(profile.social_links, {
+  const savedSocialLinks = normalizeSocialLinks(profile.social_links, {
     instagram: profile.instagram_handle,
     tiktok: profile.tiktok_handle,
     youtube: profile.youtube_handle,
@@ -441,7 +449,192 @@ export async function updateSocialIconsAction(
   return {
     status: "success",
     message: copy.socialProfiles.success,
-    socialLinks,
+    socialLinks: savedSocialLinks,
+    socialLinksPosition: normalizeSocialLinksPosition(
+      profile.social_links_position,
+    ),
+  };
+}
+
+async function readCurrentSocialIcons(
+  fallbackLinks: SocialLink[],
+  fallbackPosition: SocialLinksPosition,
+): Promise<
+  | {
+      status: "success";
+      profile: {
+        username: string;
+        social_links: unknown;
+        social_links_position: unknown;
+        instagram_handle: string | null;
+        tiktok_handle: string | null;
+        youtube_handle: string | null;
+      };
+      supabase: Awaited<ReturnType<typeof createClient>>;
+      userId: string;
+    }
+  | SocialIconsMutationResult
+> {
+  const supabase = await createClient();
+  const { data: claimsData, error: claimsError } =
+    await supabase.auth.getClaims();
+  const userId = claimsData?.claims?.sub;
+
+  if (claimsError || typeof userId !== "string" || userId.length === 0) {
+    return {
+      status: "error",
+      message: copy.socialProfiles.failure.authentication,
+      socialLinks: fallbackLinks,
+      socialLinksPosition: fallbackPosition,
+    };
+  }
+
+  const { data: profile, error } = await supabase
+    .from("profiles")
+    .select(
+      "username, social_links, social_links_position, instagram_handle, tiktok_handle, youtube_handle",
+    )
+    .eq("id", userId)
+    .maybeSingle();
+
+  if (error || !profile) {
+    return {
+      status: "error",
+      message: copy.socialProfiles.failure.update,
+      socialLinks: fallbackLinks,
+      socialLinksPosition: fallbackPosition,
+    };
+  }
+
+  return {
+    status: "success",
+    profile,
+    supabase,
+    userId,
+  };
+}
+
+export async function deleteSocialIconAction(
+  platform: SocialPlatform,
+  currentLinks: SocialLink[],
+  currentPosition: SocialLinksPosition,
+): Promise<SocialIconsMutationResult> {
+  if (!isSocialPlatform(platform)) {
+    return {
+      status: "error",
+      message: copy.socialProfiles.failure.invalidPlatform,
+      socialLinks: currentLinks,
+      socialLinksPosition: currentPosition,
+    };
+  }
+
+  const current = await readCurrentSocialIcons(currentLinks, currentPosition);
+  if (current.status === "error") return current;
+
+  const socialLinks = normalizeSocialLinks(current.profile.social_links, {
+    instagram: current.profile.instagram_handle,
+    tiktok: current.profile.tiktok_handle,
+    youtube: current.profile.youtube_handle,
+  });
+  const nextSocialLinks = removeSocialLink(socialLinks, platform);
+  const legacyColumn =
+    platform in LEGACY_SOCIAL_PLATFORM_CONFIG
+      ? LEGACY_SOCIAL_PLATFORM_CONFIG[
+          platform as keyof typeof LEGACY_SOCIAL_PLATFORM_CONFIG
+        ].column
+      : null;
+  const updatePayload = legacyColumn
+    ? { social_links: nextSocialLinks, [legacyColumn]: null }
+    : { social_links: nextSocialLinks };
+
+  const { data: profile, error } = await current.supabase
+    .from("profiles")
+    .update(updatePayload)
+    .eq("id", current.userId)
+    .select(
+      "username, social_links, social_links_position, instagram_handle, tiktok_handle, youtube_handle",
+    )
+    .maybeSingle();
+
+  if (error || !profile) {
+    return {
+      status: "error",
+      message: copy.socialProfiles.failure.update,
+      socialLinks: currentLinks,
+      socialLinksPosition: currentPosition,
+    };
+  }
+
+  revalidatePath("/dashboard");
+  revalidatePath(`/${profile.username}`);
+
+  return {
+    status: "success",
+    message: copy.socialProfiles.success,
+    socialLinks: normalizeSocialLinks(profile.social_links, {
+      instagram: profile.instagram_handle,
+      tiktok: profile.tiktok_handle,
+      youtube: profile.youtube_handle,
+    }),
+    socialLinksPosition: normalizeSocialLinksPosition(
+      profile.social_links_position,
+    ),
+  };
+}
+
+export async function updateSocialIconEnabledAction(
+  platform: SocialPlatform,
+  enabled: boolean,
+  currentLinks: SocialLink[],
+  currentPosition: SocialLinksPosition,
+): Promise<SocialIconsMutationResult> {
+  if (!isSocialPlatform(platform)) {
+    return {
+      status: "error",
+      message: copy.socialProfiles.failure.invalidPlatform,
+      socialLinks: currentLinks,
+      socialLinksPosition: currentPosition,
+    };
+  }
+
+  const current = await readCurrentSocialIcons(currentLinks, currentPosition);
+  if (current.status === "error") return current;
+
+  const socialLinks = normalizeSocialLinks(current.profile.social_links, {
+    instagram: current.profile.instagram_handle,
+    tiktok: current.profile.tiktok_handle,
+    youtube: current.profile.youtube_handle,
+  });
+  const nextSocialLinks = setSocialLinkEnabled(socialLinks, platform, enabled);
+  const { data: profile, error } = await current.supabase
+    .from("profiles")
+    .update({ social_links: nextSocialLinks })
+    .eq("id", current.userId)
+    .select(
+      "username, social_links, social_links_position, instagram_handle, tiktok_handle, youtube_handle",
+    )
+    .maybeSingle();
+
+  if (error || !profile) {
+    return {
+      status: "error",
+      message: copy.socialProfiles.failure.update,
+      socialLinks: currentLinks,
+      socialLinksPosition: currentPosition,
+    };
+  }
+
+  revalidatePath("/dashboard");
+  revalidatePath(`/${profile.username}`);
+
+  return {
+    status: "success",
+    message: copy.socialProfiles.success,
+    socialLinks: normalizeSocialLinks(profile.social_links, {
+      instagram: profile.instagram_handle,
+      tiktok: profile.tiktok_handle,
+      youtube: profile.youtube_handle,
+    }),
     socialLinksPosition: normalizeSocialLinksPosition(
       profile.social_links_position,
     ),

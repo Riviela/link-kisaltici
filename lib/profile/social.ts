@@ -12,6 +12,7 @@ export type SocialPlatform = (typeof SOCIAL_PLATFORMS)[number];
 export type SocialLinksPosition = "top" | "bottom";
 
 export interface SocialLink {
+  enabled: boolean;
   platform: SocialPlatform;
   value: string;
   url: string;
@@ -180,6 +181,7 @@ export function normalizeSocialLinks(
     if (!validated.success) continue;
 
     links.push({
+      enabled: record.enabled !== false,
       platform,
       value: validated.handle,
       url: getSocialProfileUrl(platform, validated.handle),
@@ -195,6 +197,7 @@ export function normalizeSocialLinks(
       if (!validated.success) return [];
 
       return {
+        enabled: true,
         platform,
         value: validated.handle,
         url: getSocialProfileUrl(platform, validated.handle),
@@ -209,6 +212,7 @@ export function upsertSocialLink(
   value: string,
 ) {
   const nextLink: SocialLink = {
+    enabled: links.find((link) => link.platform === platform)?.enabled ?? true,
     platform,
     value,
     url: getSocialProfileUrl(platform, value),
@@ -236,4 +240,25 @@ export function dedupeSocialLinks(links: SocialLink[]) {
 
 export function getSocialLink(links: SocialLink[], platform: SocialPlatform) {
   return links.find((link) => link.platform === platform) ?? null;
+}
+
+export function removeSocialLink(
+  links: SocialLink[],
+  platform: SocialPlatform,
+) {
+  return links.filter((link) => link.platform !== platform);
+}
+
+export function setSocialLinkEnabled(
+  links: SocialLink[],
+  platform: SocialPlatform,
+  enabled: boolean,
+) {
+  return links.map((link) =>
+    link.platform === platform ? { ...link, enabled } : link,
+  );
+}
+
+export function getEnabledSocialLinks(links: SocialLink[]) {
+  return links.filter((link) => link.enabled);
 }

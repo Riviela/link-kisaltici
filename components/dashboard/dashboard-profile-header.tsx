@@ -5,9 +5,9 @@ import { useCallback, useState } from "react";
 import { ProfileDetailsModal } from "@/components/dashboard/profile-details-modal";
 import { SocialHandleModal } from "@/components/dashboard/social-handle-modal";
 import { ProfileAvatar } from "@/components/profile/profile-avatar";
-import { SocialIcon } from "@/components/profile/social-icon";
+import { EditPenIcon, SocialIcon } from "@/components/profile/social-icon";
 import {
-  getSocialLink,
+  getEnabledSocialLinks,
   SOCIAL_PLATFORM_CONFIG,
   type SocialLink,
   type SocialLinksPosition,
@@ -47,9 +47,7 @@ export function DashboardProfileHeader({
   const closeModal = useCallback(() => setIsModalOpen(false), []);
   const shortcutPlatforms: SocialPlatform[] = ["instagram", "tiktok", "youtube"];
   const hasSavedSocialIcons = socialLinks.length > 0;
-  const visibleSocialPlatforms = hasSavedSocialIcons
-    ? socialLinks.map((link) => link.platform)
-    : shortcutPlatforms;
+  const visibleSavedSocialLinks = getEnabledSocialLinks(socialLinks);
 
   function openSocialModal(platform: SocialPlatform | null) {
     setSocialPlatform(platform);
@@ -77,33 +75,57 @@ export function DashboardProfileHeader({
               </p>
             ) : null}
             <div className="mt-2 flex items-center gap-1.5">
-              {visibleSocialPlatforms.map((platform) => {
-                const label = SOCIAL_PLATFORM_CONFIG[platform].label;
-                const connected =
-                  hasSavedSocialIcons || Boolean(getSocialLink(socialLinks, platform));
-                return (
+              {hasSavedSocialIcons
+                ? visibleSavedSocialLinks.map((link) => {
+                    const label = SOCIAL_PLATFORM_CONFIG[link.platform].label;
+                    return (
+                      <button
+                        aria-label={`Edit ${label}`}
+                        className={styles.socialProfileButton}
+                        key={link.platform}
+                        onClick={() => openSocialModal(link.platform)}
+                        type="button"
+                      >
+                        <SocialIcon platform={link.platform} />
+                      </button>
+                    );
+                  })
+                : shortcutPlatforms.map((platform) => {
+                    const label = SOCIAL_PLATFORM_CONFIG[platform].label;
+                    return (
+                      <button
+                        aria-label={`Add ${label}`}
+                        className={`${styles.socialProfileButton} ${styles.socialProfileCircleButton} ${styles.socialProfileSuggestionButton}`}
+                        key={platform}
+                        onClick={() => openSocialModal(platform)}
+                        type="button"
+                      >
+                        <SocialIcon platform={platform} />
+                        <span aria-hidden="true" className={styles.socialAddBadge}>+</span>
+                      </button>
+                    );
+                  })}
+              {hasSavedSocialIcons ? (
+                <button
+                  aria-label="Edit social icons"
+                  className={`${styles.socialProfileButton} ${styles.socialProfileCircleButton} ${styles.socialProfileEditButton}`}
+                  onClick={() => openSocialModal(null)}
+                  type="button"
+                >
+                  <EditPenIcon className="size-4" />
+                </button>
+              ) : (
                   <button
-                    aria-label={`${connected ? "Edit" : "Add"} ${label}`}
-                    className={`${styles.socialProfileButton} ${connected ? styles.socialProfileButtonConnected : ""}`}
-                    key={platform}
-                    onClick={() => openSocialModal(platform)}
+                    aria-label="Open social icons"
+                    className={`${styles.socialProfileButton} ${styles.socialProfileCircleButton} ${styles.socialProfileSuggestionButton}`}
+                    onClick={() => openSocialModal(null)}
                     type="button"
                   >
-                    <SocialIcon platform={platform} />
-                    {!connected ? <span aria-hidden="true" className={styles.socialAddBadge}>+</span> : null}
+                    <svg aria-hidden="true" className="size-5" fill="none" viewBox="0 0 24 24">
+                      <path d="M12 5v14M5 12h14" stroke="currentColor" strokeLinecap="round" strokeWidth="2" />
+                    </svg>
                   </button>
-                );
-              })}
-              <button
-                aria-label="Open social icons"
-                className={styles.socialProfileButton}
-                onClick={() => openSocialModal(null)}
-                type="button"
-              >
-                <svg aria-hidden="true" className="size-5" fill="none" viewBox="0 0 24 24">
-                  <path d="M12 5v14M5 12h14" stroke="currentColor" strokeLinecap="round" strokeWidth="2" />
-                </svg>
-              </button>
+                )}
             </div>
           </div>
       </section>
