@@ -341,15 +341,15 @@ export function SocialHandleModal({
                         <span className={styles.socialDragHandle}>
                           <DragHandleIcon />
                         </span>
-                        <SocialIcon className={styles.socialProviderIcon} platform={link.platform} />
-                        <span className={styles.socialManagedLabel}>{label}</span>
                         <button
                           aria-label={`Edit ${label}`}
-                          className={styles.socialRowEditButton}
+                          className={styles.socialManagedRowButton}
                           disabled={isMutating}
                           onClick={() => selectPlatform(link.platform)}
                           type="button"
                         >
+                          <SocialIcon className={styles.socialProviderIcon} platform={link.platform} />
+                          <span className={styles.socialManagedLabel}>{label}</span>
                           <EditPenIcon />
                         </button>
                         <label className={styles.socialToggle}>
