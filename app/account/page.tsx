@@ -11,6 +11,8 @@ import {
   type CurrentProfileResult,
 } from "@/lib/profile/get-current-profile";
 import { createClient } from "@/lib/supabase/server";
+import { getCurrentPlan } from "@/lib/subscriptions/get-current-plan";
+import { getPlanLabel } from "@/lib/subscriptions/plans";
 
 import styles from "@/components/account/account.module.css";
 
@@ -110,6 +112,7 @@ export default async function AccountPage() {
   const { data: userData } = await supabase.auth.getUser();
   const userEmail = userData?.user?.email ?? "";
   const profileUrl = `${process.env.NEXT_PUBLIC_PROFILE_HOST ?? "localhost:3000"}/${current.profile.username}`;
+  const planLabel = getPlanLabel(await getCurrentPlan());
 
   return (
     <main className={styles.page}>
@@ -129,6 +132,7 @@ export default async function AccountPage() {
       <div className={styles.appFrame}>
         <AccountSidebar
           avatarUrl={current.profile.avatarUrl}
+          planLabel={planLabel}
           profileUrl={profileUrl}
           username={current.profile.username}
         />
@@ -239,7 +243,7 @@ export default async function AccountPage() {
                   </div>
                   <div className={styles.ownerDetailsRow}>
                     <span>{copy.account.plan}</span>
-                    <strong>{copy.accountDropdown.freePlan}</strong>
+                    <strong>{planLabel}</strong>
                   </div>
                   <div className={styles.ownerDetailsRow}>
                     <span className={styles.ownerLabel}>{copy.account.admins}</span>

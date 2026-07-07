@@ -38,6 +38,7 @@ interface LinkManagerProps {
     appearance: ProfileAppearance;
     avatarUrl: string | null;
     profileUrl: string;
+    planLabel: string;
     username: string;
     bio: string | null;
     socialHandles: SocialHandles;
@@ -134,12 +135,14 @@ function DashboardRail({
   avatarUrl,
   mode,
   onModeChange,
+  planLabel,
   profileUrl,
   username,
 }: {
   avatarUrl: string | null;
   mode: DashboardMode;
   onModeChange: (mode: DashboardMode) => void;
+  planLabel: string;
   profileUrl: string;
   username: string;
 }) {
@@ -147,6 +150,7 @@ function DashboardRail({
     <nav aria-label="Dashboard" className={styles.dashboardRail}>
       <AccountDropdown
         avatarUrl={avatarUrl}
+        planLabel={planLabel}
         profileUrl={profileUrl}
         username={username}
         variant="rail"
@@ -686,6 +690,7 @@ export function LinkManager({ initialLinks, profile }: LinkManagerProps) {
         avatarUrl={profile.avatarUrl}
         mode={dashboardMode}
         onModeChange={setDashboardMode}
+        planLabel={profile.planLabel}
         profileUrl={profile.profileUrl}
         username={profile.username}
       />

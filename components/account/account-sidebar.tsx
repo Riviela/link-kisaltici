@@ -8,6 +8,7 @@ import styles from "./account.module.css";
 
 interface AccountSidebarProps {
   avatarUrl: string | null;
+  planLabel: string;
   profileUrl: string;
   username: string;
 }
@@ -105,12 +106,18 @@ function ChevronIcon() {
   );
 }
 
-export function AccountSidebar({ avatarUrl, profileUrl, username }: AccountSidebarProps) {
+export function AccountSidebar({
+  avatarUrl,
+  planLabel,
+  profileUrl,
+  username,
+}: AccountSidebarProps) {
   return (
     <aside className={styles.sidebar}>
       <div className={styles.sidebarProfileRow}>
         <AccountDropdown
           avatarUrl={avatarUrl}
+          planLabel={planLabel}
           profileUrl={profileUrl}
           username={username}
           variant="sidebar"

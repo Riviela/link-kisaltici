@@ -10,6 +10,7 @@ import styles from "./account-dropdown.module.css";
 
 interface AccountDropdownProps {
   avatarUrl: string | null;
+  planLabel: string;
   profileUrl: string;
   username: string;
   variant?: "dark" | "rail" | "sidebar";
@@ -204,6 +205,7 @@ function MenuIcon() {
 
 export function AccountDropdown({
   avatarUrl,
+  planLabel,
   profileUrl,
   username,
   variant = "dark",
@@ -406,7 +408,7 @@ export function AccountDropdown({
               <span className={styles.summaryUrl}>{profileUrl}</span>
             </div>
             <span className={styles.planBadge}>
-              {copy.accountDropdown.freePlan}
+              {planLabel}
             </span>
           </div>
 

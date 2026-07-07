@@ -27,6 +27,7 @@ export const copy = {
     back: "Go back",
     title: "Find the plan that fits you",
     subtitle: "Cancel anytime.",
+    currentPlan: "Current Plan",
     recommended: "Recommended",
     viewAllFeatures: "View all features",
     plans: {

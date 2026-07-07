@@ -13,6 +13,7 @@ type PricingPlan = {
 };
 
 type PricingCardProps = {
+  isCurrent?: boolean;
   plan: PricingPlan;
   featured?: boolean;
 };
@@ -36,7 +37,11 @@ function CheckIcon({ className }: { className: string }) {
   );
 }
 
-export function PricingCard({ plan, featured = false }: PricingCardProps) {
+export function PricingCard({
+  isCurrent = false,
+  plan,
+  featured = false,
+}: PricingCardProps) {
   const cardClassName = featured
     ? `${styles.card} ${styles.cardFeatured}`
     : styles.card;
@@ -71,7 +76,7 @@ export function PricingCard({ plan, featured = false }: PricingCardProps) {
         </p>
         <p className={styles.cardBilling}>{plan.billing}</p>
         <button className={ctaClassName} type="button">
-          {plan.cta}
+          {isCurrent ? copy.pricing.currentPlan : plan.cta}
         </button>
       </header>
 

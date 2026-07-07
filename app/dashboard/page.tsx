@@ -15,6 +15,8 @@ import {
   ProfileLookupError,
   type CurrentProfileResult,
 } from "@/lib/profile/get-current-profile";
+import { getCurrentPlan } from "@/lib/subscriptions/get-current-plan";
+import { getPlanLabel } from "@/lib/subscriptions/plans";
 
 import dashboardStyles from "@/components/dashboard/dashboard-interactions.module.css";
 
@@ -83,6 +85,7 @@ export default async function DashboardPage() {
   }
 
   const profileUrl = `${process.env.NEXT_PUBLIC_PROFILE_HOST ?? "localhost:3000"}/${current.profile.username}`;
+  const planLabel = getPlanLabel(await getCurrentPlan());
 
   return (
     <main className={dashboardStyles.dashboardPage}>
@@ -113,6 +116,7 @@ export default async function DashboardPage() {
             appearance: current.profile.appearance,
             avatarUrl: current.profile.avatarUrl,
             bio: current.profile.bio,
+            planLabel,
             profileUrl,
             socialHandles: current.profile.socialHandles,
             username: current.profile.username,

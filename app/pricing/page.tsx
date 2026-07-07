@@ -5,6 +5,7 @@ import { PricingBackButton } from "@/components/pricing/pricing-back-button";
 import { PricingCard } from "@/components/pricing/pricing-card";
 import { APP_NAME } from "@/lib/config/site";
 import { copy } from "@/lib/copy";
+import { getCurrentPlan } from "@/lib/subscriptions/get-current-plan";
 
 import styles from "./pricing.module.css";
 
@@ -13,8 +14,9 @@ export const metadata: Metadata = {
   description: "Find the Canvas Links plan that fits you.",
 };
 
-export default function PricingPage() {
+export default async function PricingPage() {
   const plans = copy.pricing.plans;
+  const currentPlan = await getCurrentPlan();
 
   return (
     <main className={styles.page}>
@@ -31,9 +33,19 @@ export default function PricingPage() {
       </section>
 
       <section className={styles.cards} aria-label="Pricing plans">
-        <PricingCard plan={plans.starter} />
-        <PricingCard plan={plans.pro} featured />
-        <PricingCard plan={plans.premium} />
+        <PricingCard
+          isCurrent={currentPlan === "starter"}
+          plan={plans.starter}
+        />
+        <PricingCard
+          featured
+          isCurrent={currentPlan === "pro"}
+          plan={plans.pro}
+        />
+        <PricingCard
+          isCurrent={currentPlan === "premium"}
+          plan={plans.premium}
+        />
       </section>
 
       <footer className={styles.footer}>
