@@ -259,6 +259,31 @@ export function setSocialLinkEnabled(
   );
 }
 
+export function reorderSocialLinks(
+  links: SocialLink[],
+  orderedPlatforms: SocialPlatform[],
+) {
+  const linksByPlatform = new Map(
+    links.map((link) => [link.platform, link]),
+  );
+  const seen = new Set<SocialPlatform>();
+  const orderedLinks: SocialLink[] = [];
+
+  for (const platform of orderedPlatforms) {
+    const link = linksByPlatform.get(platform);
+    if (!link || seen.has(platform)) continue;
+    orderedLinks.push(link);
+    seen.add(platform);
+  }
+
+  for (const link of links) {
+    if (seen.has(link.platform)) continue;
+    orderedLinks.push(link);
+  }
+
+  return orderedLinks;
+}
+
 export function getEnabledSocialLinks(links: SocialLink[]) {
   return links.filter((link) => link.enabled);
 }

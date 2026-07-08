@@ -1,9 +1,28 @@
 "use client";
 
 import {
+  closestCenter,
+  DndContext,
+  KeyboardSensor,
+  PointerSensor,
+  TouchSensor,
+  useSensor,
+  useSensors,
+  type DragEndEvent,
+} from "@dnd-kit/core";
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  useSortable,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
+import {
   useActionState,
   useCallback,
   useEffect,
+  useId,
   useMemo,
   useRef,
   useState,
@@ -11,6 +30,7 @@ import {
 
 import {
   deleteSocialIconAction,
+  reorderSocialIconsAction,
   updateSocialIconEnabledAction,
   updateSocialIconsAction,
   updateSocialIconsPositionAction,
@@ -94,6 +114,83 @@ function TrashIcon() {
   );
 }
 
+interface SortableSocialIconRowProps {
+  isMutating: boolean;
+  label: string;
+  link: SocialLink;
+  onEdit: (platform: SocialPlatform) => void;
+  onToggle: (platform: SocialPlatform, enabled: boolean) => void;
+}
+
+function SortableSocialIconRow({
+  isMutating,
+  label,
+  link,
+  onEdit,
+  onToggle,
+}: SortableSocialIconRowProps) {
+  const {
+    attributes,
+    isDragging,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+  } = useSortable({ id: link.platform, disabled: isMutating });
+  const style = {
+    transform: CSS.Transform.toString(
+      transform ? { ...transform, x: 0 } : null,
+    ),
+    transition,
+  };
+
+  return (
+    <div
+      className={styles.socialManagedRow}
+      data-dragging={isDragging ? "true" : undefined}
+      ref={setNodeRef}
+      style={style}
+    >
+      <button
+        aria-label={`Reorder ${label}`}
+        className={styles.socialDragHandle}
+        disabled={isMutating}
+        type="button"
+        {...attributes}
+        {...listeners}
+      >
+        <DragHandleIcon />
+      </button>
+      <button
+        aria-label={`Edit ${label}`}
+        className={styles.socialManagedRowButton}
+        disabled={isMutating}
+        onClick={() => onEdit(link.platform)}
+        type="button"
+      >
+        <SocialIcon className={styles.socialProviderIcon} platform={link.platform} />
+        <span className={styles.socialManagedLabel}>{label}</span>
+        <EditPenIcon />
+      </button>
+      <label className={styles.socialToggle}>
+        <span className="sr-only">
+          {link.enabled ? `Disable ${label}` : `Enable ${label}`}
+        </span>
+        <input
+          checked={link.enabled}
+          className={styles.socialToggleInput}
+          disabled={isMutating}
+          onChange={(event) =>
+            onToggle(link.platform, event.currentTarget.checked)
+          }
+          type="checkbox"
+        />
+        <span aria-hidden="true" className={styles.socialToggleTrack} />
+      </label>
+    </div>
+  );
+}
+
 export function SocialHandleModal({
   initialPlatform,
   onClose,
@@ -124,9 +221,25 @@ export function SocialHandleModal({
     getSocialLink(socialLinks, initialPlatform ?? "instagram")?.value ?? "",
   );
   const [isMutating, setIsMutating] = useState(false);
+  const dndContextId = useId();
   const hasClosedRef = useRef(false);
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: { distance: 6 },
+    }),
+    useSensor(TouchSensor, {
+      activationConstraint: { delay: 160, tolerance: 6 },
+    }),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    }),
+  );
   const addedPlatforms = useMemo(
     () => new Set(managedLinks.map((link) => link.platform)),
+    [managedLinks],
+  );
+  const managedPlatforms = useMemo(
+    () => managedLinks.map((link) => link.platform),
     [managedLinks],
   );
   const selectedLink = getSocialLink(managedLinks, selectedPlatform);
@@ -266,6 +379,45 @@ export function SocialHandleModal({
     setManagedLinks(managedLinks);
   }
 
+  async function handleSocialDragEnd(event: DragEndEvent) {
+    if (isMutating || !event.over || event.active.id === event.over.id) {
+      return;
+    }
+
+    const oldIndex = managedLinks.findIndex(
+      (link) => link.platform === event.active.id,
+    );
+    const newIndex = managedLinks.findIndex(
+      (link) => link.platform === event.over?.id,
+    );
+
+    if (oldIndex < 0 || newIndex < 0) return;
+
+    const previousLinks = managedLinks;
+    const optimisticLinks = arrayMove(managedLinks, oldIndex, newIndex);
+
+    setIsMutating(true);
+    setManagedLinks(optimisticLinks);
+    const result = await reorderSocialIconsAction(
+      optimisticLinks.map((link) => link.platform),
+      previousLinks,
+      activePosition,
+    );
+    setIsMutating(false);
+
+    if (result.status === "success") {
+      setManagedLinks(result.socialLinks);
+      setActivePosition(result.socialLinksPosition);
+      onSaved({
+        socialLinks: result.socialLinks,
+        socialLinksPosition: result.socialLinksPosition,
+      });
+      return;
+    }
+
+    setManagedLinks(previousLinks);
+  }
+
   return (
     <div
       aria-hidden={phase === "closing" ? true : undefined}
@@ -332,48 +484,32 @@ export function SocialHandleModal({
               </div>
 
               {managedLinks.length > 0 ? (
-                <div className={styles.socialManagedList}>
-                  {managedLinks.map((link) => {
-                    const label = SOCIAL_PLATFORM_CONFIG[link.platform].label;
-
-                    return (
-                      <div className={styles.socialManagedRow} key={link.platform}>
-                        <span className={styles.socialDragHandle}>
-                          <DragHandleIcon />
-                        </span>
-                        <button
-                          aria-label={`Edit ${label}`}
-                          className={styles.socialManagedRowButton}
-                          disabled={isMutating}
-                          onClick={() => selectPlatform(link.platform)}
-                          type="button"
-                        >
-                          <SocialIcon className={styles.socialProviderIcon} platform={link.platform} />
-                          <span className={styles.socialManagedLabel}>{label}</span>
-                          <EditPenIcon />
-                        </button>
-                        <label className={styles.socialToggle}>
-                          <span className="sr-only">
-                            {link.enabled ? `Disable ${label}` : `Enable ${label}`}
-                          </span>
-                          <input
-                            checked={link.enabled}
-                            className={styles.socialToggleInput}
-                            disabled={isMutating}
-                            onChange={(event) =>
-                              void handleEnabledChange(
-                                link.platform,
-                                event.currentTarget.checked,
-                              )
-                            }
-                            type="checkbox"
-                          />
-                          <span aria-hidden="true" className={styles.socialToggleTrack} />
-                        </label>
-                      </div>
-                    );
-                  })}
-                </div>
+                <DndContext
+                  collisionDetection={closestCenter}
+                  id={dndContextId}
+                  onDragEnd={(event) => void handleSocialDragEnd(event)}
+                  sensors={sensors}
+                >
+                  <SortableContext
+                    items={managedPlatforms}
+                    strategy={verticalListSortingStrategy}
+                  >
+                    <div className={styles.socialManagedList}>
+                      {managedLinks.map((link) => (
+                        <SortableSocialIconRow
+                          isMutating={isMutating}
+                          key={link.platform}
+                          label={SOCIAL_PLATFORM_CONFIG[link.platform].label}
+                          link={link}
+                          onEdit={selectPlatform}
+                          onToggle={(platform, enabled) =>
+                            void handleEnabledChange(platform, enabled)
+                          }
+                        />
+                      ))}
+                    </div>
+                  </SortableContext>
+                </DndContext>
               ) : null}
 
               <fieldset className={styles.socialPositionFieldset}>

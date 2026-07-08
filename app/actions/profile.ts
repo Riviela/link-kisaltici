@@ -35,6 +35,7 @@ import {
   normalizeSocialLinks,
   normalizeSocialLinksPosition,
   removeSocialLink,
+  reorderSocialLinks,
   setSocialLinkEnabled,
   type SocialHandleActionState,
   type SocialLink,
@@ -606,6 +607,67 @@ export async function updateSocialIconEnabledAction(
     youtube: current.profile.youtube_handle,
   });
   const nextSocialLinks = setSocialLinkEnabled(socialLinks, platform, enabled);
+  const { data: profile, error } = await current.supabase
+    .from("profiles")
+    .update({ social_links: nextSocialLinks })
+    .eq("id", current.userId)
+    .select(
+      "username, social_links, social_links_position, instagram_handle, tiktok_handle, youtube_handle",
+    )
+    .maybeSingle();
+
+  if (error || !profile) {
+    return {
+      status: "error",
+      message: copy.socialProfiles.failure.update,
+      socialLinks: currentLinks,
+      socialLinksPosition: currentPosition,
+    };
+  }
+
+  revalidatePath("/dashboard");
+  revalidatePath(`/${profile.username}`);
+
+  return {
+    status: "success",
+    message: copy.socialProfiles.success,
+    socialLinks: normalizeSocialLinks(profile.social_links, {
+      instagram: profile.instagram_handle,
+      tiktok: profile.tiktok_handle,
+      youtube: profile.youtube_handle,
+    }),
+    socialLinksPosition: normalizeSocialLinksPosition(
+      profile.social_links_position,
+    ),
+  };
+}
+
+export async function reorderSocialIconsAction(
+  orderedPlatforms: SocialPlatform[],
+  currentLinks: SocialLink[],
+  currentPosition: SocialLinksPosition,
+): Promise<SocialIconsMutationResult> {
+  if (
+    !Array.isArray(orderedPlatforms) ||
+    orderedPlatforms.some((platform) => !isSocialPlatform(platform))
+  ) {
+    return {
+      status: "error",
+      message: copy.socialProfiles.failure.invalidPlatform,
+      socialLinks: currentLinks,
+      socialLinksPosition: currentPosition,
+    };
+  }
+
+  const current = await readCurrentSocialIcons(currentLinks, currentPosition);
+  if (current.status === "error") return current;
+
+  const socialLinks = normalizeSocialLinks(current.profile.social_links, {
+    instagram: current.profile.instagram_handle,
+    tiktok: current.profile.tiktok_handle,
+    youtube: current.profile.youtube_handle,
+  });
+  const nextSocialLinks = reorderSocialLinks(socialLinks, orderedPlatforms);
   const { data: profile, error } = await current.supabase
     .from("profiles")
     .update({ social_links: nextSocialLinks })
