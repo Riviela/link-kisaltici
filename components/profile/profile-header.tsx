@@ -16,6 +16,7 @@ interface ProfileHeaderProps {
   bio: string | null;
   variant?: "default" | "preview";
   socialLinks: SocialLink[];
+  socialLinksHoverClassName?: string;
 }
 
 export function ProfileHeader({
@@ -25,6 +26,7 @@ export function ProfileHeader({
   bio,
   variant = "default",
   socialLinks,
+  socialLinksHoverClassName = "",
 }: ProfileHeaderProps) {
   const isPreview = variant === "preview";
   const appearance = normalizeAppearance(appearanceInput);
@@ -59,6 +61,7 @@ export function ProfileHeader({
   const socialElement = (
     <SocialLinks
       className={isPreview ? styles.profileSocialPreview : styles.profileSocial}
+      hoverClassName={socialLinksHoverClassName}
       links={socialLinks}
       size={isPreview ? "preview" : "default"}
     />

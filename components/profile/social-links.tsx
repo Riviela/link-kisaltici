@@ -7,12 +7,14 @@ import {
 
 interface SocialLinksProps {
   className?: string;
+  hoverClassName?: string;
   links: SocialLink[];
   size?: "default" | "preview";
 }
 
 export function SocialLinks({
   className = "",
+  hoverClassName = "",
   links,
   size = "default",
 }: SocialLinksProps) {
@@ -28,7 +30,7 @@ export function SocialLinks({
         return (
           <a
             aria-label={`${label}: ${link.value}`}
-            className={`${size === "preview" ? "size-6" : "size-7"} grid place-items-center text-[var(--color-text)]`}
+            className={`${size === "preview" ? "size-6" : "size-7"} inline-flex items-center justify-center leading-none text-[var(--color-text)] ${hoverClassName}`}
             href={link.url}
             key={link.platform}
             rel="noopener noreferrer"

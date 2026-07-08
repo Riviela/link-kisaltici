@@ -104,6 +104,7 @@ export function PublicProfileSurface({
   username,
 }: PublicProfileSurfaceProps) {
   const isPreview = mode === "preview";
+  const socialHoverClassName = styles.profileSocialLinkHover;
   const appearance = normalizeAppearance(appearanceInput);
   const profileStyle: ProfileSurfaceStyle = {
     "--profile-background": appearance.tokens.background,
@@ -118,6 +119,7 @@ export function PublicProfileSurface({
     <div className={styles.profileBottomSocial}>
       <SocialLinks
         className={isPreview ? styles.profileSocialPreview : styles.profileSocial}
+        hoverClassName={socialHoverClassName}
         links={socialLinks}
         size={isPreview ? "preview" : "default"}
       />
@@ -153,6 +155,7 @@ export function PublicProfileSurface({
           avatarUrl={avatarUrl}
           bio={bio}
           variant={isPreview ? "preview" : "default"}
+          socialLinksHoverClassName={socialHoverClassName}
           socialLinks={socialLinksPosition === "top" ? socialLinks : []}
           username={username}
         />

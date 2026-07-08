@@ -12,9 +12,10 @@ interface IconProps {
 }
 
 function getClassName(className: string, tone?: "dark" | "light") {
-  if (tone === "dark") return `${className} text-black`;
-  if (tone === "light") return `${className} text-white`;
-  return className;
+  const normalizedClassName = `${className} block shrink-0`;
+  if (tone === "dark") return `${normalizedClassName} text-black`;
+  if (tone === "light") return `${normalizedClassName} text-white`;
+  return normalizedClassName;
 }
 
 export function SocialIcon({
@@ -94,7 +95,7 @@ export function SocialIcon({
   }
 
   return (
-    <svg aria-hidden="true" className={iconClassName} fill="none" viewBox="1 4 21 16">
+    <svg aria-hidden="true" className={iconClassName} fill="none" viewBox="0 0 24 24">
       <path
         d="M19.814 5.417c.862.232 1.54.91 1.77 1.769C22 8.745 22 11.999 22 11.999s0 3.255-.417 4.815a2.51 2.51 0 0 1-1.769 1.768C18.255 19 12 19 12 19s-6.252 0-7.814-.417a2.51 2.51 0 0 1-1.77-1.768C2 15.254 2 11.999 2 11.999s0-3.254.417-4.813a2.51 2.51 0 0 1 1.769-1.77C5.748 5 12 5 12 5s6.255 0 7.814.417m-4.618 6.582-5.196 3V9z"
         fill="currentColor"
