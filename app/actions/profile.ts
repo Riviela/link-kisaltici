@@ -52,11 +52,36 @@ export interface AppearanceActionState {
   appearance?: ProfileAppearance;
 }
 
-interface SocialIconsMutationResult {
-  status: "success" | "error";
+interface SocialIconsMutationSuccess {
+  status: "success";
   message: string;
   socialLinks: SocialLink[];
   socialLinksPosition: SocialLinksPosition;
+}
+
+interface SocialIconsMutationError {
+  status: "error";
+  message: string;
+  socialLinks: SocialLink[];
+  socialLinksPosition: SocialLinksPosition;
+}
+
+type SocialIconsMutationResult =
+  | SocialIconsMutationSuccess
+  | SocialIconsMutationError;
+
+interface CurrentSocialIconsResult {
+  status: "success";
+  profile: {
+    username: string;
+    social_links: unknown;
+    social_links_position: unknown;
+    instagram_handle: string | null;
+    tiktok_handle: string | null;
+    youtube_handle: string | null;
+  };
+  supabase: Awaited<ReturnType<typeof createClient>>;
+  userId: string;
 }
 
 const USERNAME_CONSTRAINTS = [
@@ -460,22 +485,7 @@ export async function updateSocialIconsAction(
 async function readCurrentSocialIcons(
   fallbackLinks: SocialLink[],
   fallbackPosition: SocialLinksPosition,
-): Promise<
-  | {
-      status: "success";
-      profile: {
-        username: string;
-        social_links: unknown;
-        social_links_position: unknown;
-        instagram_handle: string | null;
-        tiktok_handle: string | null;
-        youtube_handle: string | null;
-      };
-      supabase: Awaited<ReturnType<typeof createClient>>;
-      userId: string;
-    }
-  | SocialIconsMutationResult
-> {
+): Promise<CurrentSocialIconsResult | SocialIconsMutationError> {
   const supabase = await createClient();
   const { data: claimsData, error: claimsError } =
     await supabase.auth.getClaims();
